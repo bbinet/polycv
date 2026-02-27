@@ -22,6 +22,13 @@ jobs:
       - name: Install fonts
         run: sudo apt-get install -y fonts-ibm-plex
 
+      - uses: fontist/setup-fontist@v2
+
+      - name: Install Font Awesome
+        run: |
+          fontist install "Font Awesome 7 Free"
+          fontist install "Font Awesome 7 Brands"
+
       - name: Install cspell
         run: npm install -g cspell
 
@@ -32,4 +39,4 @@ jobs:
       - run: just spell
       - run: just build
         env:
-          TYPST_FONT_PATHS: /home/runner/.local/share/typst/packages
+          TYPST_FONT_PATHS: ~/.fontist/fonts
