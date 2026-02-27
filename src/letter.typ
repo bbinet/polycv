@@ -38,77 +38,94 @@
   font-weight: (:),
   body,
 ) = {
-
   // --- Default theme ---
   let t = (
-    primary:   rgb("#000000"),
-    header:    rgb("#6B6B6B"),
-    footer:    rgb("#6B6B6B"),
-    links:     rgb("#1565C0"),
-    header-bg: rgb("#F5F1ED"),
-  ) + theme
+    (
+      primary: rgb("#000000"),
+      header: rgb("#6B6B6B"),
+      footer: rgb("#6B6B6B"),
+      links: rgb("#1565C0"),
+      header-bg: rgb("#F5F1ED"),
+    )
+      + theme
+  )
 
   // --- Sizes / weights / gaps ---
   let ts = (
-    body:   11pt,
-    name:   28pt,
-    header: 9.5pt,
-    footer: 8pt,
-  ) + text-size
+    (
+      body: 11pt,
+      name: 28pt,
+      header: 9.5pt,
+      footer: 8pt,
+    )
+      + text-size
+  )
 
   let ff = (
-    body: "IBM Plex Sans",
-  ) + font-family
+    (
+      body: "IBM Plex Sans",
+    )
+      + font-family
+  )
 
   let fw = (
-    body:           "light",
-    name:           "bold",
-    header:         "light",
-    footer:         "light",
-    recipient-name: "medium",
-    subject:        "bold",
-    signature:      "medium",
-  ) + font-weight
+    (
+      body: "light",
+      name: "bold",
+      header: "light",
+      footer: "light",
+      recipient-name: "medium",
+      subject: "bold",
+      signature: "medium",
+    )
+      + font-weight
+  )
 
   let gap = (
-    name-to-headline:      -16pt,
-    headline-to-contact:     4pt,
-    header-bottom-pad:      12pt,
-    header-to-body:         36pt,
-    recipient-to-subject:   10pt,
-    subject-to-salutation:  10pt,
-    salutation-to-body:     10pt,
-    between-paragraphs:      8pt,
-    closing-to-signature:   15pt,
-    signature-space:        25pt,
-    header-separator:       12pt,
-    footer-separator:       12pt,
-    header-icon-to-text:     4pt,
-    footer-icon-to-text:     2pt,
+    name-to-headline: -16pt,
+    headline-to-contact: 4pt,
+    header-bottom-pad: 12pt,
+    header-to-body: 36pt,
+    recipient-to-subject: 10pt,
+    subject-to-salutation: 10pt,
+    salutation-to-body: 10pt,
+    between-paragraphs: 8pt,
+    closing-to-signature: 15pt,
+    signature-space: 25pt,
+    header-separator: 12pt,
+    footer-separator: 12pt,
+    header-icon-to-text: 4pt,
+    footer-icon-to-text: 2pt,
   )
 
   let layout = (
-    margin-left:      0.7in,
-    margin-right:     0.7in,
-    margin-top:       0.8in,
-    margin-bottom:    0.8in,
+    margin-left: 0.7in,
+    margin-right: 0.7in,
+    margin-top: 0.8in,
+    margin-bottom: 0.8in,
     header-bg-height: 1in,
   )
 
   // --- Contact icon / URL defaults ---
   let ci = (
-    phone:    "phone",
-    email:    "envelope",
-    linkedin: "linkedin",
-    github:   "github",
-    address:  "location-dot",
-  ) + contact-icons
+    (
+      phone: "phone",
+      email: "envelope",
+      linkedin: "linkedin",
+      github: "github",
+      address: "location-dot",
+    )
+      + contact-icons
+  )
 
   let cu = (
-    email:    "mailto:",
-    linkedin: "https://linkedin.com/in/",
-    github:   "https://github.com/",
-  ) + contact-url-bases
+    (
+      email: "mailto:",
+      linkedin: "https://linkedin.com/in/",
+      github: "https://github.com/",
+    )
+      + contact-url-bases
+  )
 
   // --- Helpers ---
   let contact-line(s) = {
@@ -116,16 +133,18 @@
     let parts = items
       .filter(key => s.at(key, default: none) != none)
       .map(key => {
-        let val  = s.at(key)
+        let val = s.at(key)
         let icon = ci.at(key, default: none)
         let base = cu.at(key, default: none)
         let disp = if base != none { link(base + val)[#val] } else { val }
-        if icon != none { fa-icon(icon) + h(gap.header-icon-to-text) + disp } else { disp }
+        if icon != none {
+          fa-icon(icon) + h(gap.header-icon-to-text) + disp
+        } else { disp }
       })
     text(
-      size:   ts.header,
+      size: ts.header,
       weight: fw.header,
-      fill:   t.header,
+      fill: t.header,
       parts.join(h(gap.header-separator)),
     )
   }
@@ -185,34 +204,35 @@
       .filter(k => k == "name" or s.at(k, default: none) != none)
       .map(k => {
         if k == "name" { return s.name }
-        let val  = s.at(k)
+        let val = s.at(k)
         let icon = ci.at(k, default: none)
-        if icon != none { [#fa-icon(icon) #h(gap.footer-icon-to-text) #val] } else { val }
+        if icon != none {
+          [#fa-icon(icon) #h(gap.footer-icon-to-text) #val]
+        } else { val }
       })
-    align(center,
-      text(size: ts.footer, weight: fw.footer, fill: t.footer,
-        parts.join[#h(gap.footer-separator)],
-      ),
-    )
+    align(center, text(
+      size: ts.footer,
+      weight: fw.footer,
+      fill: t.footer,
+      parts.join[#h(gap.footer-separator)],
+    ))
   }
 
   // --- Page setup ---
   set page(
     paper: "us-letter",
     margin: (
-      left:   layout.margin-left,
-      right:  layout.margin-right,
-      top:    layout.margin-top,
+      left: layout.margin-left,
+      right: layout.margin-right,
+      top: layout.margin-top,
       bottom: layout.margin-bottom,
     ),
     footer: build-footer(),
-    background: place(top + left,
-      rect(
-        width:  100%,
-        height: layout.header-bg-height + layout.margin-top,
-        fill:   t.header-bg,
-      ),
-    ),
+    background: place(top + left, rect(
+      width: 100%,
+      height: layout.header-bg-height + layout.margin-top,
+      fill: t.header-bg,
+    )),
   )
   set text(font: ff.body, size: ts.body, weight: fw.body)
   set par(justify: true, leading: 0.65em)

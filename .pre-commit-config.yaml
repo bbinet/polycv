@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0
+    hooks:
+      - id: prettier
+        files: \.md$
+
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v9.4.0
+    hooks:
+      - id: cspell
+        args: ["--config", "cspell.toml", "--no-must-find-files"]
+
+  - repo: https://github.com/instrumentl/pre-commit-just
+    rev: v0.1
+    hooks:
+      - id: format-justfile
+
+  - repo: local
+    hooks:
+      - id: typstyle
+        name: Format Typst files
+        entry: typstyle -i
+        language: system
+        files: \.typ$
+        pass_filenames: true
+
+      - id: sync-schema-cue-to-schema-json
+        name: Regenerate schema.json from CUE
+        entry: bash -c "just schema"
+        language: system
+        files: ^schema/schema\.cue$
+        pass_filenames: false

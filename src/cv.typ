@@ -44,6 +44,9 @@
 ///   Valid keys: "summary", "motivation", "experience", "education", "awards", "courses".
 /// - section-titles (dictionary): Override any section display title.
 ///   Keys match section keys above. Defaults are all-caps e.g. "HONORS & AWARDS".
+/// - photo (content, none): Profile photo, e.g. image("assets/avatar.png").
+///   Rendered as a circle at the top of the sidebar.
+/// - photo-size (ratio): Diameter of the circular photo as a fraction of sidebar width.
 /// - body (content): Optional content appended after the CV.
 #let cv(
   name: "",
@@ -71,6 +74,8 @@
   font-weight: (:),
   show-timeline: true,
   justify-sidebar: false,
+  photo: none,
+  photo-size: 70%,
   skill-icons: (:),
   section-icons: (:),
   bullet-icon: "angle-right",
@@ -96,6 +101,7 @@
     GitHub: (icon: "github", url-base: "https://github.com/"),
   ),
   sidebar-sections: (
+    "photo",
     "contact",
     "skills",
     "values",
@@ -608,6 +614,19 @@
 
   // --- Sidebar section renderers ---
   let sidebar-renderers = (
+    photo: () => {
+      if photo != none {
+        let sidebar-content-width = (
+          sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
+        )
+        let d = sidebar-content-width * photo-size
+        pad(top: 0pt, bottom: gap.sidebar-section-below)[
+          #align(center)[
+            #box(width: d, height: d, clip: true, radius: 50%, photo)
+          ]
+        ]
+      }
+    },
     contact: () => sidebar-section(si.contact, st.contact)[
       #show: section-text("contact")
       #show link: set text(fill: t.primary)

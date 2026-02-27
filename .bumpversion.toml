@@ -1,0 +1,40 @@
+[tool.bumpversion]
+current_version = "0.0.0"
+commit = true
+tag = true
+tag_name = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "typst.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "template/cv.toml"
+search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+
+[[tool.bumpversion.files]]
+filename = "template/letter.toml"
+search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+
+[[tool.bumpversion.files]]
+filename = "template/cv.typ"
+search = "@preview/nabcv:{current_version}"
+replace = "@preview/nabcv:{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "template/letter.typ"
+search = "@preview/nabcv:{current_version}"
+replace = "@preview/nabcv:{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "template/application.typ"
+search = "@preview/nabcv:{current_version}"
+replace = "@preview/nabcv:{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "version-{current_version}-blue"
+replace = "version-{new_version}-blue"

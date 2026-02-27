@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#DDD5C8"/>
+  <!-- Head -->
+  <circle cx="200" cy="148" r="72" fill="#A89880"/>
+  <!-- Neck -->
+  <rect x="178" y="210" width="44" height="36" rx="10" fill="#A89880"/>
+  <!-- Shoulders / torso (fills bottom of circle when clipped) -->
+  <ellipse cx="200" cy="370" rx="148" ry="108" fill="#8C7B6A"/>
+</svg>

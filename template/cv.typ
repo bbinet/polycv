@@ -1,9 +1,10 @@
 // typst compile --root . template/cv.typ
-#import "/src/lib.typ": cv
+#import "@preview/nabcv:0.0.0": cv
 
 #let cd = toml("cv.toml").cv // cv data
 
 #show: cv.with(
+  photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
   name: cd.name,
   headline: cd.at("headline", default: none),
   location: cd.at("location", default: none),

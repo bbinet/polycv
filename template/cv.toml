@@ -1,3 +1,5 @@
+#:schema https://raw.githubusercontent.com/xrsl/nabcv/v0.0.0/schema/schema.json
+
 [cv]
 name     = "John Doe"
 headline = "Full-Stack Developer | Recovering Perfectionist"

@@ -1,4 +1,4 @@
-  # nabcv
+# nabcv
 
 <div align="center">
 
@@ -6,7 +6,7 @@
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/xrsl/nabcv)
+[![Version](https://img.shields.io/badge/version-0.0.0-blue)](https://github.com/xrsl/nabcv)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Typst](https://img.shields.io/badge/typst-%3E%3D0.12-orange)](https://typst.app)
 
@@ -32,12 +32,29 @@
 ### 1. Initialize from the Typst template
 
 ```sh
-typst init @preview/nabcv:0.1.0
+typst init @preview/nabcv:0.0.0
 ```
 
 This creates a `template/` folder with `cv.typ`, `letter.typ`, `application.typ` and their corresponding `.toml` data files.
 
-### 2. Fill in your data
+### 2. Install the Tombi VS Code extension (recommended)
+
+[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides TOML editing with schema-aware autocompletion, validation, and formatting. Install it and point it at the bundled schema:
+
+```json
+"tombi.schemas": [
+  {
+    "fileMatch": ["**/cv.toml"],
+    "url": "./schema/schema.json"
+  },
+  {
+    "fileMatch": ["**/letter.toml"],
+    "url": "./schema/schema.json"
+  }
+]
+```
+
+### 3. Fill in your data
 
 Edit `template/cv.toml`:
 
@@ -68,7 +85,7 @@ highlights = ["Built thing", "Improved other thing"]
 
 Edit `template/letter.toml` similarly for your cover letter.
 
-### 3. Compile
+### 4. Compile
 
 ```sh
 # CV only
@@ -85,13 +102,13 @@ typst compile --root . template/application.typ
 
 ## Templates
 
-| File | Description |
-|------|-------------|
-| `template/cv.typ` | Standalone CV using `#show: cv.with(...)` |
-| `template/letter.typ` | Standalone cover letter using `#show: letter.with(...)` |
-| `template/application.typ` | CV followed by letter in a single PDF |
-| `template/cv.toml` | CV data (personal info, experience, education, …) |
-| `template/letter.toml` | Letter data (sender, recipient, body paragraphs) |
+| File                       | Description                                             |
+| -------------------------- | ------------------------------------------------------- |
+| `template/cv.typ`          | Standalone CV using `#show: cv.with(...)`               |
+| `template/letter.typ`      | Standalone cover letter using `#show: letter.with(...)` |
+| `template/application.typ` | CV followed by letter in a single PDF                   |
+| `template/cv.toml`         | CV data (personal info, experience, education, …)       |
+| `template/letter.toml`     | Letter data (sender, recipient, body paragraphs)        |
 
 ---
 
@@ -161,24 +178,24 @@ Any network is supported by extending `profiles-config`:
 
 ### Other overrides
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `bullet-icon` | `"angle-right"` | Icon for all list bullets |
-| `address-icon` | `"location-dot"` | Icon for address field |
-| `doi-icon` | `"external-link"` | Icon on publication DOI links |
-| `show-timeline` | `true` | Toggle the experience/education timeline |
-| `justify-sidebar` | `false` | Justify text in the sidebar |
-| `skill-icons` | *(defaults)* | Map skill group names to icons |
-| `text-size` | *(defaults)* | Override any font size by key |
-| `font-weight` | *(defaults)* | Override any font weight by key |
+| Parameter         | Default           | Description                              |
+| ----------------- | ----------------- | ---------------------------------------- |
+| `bullet-icon`     | `"angle-right"`   | Icon for all list bullets                |
+| `address-icon`    | `"location-dot"`  | Icon for address field                   |
+| `doi-icon`        | `"external-link"` | Icon on publication DOI links            |
+| `show-timeline`   | `true`            | Toggle the experience/education timeline |
+| `justify-sidebar` | `false`           | Justify text in the sidebar              |
+| `skill-icons`     | _(defaults)_      | Map skill group names to icons           |
+| `text-size`       | _(defaults)_      | Override any font size by key            |
+| `font-weight`     | _(defaults)_      | Override any font weight by key          |
 
 For the letter:
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `footer-items` | `("phone", "email", "linkedin")` | Fields shown in the page footer |
-| `contact-icons` | *(defaults)* | Icon names for contact fields |
-| `contact-url-bases` | *(defaults)* | URL prefixes for email/linkedin/github |
+| Parameter           | Default                          | Description                            |
+| ------------------- | -------------------------------- | -------------------------------------- |
+| `footer-items`      | `("phone", "email", "linkedin")` | Fields shown in the page footer        |
+| `contact-icons`     | _(defaults)_                     | Icon names for contact fields          |
+| `contact-url-bases` | _(defaults)_                     | URL prefixes for email/linkedin/github |
 
 ---
 
@@ -264,6 +281,12 @@ paragraph = "Opening paragraph text."
 [[letter.content.body]]
 paragraph = "Second paragraph text."
 ```
+
+---
+
+## Inspirations
+
+- [brilliant-CV](https://github.com/yunanwg/brilliant-CV) — a well-crafted Typst CV package that inspired the overall structure and development workflow of this project
 
 ---
 

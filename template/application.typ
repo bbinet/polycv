@@ -1,10 +1,11 @@
 // typst compile --root . template/application.typ
-#import "/src/lib.typ": cv, letter
+#import "@preview/nabcv:0.0.0": cv, letter
 
 #let cd = toml("cv.toml").cv      // cv data
 #let ld = toml("letter.toml").letter // letter data
 
 #cv(
+  // photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
   name: cd.name,
   headline: cd.at("headline", default: none),
   location: cd.at("location", default: none),

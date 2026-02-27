@@ -1,0 +1,426 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "#BodyParagraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paragraph": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "paragraph"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#CV": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "summary": {
+          "type": "string"
+        },
+        "motivation": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hobbies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "references": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#SocialNetwork"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#SkillEntry"
+          }
+        },
+        "experience": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#Entry"
+          }
+        },
+        "education": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#Entry"
+          }
+        },
+        "awards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#Entry"
+          }
+        },
+        "courses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#Entry"
+          }
+        },
+        "publications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#PublicationEntry"
+          }
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#Content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "salutation": {
+          "type": "string"
+        },
+        "closing": {
+          "type": "string"
+        },
+        "body": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#BodyParagraph"
+          }
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#Date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "#Entry": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "start_date": {
+          "$ref": "#/$defs/#Date"
+        },
+        "end_date": {
+          "$ref": "#/$defs/#ExactDate"
+        },
+        "date": {
+          "$ref": "#/$defs/#Date"
+        },
+        "highlights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#ExactDate": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "const": "present"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "#Letter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sender": {
+          "$ref": "#/$defs/#Sender"
+        },
+        "recipient": {
+          "$ref": "#/$defs/#Recipient"
+        },
+        "content": {
+          "$ref": "#/$defs/#Content"
+        },
+        "metadata": {
+          "$ref": "#/$defs/#Metadata"
+        }
+      },
+      "required": [
+        "sender"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": "auto"
+            }
+          ]
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#PublicationEntry": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "doi": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "journal": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/#Date"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#Recipient": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#Sender": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string"
+        },
+        "github": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#SkillEntry": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "group",
+        "items"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#SocialNetwork": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "network": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "network",
+        "username"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#CVSchema": {
+      "properties": {},
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#LetterSchema": {
+      "properties": {},
+      "x-tombi-table-keys-order": "schema"
+    },
+    "#UnifiedSchema": {
+      "properties": {},
+      "x-tombi-table-keys-order": "schema"
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "cv": {
+      "$ref": "#/$defs/#CV"
+    },
+    "letter": {
+      "$ref": "#/$defs/#Letter"
+    }
+  }
+}

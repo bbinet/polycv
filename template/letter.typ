@@ -1,5 +1,5 @@
 // typst compile --root . template/letter.typ
-#import "/src/lib.typ": letter
+#import "@preview/nabcv:0.0.0": letter
 
 #let ld = toml("letter.toml").letter // letter data
 
