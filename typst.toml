@@ -21,7 +21,6 @@ exclude = [
   "justfile",
   "cspell.toml",
   ".pre-commit-config.yaml",
-  ".vscode",
 ]
 
 [template]

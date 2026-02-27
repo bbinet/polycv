@@ -12,38 +12,41 @@
 
 </div>
 
----
+A data-driven CV and cover letter package for Typst. All personal data lives in `.toml` files; the template `.typ` files stay clean and untouched. The package exposes two functions — `cv` and `letter` — composable into a single `application.typ`.
 
 ## Features
 
-- **TOML-driven** — all personal data lives in `.toml` files; the template is a clean, untouched `.typ`
+- **TOML-driven** — personal data in `.toml` files, no source edits needed
 - **Two templates** — `cv` and `letter`, composable into a single `application.typ`
-- **Configurable section order** — reorder or drop any sidebar or main-column section
-- **Configurable titles & icons** — every section title and icon is overridable without touching source
-- **Any social network** — `profiles-config` maps network name → icon + URL base; add Mastodon, Bluesky, etc.
-- **i18n-ready** — inject `month-names` and `date-separator` for any locale
-- **Open fonts & icons** — IBM Plex Sans + FontAwesome 6 (both open source)
-- **Typst-idiomatic** — named parameters, `#show: cv.with(...)` pattern, zero magic
+- **Configurable sections** — reorder or drop any sidebar or main-column section
+- **Any social network** — `profiles-config` maps network name → icon + URL base
+- **i18n** — override `month-names` and `date-separator` for any locale
+- **Typst-idiomatic** — named parameters, `#show: cv.with(...)` pattern
 
----
+## Prerequisites
+
+1. **Typst CLI** — follow the [official instructions](https://github.com/typst/typst#installation).
+2. **Fonts** — nabcv requires two font families:
+   - **IBM Plex Sans** — [Google Fonts](https://fonts.google.com/specimen/IBM+Plex+Sans)
+   - **Font Awesome 7 Free** — [fontawesome.com/download](https://fontawesome.com/download)
 
 ## Quick Start
 
-### 1. Initialize from the Typst template
+### 1. Initialize
 
 ```sh
 typst init @preview/nabcv:0.0.0
 ```
 
-This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their corresponding data files (`cv.toml` and `letter.toml`).
+This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their data files.
 
-### 2. Install the Tombi VS Code extension (recommended)
+### 2. Install the Tombi VS Code extension (optional)
 
-[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides TOML editing with schema-aware autocompletion, validation, and formatting. It’s not required, but it makes editing the `.toml` files much easier.
+[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides schema-aware autocompletion and validation for `cv.toml` and `letter.toml`. Both files are validated by `schema/schema.json`.
 
 ### 3. Fill in your data
 
-Edit `template/cv.toml`:
+Edit `cv.toml`:
 
 ```toml
 [cv]
@@ -51,15 +54,10 @@ name     = "Jane Smith"
 headline = "Software Engineer"
 email    = "jane@example.com"
 phone    = "+1 555 000 0000"
-
-summary = "Brief professional summary."
+summary  = "Brief professional summary."
 
 [[cv.profiles]]
 network  = "LinkedIn"
-username = "janesmith"
-
-[[cv.profiles]]
-network  = "GitHub"
 username = "janesmith"
 
 [[cv.experience]]
@@ -70,38 +68,30 @@ end_date   = "present"
 highlights = ["Built thing", "Improved other thing"]
 ```
 
-Edit `template/letter.toml` similarly for your cover letter.
+Edit `letter.toml` similarly for your cover letter.
 
 ### 4. Compile
 
 ```sh
-# CV only
-typst compile --root . template/cv.typ
-
-# Cover letter only
-typst compile --root . template/letter.typ
-
-# CV + letter in one document
-typst compile --root . template/application.typ
+cd nabcv
+typst compile cv.typ cv.pdf
+typst compile letter.typ letter.pdf
+typst compile application.typ application.pdf  # CV + letter in one PDF
 ```
-
----
 
 ## Templates
 
-| File                       | Description                                             |
-| -------------------------- | ------------------------------------------------------- |
-| `template/cv.typ`          | Standalone CV using `#show: cv.with(...)`               |
-| `template/letter.typ`      | Standalone cover letter using `#show: letter.with(...)` |
-| `template/application.typ` | CV followed by letter in a single PDF                   |
-| `template/cv.toml`         | CV data (personal info, experience, education, …)       |
-| `template/letter.toml`     | Letter data (sender, recipient, body paragraphs)        |
-
----
+| File               | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `cv.typ`           | Standalone CV using `#show: cv.with(...)`               |
+| `letter.typ`       | Standalone cover letter using `#show: letter.with(...)` |
+| `application.typ`  | CV followed by letter in a single PDF                   |
+| `cv.toml`          | CV data (personal info, experience, education, …)       |
+| `letter.toml`      | Letter data (sender, recipient, body paragraphs)        |
 
 ## Customization
 
-All customization is done in the template `.typ` file via named parameters. Nothing in `src/` needs to be touched.
+All customization is done through named parameters in the template `.typ` file. Nothing in `src/` needs to be touched.
 
 ### Section order
 
@@ -125,11 +115,9 @@ Omit a key to hide that section entirely.
 )
 ```
 
-Icon names are [FontAwesome 6](https://fontawesome.com/icons) identifiers.
+Icon names are [FontAwesome 7](https://fontawesome.com/icons) identifiers.
 
 ### Social profiles
-
-Any network is supported by extending `profiles-config`:
 
 ```typst
 #show: cv.with(
@@ -163,7 +151,7 @@ Any network is supported by extending `profiles-config`:
 )
 ```
 
-### Other overrides
+### Other parameters
 
 | Parameter         | Default           | Description                              |
 | ----------------- | ----------------- | ---------------------------------------- |
@@ -184,17 +172,11 @@ For the letter:
 | `contact-icons`     | _(defaults)_                     | Icon names for contact fields          |
 | `contact-url-bases` | _(defaults)_                     | URL prefixes for email/linkedin/github |
 
----
-
-Both `cv.toml` and `letter.toml` are validated by `schema/schema.json` — use the [Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) VS Code extension for schema-aware autocompletion and validation.
-
----
-
 ## Inspirations
 
 - [brilliant-CV](https://github.com/yunanwg/brilliant-CV) — a well-crafted Typst CV package that inspired the overall structure and development workflow of this project
-
----
+- [hipster-cv](https://github.com/latex-ninja/hipster-cv) — a LaTeX CV template that inspired the two-column sidebar design
+- [acadennial-cv](https://github.com/whliao5am/acadennial-cv-typst-template) — a Typst academic CV template
 
 ## License
 
