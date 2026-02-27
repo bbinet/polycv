@@ -94,7 +94,7 @@ All customization is done through named parameters in the template `.typ` file. 
 
 ### Section order
 
-```typst
+```typ
 #show: cv.with(
   ...,
   sidebar-sections: ("contact", "skills", "values", "references"),
@@ -106,7 +106,7 @@ Omit a key to hide that section entirely.
 
 ### Section titles & icons
 
-```typst
+```typ
 #show: cv.with(
   ...,
   section-titles: (awards: "PRIZES & RECOGNITION", experience: "WORK HISTORY"),
@@ -118,7 +118,7 @@ Icon names are [FontAwesome 7](https://fontawesome.com/icons) identifiers.
 
 ### Social profiles
 
-```typst
+```typ
 #show: cv.with(
   ...,
   profiles-config: (
@@ -131,7 +131,7 @@ Portfolio: (icon: "globe",     url-base: "https://"),
 
 ### Locale / i18n
 
-```typst
+```typ
 #show: cv.with(
   ...,
   month-names:    ("jan.", "fév.", "mars", "avr.", "mai", "juin",
@@ -142,7 +142,7 @@ Portfolio: (icon: "globe",     url-base: "https://"),
 
 ### Theming
 
-```typst
+```typ
 #show: cv.with(
   ...,
   theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")),
