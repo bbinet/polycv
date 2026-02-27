@@ -8,11 +8,14 @@ on:
         description: "Version number (e.g. 0.1.0)"
         required: true
         type: string
+      dry-run:
+        description: "Skip creating the PR (for testing)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
   pull-requests: write
-  actions: read
 
 jobs:
   release-and-publish:
@@ -52,6 +55,7 @@ jobs:
             --exclude='cspell.toml' \
             --exclude='CLAUDE.md' \
             --exclude='thumbnail-all.png' \
+            --exclude='out' \
             --exclude='packages' \
             . packages/preview/nabcv/${{ steps.version.outputs.version }}/
 
@@ -64,14 +68,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           gh auth setup-git
 
-          gh repo clone xrsl/typst-packages temp-fork
+          gh repo clone xrsl/typst-packages temp-fork -- --depth=1
           cd temp-fork
-
-          git remote add upstream https://github.com/typst/packages.git
-          git fetch upstream
-          git checkout main
-          git reset --hard upstream/main
-          git push origin main --force
 
           BRANCH="${{ steps.version.outputs.branch }}"
           git show-ref --verify --quiet refs/heads/$BRANCH && git branch -D $BRANCH || true
@@ -84,6 +82,11 @@ jobs:
           git add .
           git commit -m "nabcv:${{ steps.version.outputs.version }}"
           git push -u origin "$BRANCH"
+
+          if [ "${{ github.event.inputs.dry-run }}" = "true" ]; then
+            echo "Dry run — skipping PR creation"
+            exit 0
+          fi
 
           gh pr create \
             --repo typst/packages \

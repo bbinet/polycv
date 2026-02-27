@@ -124,8 +124,7 @@ Icon names are [FontAwesome 7](https://fontawesome.com/icons) identifiers.
   profiles-config: (
     LinkedIn:  (icon: "linkedin",  url-base: "https://linkedin.com/in/"),
     GitHub:    (icon: "github",    url-base: "https://github.com/"),
-    Mastodon:  (icon: "mastodon",  url-base: "https://mastodon.social/@"),
-    Portfolio: (icon: "globe",     url-base: "https://"),
+Portfolio: (icon: "globe",     url-base: "https://"),
   ),
 )
 ```
