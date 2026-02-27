@@ -8,7 +8,8 @@ schema:
 # generate combined thumbnail strip from application.typ
 thumbs: link
     @typst compile template/application.typ "thumbnail{p}.png" --ppi 150
-    @magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail.png
+    @cp thumbnail1.png thumbnail.png
+    @magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail-all.png
     @rm thumbnail1.png thumbnail2.png thumbnail3.png
 
 # watch cv.typ for changes

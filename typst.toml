@@ -21,6 +21,7 @@ exclude = [
   "cspell.toml",
   ".pre-commit-config.yaml",
   "CLAUDE.md",
+  "thumbnail-all.png",
 ]
 
 [template]

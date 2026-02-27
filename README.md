@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![](thumbnail.png)
+![](thumbnail-all.png)
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 

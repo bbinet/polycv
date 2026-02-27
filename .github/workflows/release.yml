@@ -51,6 +51,7 @@ jobs:
             --exclude='justfile' \
             --exclude='cspell.toml' \
             --exclude='CLAUDE.md' \
+            --exclude='thumbnail-all.png' \
             --exclude='packages' \
             . packages/preview/nabcv/${{ steps.version.outputs.version }}/
 
