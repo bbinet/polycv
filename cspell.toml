@@ -5,6 +5,7 @@ ignorePaths = [
   "docs/",
   "*.typ",
   "*.toml.json",
+  "*.svg",
   "justfile",
   "CLAUDE.md"
 ]

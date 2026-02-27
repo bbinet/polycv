@@ -47,11 +47,10 @@ jobs:
             --exclude='.github' \
             --exclude='.bumpversion.toml' \
             --exclude='.pre-commit-config.yaml' \
-            --exclude='.vscode' \
-            --exclude='docs' \
             --exclude='schema' \
             --exclude='justfile' \
             --exclude='cspell.toml' \
+            --exclude='CLAUDE.md' \
             --exclude='packages' \
             . packages/preview/nabcv/${{ steps.version.outputs.version }}/
 

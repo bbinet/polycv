@@ -73,10 +73,9 @@ Edit `letter.toml` similarly for your cover letter.
 ### 4. Compile
 
 ```sh
-cd nabcv
-typst compile cv.typ cv.pdf
-typst compile letter.typ letter.pdf
-typst compile application.typ application.pdf  # CV + letter in one PDF
+typst compile cv.typ
+typst compile letter.typ
+typst compile application.typ
 ```
 
 ## Templates
