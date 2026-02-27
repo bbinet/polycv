@@ -1,0 +1,106 @@
+name: Release and Publish to Typst Packages
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g. 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  release-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${{ github.ref_name }}"
+            VERSION=${VERSION#v}
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch=nabcv-$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Prepare package files
+        run: |
+          mkdir -p packages/preview/nabcv/${{ steps.version.outputs.version }}
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.bumpversion.toml' \
+            --exclude='.pre-commit-config.yaml' \
+            --exclude='.vscode' \
+            --exclude='docs' \
+            --exclude='schema' \
+            --exclude='justfile' \
+            --exclude='cspell.toml' \
+            --exclude='packages' \
+            . packages/preview/nabcv/${{ steps.version.outputs.version }}/
+
+      - name: Publish to fork and create PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          MAIN_DIR="$(pwd)"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          gh auth setup-git
+
+          gh repo clone xrsl/typst-packages temp-fork
+          cd temp-fork
+
+          git remote add upstream https://github.com/typst/packages.git
+          git fetch upstream
+          git checkout main
+          git reset --hard upstream/main
+          git push origin main --force
+
+          BRANCH="${{ steps.version.outputs.branch }}"
+          git show-ref --verify --quiet refs/heads/$BRANCH && git branch -D $BRANCH || true
+          git ls-remote --heads origin $BRANCH | grep -q $BRANCH && git push origin --delete $BRANCH || true
+          git checkout -b "$BRANCH"
+
+          mkdir -p packages/preview/nabcv
+          cp -r "$MAIN_DIR/packages/preview/nabcv/${{ steps.version.outputs.version }}" packages/preview/nabcv/
+
+          git add .
+          git commit -m "nabcv:${{ steps.version.outputs.version }}"
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --repo typst/packages \
+            --title "nabcv:${{ steps.version.outputs.version }}" \
+            --body "I am submitting
+          - [ ] a new package
+          - [ ] an update for a package
+
+          Description: nabcv ${{ steps.version.outputs.version }} — a data-driven two-column CV package for Typst.
+
+          I have read and followed the submission guidelines and, in particular, I
+          - [X] selected a name that isn't the most obvious or canonical name for what the package does
+          - [X] added a \`typst.toml\` file with all required keys
+          - [X] added a \`README.md\` with documentation for my package
+          - [X] have chosen a license and added a \`LICENSE\` file
+          - [X] tested my package locally on my system and it worked
+          - [X] \`exclude\`d PDFs or README images, if any, but not the LICENSE
+          - [X] ensured that my package is licensed such that users can use and distribute the contents of its template directory without restriction, after modifying them through normal use." \
+            --head "xrsl:$BRANCH" \
+            --base main
