@@ -38,3 +38,8 @@ replace = "@preview/nabcv:{new_version}"
 filename = "README.md"
 search = "version-{current_version}-blue"
 replace = "version-{new_version}-blue"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "@preview/nabcv:{current_version}"
+replace = "@preview/nabcv:{new_version}"

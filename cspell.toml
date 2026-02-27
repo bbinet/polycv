@@ -6,6 +6,7 @@ ignorePaths = [
   "*.typ",
   "*.toml.json",
   "justfile",
+  "CLAUDE.md"
 ]
 words = [
   "nabcv",
