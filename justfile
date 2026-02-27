@@ -79,5 +79,8 @@ release type: (bump type)
 prek:
     prek run --all-files
 
+prek-ci:
+    prek run --all-files --skip schema --skip typstyle --show-diff-on-failure --color always
+
 # run ci suite
-ci: spell build clean
+ci: prek spell build clean
