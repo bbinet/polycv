@@ -6,7 +6,7 @@
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-[![Version](https://img.shields.io/badge/version-0.0.0-blue)](https://github.com/xrsl/nabcv)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/xrsl/nabcv)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Typst](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
@@ -35,7 +35,7 @@ A data-driven CV and cover letter package for Typst. All personal data lives in 
 ### 1. Initialize
 
 ```sh
-typst init @preview/nabcv:0.0.0
+typst init @preview/nabcv:0.1.0
 ```
 
 This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their data files.

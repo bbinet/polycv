@@ -1,5 +1,5 @@
 // typst compile --root . template/application.typ
-#import "@preview/nabcv:0.0.0": cv, letter
+#import "@preview/nabcv:0.1.0": cv, letter
 
 #let cd = toml("cv.toml").cv      // cv data
 #let ld = toml("letter.toml").letter // letter data
