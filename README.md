@@ -1,69 +1,272 @@
-# The `my-package` Package
-<div align="center">Version 0.1.0</div>
+  # nabcv
 
-A short description about the project and/or client.
+<div align="center">
 
-## Template adaptation checklist
+![](thumbnail.png)
 
-- [ ] Fill out `README.md`
-  - Change the `my-package` package name, including code snippets
-  - Check section contents and/or delete sections that don't apply
-- [ ] Check and/or replace `LICENSE` by something that suits your needs
-- [ ] Fill out `typst.toml`
-  - See also the [typst/packages README](https://github.com/typst/packages/?tab=readme-ov-file#package-format)
-- [ ] Adapt Repository URLs in `CHANGELOG.md`
-  - Consider only committing that file with your first release, or removing the "Initial Release" part in the beginning
-- [ ] Adapt or deactivate the release workflow in `.github/workflows/release.yml`
-  - to deactivate it, delete that file or remove/comment out lines 2-4 (`on:` and following)
-  - to use the workflow
-    - [ ] check the values under `env:`, particularly `REGISTRY_FORK`
-    - [ ] if you don't have one, [create a fine-grained personal access token](https://github.com/settings/tokens?type=beta) with [only Contents permission](https://stackoverflow.com/a/75116350/371191) for the `REGISTRY_FORK`
-    - [ ] on this repo, create a secret `REGISTRY_TOKEN` (at `https://github.com/[user]/[repo]/settings/secrets/actions`) that contains the so created token
+**A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-    if configured correctly, whenever you create a tag `v...`, your package will be pushed onto a branch on the `REGISTRY_FORK`, from which you can then create a pull request against [typst/packages](https://github.com/typst/packages/)
-- [ ] remove/replace the example test case
-- [ ] (add your actual code, docs and tests)
-- [ ] remove this section from the README
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/xrsl/nabcv)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Typst](https://img.shields.io/badge/typst-%3E%3D0.12-orange)](https://typst.app)
 
-## Getting Started
+</div>
 
-These instructions will get you a copy of the project up and running on the typst web app. Perhaps a short code example on importing the package and a very simple teaser usage.
+---
 
-```typ
-#import "@preview/my-package:0.1.0": *
+## Features
 
-#show: my-show-rule.with()
-#my-func()
+- **TOML-driven** — all personal data lives in `.toml` files; the template is a clean, untouched `.typ`
+- **Two templates** — `cv` and `letter`, composable into a single `application.typ`
+- **Configurable section order** — reorder or drop any sidebar or main-column section
+- **Configurable titles & icons** — every section title and icon is overridable without touching source
+- **Any social network** — `profiles-config` maps network name → icon + URL base; add Mastodon, Bluesky, etc.
+- **i18n-ready** — inject `month-names` and `date-separator` for any locale
+- **Open fonts & icons** — IBM Plex Sans + FontAwesome 6 (both open source)
+- **Typst-idiomatic** — named parameters, `#show: cv.with(...)` pattern, zero magic
+
+---
+
+## Quick Start
+
+### 1. Initialize from the Typst template
+
+```sh
+typst init @preview/nabcv:0.1.0
 ```
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./thumbnail-dark.svg">
-  <img src="./thumbnail-light.svg">
-</picture>
+This creates a `template/` folder with `cv.typ`, `letter.typ`, `application.typ` and their corresponding `.toml` data files.
 
-### Installation
+### 2. Fill in your data
 
-A step by step guide that will tell you how to get the development environment up and running. This should explain how to clone the repo and where to (maybe a link to the typst documentation on it), along with any pre-requisite software and installation steps.
+Edit `template/cv.toml`:
 
+```toml
+[cv]
+name     = "Jane Smith"
+headline = "Software Engineer"
+email    = "jane@example.com"
+phone    = "+1 555 000 0000"
+
+summary = "Brief professional summary."
+
+[[cv.profiles]]
+network  = "LinkedIn"
+username = "janesmith"
+
+[[cv.profiles]]
+network  = "GitHub"
+username = "janesmith"
+
+[[cv.experience]]
+company    = "Acme Corp"
+position   = "Senior Engineer"
+start_date = "2021-03"
+end_date   = "present"
+highlights = ["Built thing", "Improved other thing"]
 ```
-$ First step
-$ Another step
-$ Final step
+
+Edit `template/letter.toml` similarly for your cover letter.
+
+### 3. Compile
+
+```sh
+# CV only
+typst compile --root . template/cv.typ
+
+# Cover letter only
+typst compile --root . template/letter.typ
+
+# CV + letter in one document
+typst compile --root . template/application.typ
 ```
 
-## Usage
+---
 
-A more in-depth description of usage. Any template arguments? A complicated example that showcases most if not all of the functions the package provides? This is also an excellent place to signpost the manual.
+## Templates
 
-```typ
-#import "@preview/my-package:0.1.0": *
+| File | Description |
+|------|-------------|
+| `template/cv.typ` | Standalone CV using `#show: cv.with(...)` |
+| `template/letter.typ` | Standalone cover letter using `#show: letter.with(...)` |
+| `template/application.typ` | CV followed by letter in a single PDF |
+| `template/cv.toml` | CV data (personal info, experience, education, …) |
+| `template/letter.toml` | Letter data (sender, recipient, body paragraphs) |
 
-#let my-complicated-example = ...
+---
+
+## Customization
+
+All customization is done in the template `.typ` file via named parameters. Nothing in `src/` needs to be touched.
+
+### Section order
+
+```typst
+#show: cv.with(
+  ...,
+  sidebar-sections: ("contact", "skills", "values", "references"),
+  main-sections:    ("experience", "education", "summary", "courses"),
+)
 ```
 
-## Additional Documentation and Acknowledgments
+Omit a key to hide that section entirely.
 
-* Project folder on server:
-* Confluence link:
-* Asana board:
-* etc...
+### Section titles & icons
+
+```typst
+#show: cv.with(
+  ...,
+  section-titles: (awards: "PRIZES & RECOGNITION", experience: "WORK HISTORY"),
+  section-icons:  (awards: "medal", experience: "briefcase"),
+)
+```
+
+Icon names are [FontAwesome 6](https://fontawesome.com/icons) identifiers.
+
+### Social profiles
+
+Any network is supported by extending `profiles-config`:
+
+```typst
+#show: cv.with(
+  ...,
+  profiles-config: (
+    LinkedIn:  (icon: "linkedin",  url-base: "https://linkedin.com/in/"),
+    GitHub:    (icon: "github",    url-base: "https://github.com/"),
+    Mastodon:  (icon: "mastodon",  url-base: "https://mastodon.social/@"),
+    Portfolio: (icon: "globe",     url-base: "https://"),
+  ),
+)
+```
+
+### Locale / i18n
+
+```typst
+#show: cv.with(
+  ...,
+  month-names:    ("jan.", "fév.", "mars", "avr.", "mai", "juin",
+                   "juil.", "août", "sep.", "oct.", "nov.", "déc."),
+  date-separator: " – ",
+)
+```
+
+### Theming
+
+```typst
+#show: cv.with(
+  ...,
+  theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")),
+)
+```
+
+### Other overrides
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `bullet-icon` | `"angle-right"` | Icon for all list bullets |
+| `address-icon` | `"location-dot"` | Icon for address field |
+| `doi-icon` | `"external-link"` | Icon on publication DOI links |
+| `show-timeline` | `true` | Toggle the experience/education timeline |
+| `justify-sidebar` | `false` | Justify text in the sidebar |
+| `skill-icons` | *(defaults)* | Map skill group names to icons |
+| `text-size` | *(defaults)* | Override any font size by key |
+| `font-weight` | *(defaults)* | Override any font weight by key |
+
+For the letter:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `footer-items` | `("phone", "email", "linkedin")` | Fields shown in the page footer |
+| `contact-icons` | *(defaults)* | Icon names for contact fields |
+| `contact-url-bases` | *(defaults)* | URL prefixes for email/linkedin/github |
+
+---
+
+## TOML Schema
+
+### `cv.toml`
+
+```toml
+[cv]
+name        = "string"         # required
+headline    = "string"         # optional
+location    = "string"         # optional
+email       = "string"         # optional
+phone       = "string"         # optional
+address     = ["line1","line2"] # optional, string or array
+keywords    = ["tag1","tag2"]  # optional, shown as header badges
+summary     = "string"         # optional
+motivation  = "string"         # optional
+references  = "string"         # optional, or [[cv.references]] array
+values      = ["string"]       # optional
+hobbies     = ["string"]       # optional
+
+[[cv.profiles]]
+network  = "LinkedIn"          # must match a key in profiles-config
+username = "yourhandle"
+
+[[cv.skills]]
+group = "Programming"
+items = "Python, TypeScript, Go"
+
+[[cv.experience]]
+company    = "Company Name"
+position   = "Job Title"       # optional
+start_date = "2022-01"         # YYYY-MM or "present"
+end_date   = "present"
+location   = "City, Country"   # optional
+highlights = ["bullet one"]    # optional
+
+[[cv.education]]               # same shape as experience
+
+[[cv.awards]]
+name    = "Award Name"
+date    = "2023-06"
+summary = "Short description"  # optional
+
+[[cv.courses]]
+name    = "Course Name"
+date    = "2024-01"
+summary = "Issuer or note"     # optional
+
+[[cv.publications]]
+title = "Paper Title"
+doi   = "10.1234/example"      # optional
+```
+
+### `letter.toml`
+
+```toml
+[letter.sender]
+name     = "Your Name"
+email    = "you@example.com"
+phone    = "+1 555 000 0000"
+linkedin = "yourhandle"        # optional
+github   = "yourhandle"        # optional
+
+[letter.recipient]
+name    = "Hiring Manager"     # optional
+title   = "Engineering Lead"   # optional
+company = "Company Name"       # optional
+address = "123 Main St"        # optional
+
+[letter.metadata]
+date = "auto"                  # "auto" = today, or any string
+
+[letter.content]
+subject    = "Application for Software Engineer"
+salutation = "Dear Hiring Manager"
+closing    = "Kind regards"
+
+[[letter.content.body]]
+paragraph = "Opening paragraph text."
+
+[[letter.content.body]]
+paragraph = "Second paragraph text."
+```
+
+---
+
+## License
+
+[MIT](LICENSE)

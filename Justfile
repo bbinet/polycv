@@ -6,6 +6,12 @@ export TYPST_ROOT := root
 default:
   @just --list --unsorted
 
+# generate combined thumbnail strip from application.typ
+thumbs:
+  typst compile template/application.typ "thumbnail{p}.png" --ppi 150
+  magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail.png
+  rm thumbnail1.png thumbnail2.png thumbnail3.png
+
 # generate manual
 doc:
   typst compile docs/manual.typ docs/manual.pdf
