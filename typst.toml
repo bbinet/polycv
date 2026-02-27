@@ -12,7 +12,7 @@ repository = "https://github.com/xrsl/nabcv"
 keywords = ["cv", "resume", "cover-letter", "curriculum-vitae", "two-column", "letter"]
 categories = ["cv"]
 disciplines = []
-# compiler = ""
+compiler = "0.14.0"
 exclude = [
   ".github",
   ".bumpversion.toml",

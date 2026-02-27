@@ -89,7 +89,7 @@ jobs:
             --repo typst/packages \
             --title "nabcv:${{ steps.version.outputs.version }}" \
             --body "I am submitting
-          - [ ] a new package
+          - [X] a new package
           - [ ] an update for a package
 
           Description: nabcv ${{ steps.version.outputs.version }} — a data-driven two-column CV package for Typst.

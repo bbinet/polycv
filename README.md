@@ -8,7 +8,7 @@
 
 [![Version](https://img.shields.io/badge/version-0.0.0-blue)](https://github.com/xrsl/nabcv)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Typst](https://img.shields.io/badge/typst-%3E%3D0.12-orange)](https://typst.app)
+[![Typst](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
 </div>
 
