@@ -31,8 +31,8 @@ repos:
         files: \.typ$
         pass_filenames: true
 
-      - id: sync-schema-cue-to-schema-json
-        name: Regenerate schema.json from CUE
+      - id: schema
+        name: Regenerate schema.json from schema.cue
         entry: bash -c "just schema"
         language: system
         files: ^schema/schema\.cue$

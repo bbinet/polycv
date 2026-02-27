@@ -80,4 +80,4 @@ prek:
     prek run --all-files
 
 # run ci suite
-ci: build
+ci: spell build clean

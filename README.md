@@ -35,24 +35,11 @@
 typst init @preview/nabcv:0.0.0
 ```
 
-This creates a `template/` folder with `cv.typ`, `letter.typ`, `application.typ` and their corresponding `.toml` data files.
+This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their corresponding data files (`cv.toml` and `letter.toml`).
 
 ### 2. Install the Tombi VS Code extension (recommended)
 
-[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides TOML editing with schema-aware autocompletion, validation, and formatting. Install it and point it at the bundled schema:
-
-```json
-"tombi.schemas": [
-  {
-    "fileMatch": ["**/cv.toml"],
-    "url": "./schema/schema.json"
-  },
-  {
-    "fileMatch": ["**/letter.toml"],
-    "url": "./schema/schema.json"
-  }
-]
-```
+[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides TOML editing with schema-aware autocompletion, validation, and formatting. It’s not required, but it makes editing the `.toml` files much easier.
 
 ### 3. Fill in your data
 
@@ -199,88 +186,7 @@ For the letter:
 
 ---
 
-## TOML Schema
-
-### `cv.toml`
-
-```toml
-[cv]
-name        = "string"         # required
-headline    = "string"         # optional
-location    = "string"         # optional
-email       = "string"         # optional
-phone       = "string"         # optional
-address     = ["line1","line2"] # optional, string or array
-keywords    = ["tag1","tag2"]  # optional, shown as header badges
-summary     = "string"         # optional
-motivation  = "string"         # optional
-references  = "string"         # optional, or [[cv.references]] array
-values      = ["string"]       # optional
-hobbies     = ["string"]       # optional
-
-[[cv.profiles]]
-network  = "LinkedIn"          # must match a key in profiles-config
-username = "yourhandle"
-
-[[cv.skills]]
-group = "Programming"
-items = "Python, TypeScript, Go"
-
-[[cv.experience]]
-company    = "Company Name"
-position   = "Job Title"       # optional
-start_date = "2022-01"         # YYYY-MM or "present"
-end_date   = "present"
-location   = "City, Country"   # optional
-highlights = ["bullet one"]    # optional
-
-[[cv.education]]               # same shape as experience
-
-[[cv.awards]]
-name    = "Award Name"
-date    = "2023-06"
-summary = "Short description"  # optional
-
-[[cv.courses]]
-name    = "Course Name"
-date    = "2024-01"
-summary = "Issuer or note"     # optional
-
-[[cv.publications]]
-title = "Paper Title"
-doi   = "10.1234/example"      # optional
-```
-
-### `letter.toml`
-
-```toml
-[letter.sender]
-name     = "Your Name"
-email    = "you@example.com"
-phone    = "+1 555 000 0000"
-linkedin = "yourhandle"        # optional
-github   = "yourhandle"        # optional
-
-[letter.recipient]
-name    = "Hiring Manager"     # optional
-title   = "Engineering Lead"   # optional
-company = "Company Name"       # optional
-address = "123 Main St"        # optional
-
-[letter.metadata]
-date = "auto"                  # "auto" = today, or any string
-
-[letter.content]
-subject    = "Application for Software Engineer"
-salutation = "Dear Hiring Manager"
-closing    = "Kind regards"
-
-[[letter.content.body]]
-paragraph = "Opening paragraph text."
-
-[[letter.content.body]]
-paragraph = "Second paragraph text."
-```
+Both `cv.toml` and `letter.toml` are validated by `schema/schema.json` — use the [Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) VS Code extension for schema-aware autocompletion and validation.
 
 ---
 

@@ -17,7 +17,25 @@ jobs:
 
       - uses: typst-community/setup-typst@v4
         with:
-          typst-version: 'latest'
+          typst-version: "latest"
 
-      - name: Run tests
-        run: just ci
+      - name: Install fonts
+        run: sudo apt-get install -y fonts-ibm-plex
+
+      - name: Install cspell
+        run: npm install -g cspell
+
+      - uses: j178/prek-action@v1
+        with:
+          install-only: true
+      - run: |
+          prek run \
+            --all-files \
+            --skip schema --skip typstyle \
+            --show-diff-on-failure \
+            --color always
+      - name: just ci
+        run: just spell
+
+      - name: just build
+        run: just build
