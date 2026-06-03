@@ -1,7 +1,8 @@
 // typst compile --root . template/letter.typ
 #import "@preview/nabcv:0.1.0": letter
 
-#let ld = toml("letter.toml").letter // letter data
+#let fmt = sys.inputs.at("fmt", default: "yaml")
+#let ld = if fmt == "yaml" { yaml("letter.yml").letter } else { toml("letter.toml").letter }
 
 #show: letter.with(
   sender: ld.sender,

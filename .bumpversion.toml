@@ -20,6 +20,16 @@ search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema
 replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
 
 [[tool.bumpversion.files]]
+filename = "template/cv.yml"
+search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+
+[[tool.bumpversion.files]]
+filename = "template/letter.yml"
+search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+
+[[tool.bumpversion.files]]
 filename = "template/cv.typ"
 search = "@preview/nabcv:{current_version}"
 replace = "@preview/nabcv:{new_version}"

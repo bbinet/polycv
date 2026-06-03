@@ -12,11 +12,11 @@
 
 </div>
 
-A data-driven CV and cover letter package for Typst. All personal data lives in `.toml` files; the template `.typ` files stay clean and untouched. The package exposes two functions — `cv` and `letter` — composable into a single `application.typ`.
+A data-driven CV and cover letter package for Typst. All personal data lives in `.yml` or `.toml` files; the template `.typ` files stay clean and untouched. The package exposes two functions — `cv` and `letter` — composable into a single `application.typ`.
 
 ## Features
 
-- **TOML-driven** — personal data in `.toml` files, no source edits needed
+- **Data-driven** — personal data in `.yml` or `.toml` files, no source edits needed
 - **Two templates** — `cv` and `letter`, composable into a single `application.typ`
 - **Configurable sections** — reorder or drop any sidebar or main-column section
 - **Any social network** — `profiles-config` maps network name → icon + URL base
@@ -40,13 +40,38 @@ typst init @preview/nabcv:0.1.0
 
 This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their data files.
 
-### 2. Install the Tombi VS Code extension (optional)
+### 2. Install editor extensions (optional)
 
-[Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) provides schema-aware autocompletion and validation for `cv.toml` and `letter.toml`. Both files are validated by `schema/schema.json`.
+For schema-aware autocompletion and validation:
+
+- **YAML** — [YAML by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) validates `cv.yml` and `letter.yml` against `schema/schema.json`.
+- **TOML** — [Tombi](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) validates `cv.toml` and `letter.toml`.
 
 ### 3. Fill in your data
 
-Edit `cv.toml`:
+Edit `cv.yml` (default format):
+
+```yaml
+cv:
+  name: "Jane Smith"
+  headline: "Software Engineer"
+  email: "jane@example.com"
+  phone: "+1 555 000 0000"
+  summary: "Brief professional summary."
+  profiles:
+    - network: LinkedIn
+      username: janesmith
+  experience:
+    - company: "Acme Corp"
+      position: "Senior Engineer"
+      start_date: "2021-03"
+      end_date: "present"
+      highlights:
+        - "Built thing"
+        - "Improved other thing"
+```
+
+Or use the TOML equivalent in `cv.toml`:
 
 ```toml
 [cv]
@@ -68,14 +93,20 @@ end_date   = "present"
 highlights = ["Built thing", "Improved other thing"]
 ```
 
-Edit `letter.toml` similarly for your cover letter.
+Edit `letter.yml` (or `letter.toml`) similarly for your cover letter.
 
 ### 4. Compile
 
 ```sh
+# YAML data (default)
 typst compile cv.typ
 typst compile letter.typ
 typst compile application.typ
+
+# TOML data
+typst compile cv.typ --input fmt=toml
+typst compile letter.typ --input fmt=toml
+typst compile application.typ --input fmt=toml
 ```
 
 ## Templates
@@ -85,8 +116,10 @@ typst compile application.typ
 | `cv.typ`           | Standalone CV using `#show: cv.with(...)`               |
 | `letter.typ`       | Standalone cover letter using `#show: letter.with(...)` |
 | `application.typ`  | CV followed by letter in a single PDF                   |
-| `cv.toml`          | CV data (personal info, experience, education, …)       |
-| `letter.toml`      | Letter data (sender, recipient, body paragraphs)        |
+| `cv.yml`           | CV data in YAML (personal info, experience, education, …) |
+| `letter.yml`       | Letter data in YAML (sender, recipient, body paragraphs)  |
+| `cv.toml`          | CV data in TOML (alternative format, `--input fmt=toml`)  |
+| `letter.toml`      | Letter data in TOML (alternative format)                  |
 
 ## Customization
 

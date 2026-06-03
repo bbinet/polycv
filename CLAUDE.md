@@ -5,8 +5,8 @@ Typst CV package. Data-driven: all personal info lives in TOML files; `.typ` tem
 ## Structure
 
 - `src/` — package source (`cv.typ`, `letter.typ`, `lib.typ`)
-- `template/` — user-facing template files (`cv.typ`, `letter.typ`, `application.typ`, `cv.toml`, `letter.toml`)
-- `schema/` — CUE schema + generated `schema.json` for TOML validation
+- `template/` — user-facing template files (`cv.typ`, `letter.typ`, `application.typ`, `cv.toml`, `letter.toml`, `cv.yml`, `letter.yml`)
+- `schema/` — CUE schema + generated `schema.json` for TOML/YAML validation
 - `typst.toml` — package manifest
 
 ## Key commands

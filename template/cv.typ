@@ -1,7 +1,8 @@
 // typst compile --root . template/cv.typ
 #import "@preview/nabcv:0.1.0": cv
 
-#let cd = toml("cv.toml").cv // cv data
+#let fmt = sys.inputs.at("fmt", default: "yaml")
+#let cd = if fmt == "yaml" { yaml("cv.yml").cv } else { toml("cv.toml").cv }
 
 #show: cv.with(
   photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),

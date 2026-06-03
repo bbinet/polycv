@@ -23,17 +23,19 @@ clean:
     @rm -rf out/
     @echo "✅ Done"
 
-# spell check template toml files and readme
+# spell check template data files and readme
 spell:
-    @cspell template/cv.toml template/letter.toml README.md --config cspell.toml
+    @cspell template/cv.toml template/letter.toml template/cv.yml template/letter.yml README.md --config cspell.toml
 
-# compile all templates as a smoke test
+# compile all templates as a smoke test (yaml default + toml variant)
 build: link && unlink
     @echo "🏗️  Building templates..."
     @mkdir -p out
     @typst compile template/cv.typ out/cv.pdf
     @typst compile template/letter.typ out/letter.pdf
     @typst compile template/application.typ out/application.pdf
+    @typst compile template/cv.typ out/cv-toml.pdf --input fmt=toml
+    @typst compile template/letter.typ out/letter-toml.pdf --input fmt=toml
 
 # symlink the library into the local preview package directory
 link:
@@ -77,6 +79,26 @@ release type: (bump type)
     git push
     git push --tags
 
+# verify yaml and toml produce pixel-identical rendered output
+test-yaml: link
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p out
+    echo "Compiling YAML variant..."
+    typst compile --root . template/cv.typ "out/test-yaml{p}.png" --ppi 150
+    echo "Compiling TOML variant..."
+    typst compile --root . template/cv.typ "out/test-toml{p}.png" --ppi 150 --input fmt=toml
+    echo "Comparing pages..."
+    for f in out/test-yaml*.png; do
+        toml_f="${f/test-yaml/test-toml}"
+        if ! magick compare -metric AE "$f" "$toml_f" null: 2>/dev/null; then
+            echo "FAIL: $f != $toml_f"
+            exit 1
+        fi
+    done
+    echo "OK: YAML and TOML outputs are pixel-identical"
+    rm -f out/test-yaml*.png out/test-toml*.png
+
 prek:
     prek run --all-files
 
@@ -84,4 +106,4 @@ prek-ci:
     prek run --all-files --skip schema --skip typstyle --show-diff-on-failure --color always
 
 # run ci suite
-ci: prek spell build clean
+ci: prek spell build test-yaml clean
