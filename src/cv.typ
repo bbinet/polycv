@@ -861,11 +861,11 @@
           #stack(spacing: 0pt, ..education
             .enumerate()
             .map(((i, edu)) => entry(
-              edu.company,
+              edu.at("company", default: edu.at("degree", default: "")),
               format-date(edu.start_date, edu.end_date),
               subtitle: edu.at("position", default: none),
               location: edu.at("location", default: none),
-              summary: edu.at("summary", default: none),
+              summary: edu.at("summary", default: edu.at("institution", default: none)),
               highlights: if edu.at("highlights", default: none) != none {
                 edu.highlights
               } else { () },

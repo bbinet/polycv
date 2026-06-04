@@ -1,13 +1,37 @@
 // typst compile --root . template/cv.typ
 #import "@preview/nabcv:0.1.0": cv
 
+// --- Load data (fmt and data-file from sys.inputs, with sensible defaults) ---
 #let fmt = sys.inputs.at("fmt", default: "yaml")
-#let cd = if fmt == "yaml" { yaml("cv.yml").cv } else { toml("cv.toml").cv }
-#let header-band = sys.inputs.at("header-band", default: "false") == "true"
-#let ats-split = sys.inputs.at("ats-split", default: "false") == "true"
+#let data-file = sys.inputs.at("data", default: if fmt == "toml" { "cv.toml" } else { "cv.yml" })
+#let raw = if fmt == "yaml" { yaml(data-file) } else { toml(data-file) }
+#let meta = raw.at("meta", default: (:))
+#let cd = raw.cv
+
+// --- Helpers: sys.inputs take priority, meta is the fallback ---
+#let input-str(key, default: "") = sys.inputs.at(key, default: str(meta.at(key, default: default)))
+#let input-bool(key) = {
+  if key in sys.inputs { sys.inputs.at(key) == "true" }
+  else { meta.at(key, default: false) }
+}
+
+#let photo-file = input-str("photo", default: "assets/avatar.svg")
+#let header-band = input-bool("header-band")
+#let ats-split = input-bool("ats-split")
+#let locale = input-str("locale", default: "en")
+
+#let locale-args = if locale == "fr" {
+  (
+    month-names: (
+      "jan.", "fév.", "mars", "avr.", "mai", "juin",
+      "juil.", "août", "sep.", "oct.", "nov.", "déc.",
+    ),
+    date-separator: " – ",
+  )
+} else { (:) }
 
 #show: cv.with(
-  photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
+  photo: image(photo-file, width: 100%, height: 100%, fit: "cover"),
   name: cd.name,
   headline: cd.at("headline", default: none),
   location: cd.at("location", default: none),
@@ -29,6 +53,7 @@
   publications: cd.at("publications", default: none),
   show-header-band: header-band,
   ats-split: ats-split,
+  ..locale-args,
   // sidebar-sections: ("contact", "skills", "values", "hobbies", "references", "publications"),
   // main-sections: ("summary", "motivation", "experience", "education", "awards", "courses"),
   // section-icons: (experience: "briefcase", awards: "medal"),
