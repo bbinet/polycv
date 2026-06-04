@@ -4,6 +4,7 @@
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let cd = if fmt == "yaml" { yaml("cv.yml").cv } else { toml("cv.toml").cv }
 #let header-band = sys.inputs.at("header-band", default: "false") == "true"
+#let ats-split = sys.inputs.at("ats-split", default: "false") == "true"
 
 #show: cv.with(
   photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
@@ -27,6 +28,7 @@
   references: cd.at("references", default: none),
   publications: cd.at("publications", default: none),
   show-header-band: header-band,
+  ats-split: ats-split,
   // sidebar-sections: ("contact", "skills", "values", "hobbies", "references", "publications"),
   // main-sections: ("summary", "motivation", "experience", "education", "awards", "courses"),
   // section-icons: (experience: "briefcase", awards: "medal"),

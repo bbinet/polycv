@@ -12,10 +12,15 @@ thumbs: link
     @magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail-all.png
     @rm thumbnail1.png thumbnail2.png thumbnail3.png
 
-# compile cv with ATS-friendly header band
+# compile cv with ATS-friendly header band (visible beige band)
 cv-ats: link && unlink
     @mkdir -p out
     @typst compile template/cv.typ out/cv-ats.pdf --input header-band=true
+
+# compile cv with ATS-friendly split layout (invisible, photo|name then skills|summary)
+cv-ats-split: link && unlink
+    @mkdir -p out
+    @typst compile template/cv.typ out/cv-ats-split.pdf --input ats-split=true
 
 # watch cv.typ for changes
 watch: link
@@ -41,6 +46,7 @@ build: link && unlink
     @typst compile template/application.typ out/application.pdf
     @typst compile template/cv.typ out/cv-toml.pdf --input fmt=toml
     @typst compile template/letter.typ out/letter-toml.pdf --input fmt=toml
+    @typst compile template/cv.typ out/cv-ats-split.pdf --input ats-split=true
 
 # symlink the library into the local preview package directory
 link:

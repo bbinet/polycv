@@ -119,6 +119,7 @@
   ),
   section-titles: (:),
   show-header-band: false,
+  ats-split: false,
   body,
 ) = {
   // --- Default theme ---
@@ -419,6 +420,57 @@
       label,
     ),
   )
+
+  // Inline contact line with FA icons, used in header-band and ats-split
+  let build-contact-line() = {
+    let items = ()
+    if location != none {
+      items.push([
+        #text(size: ts.header-location * 0.9)[#fa-icon(address-icon)]
+        #h(gap.icon-to-text-tiny)
+        #text(
+          font: ff.header-location,
+          size: ts.header-location,
+          weight: fw.header-location,
+        )[#location]
+      ])
+    }
+    if email != none {
+      items.push([
+        #text(size: ts.header-location * 0.9)[#fa-icon("envelope")]
+        #h(gap.icon-to-text-tiny)
+        #link("mailto:" + email)[#text(size: ts.header-location)[#email]]
+      ])
+    }
+    if phone != none {
+      items.push([
+        #text(size: ts.header-location * 0.9)[#fa-icon("phone")]
+        #h(gap.icon-to-text-tiny)
+        #text(size: ts.header-location)[#phone]
+      ])
+    }
+    if profiles != none {
+      for profile in profiles {
+        let cfg = profiles-config.at(profile.network, default: none)
+        if cfg != none {
+          items.push([
+            #text(size: ts.header-location * 0.9)[#fa-icon(cfg.icon)]
+            #h(gap.icon-to-text-tiny)
+            #link(cfg.url-base + profile.username)[
+              #text(size: ts.header-location)[#profile.username]
+            ]
+          ])
+        }
+      }
+    }
+    if items.len() > 0 [
+      #show link: set text(fill: t.primary)
+      #v(-2pt)
+      #text(size: ts.header-location, fill: t.summary)[
+        #items.join([#h(0.4em) · #h(0.4em)])
+      ]
+    ]
+  }
 
   let text-block(section, content) = {
     pad(left: gap.section-indent)[
@@ -870,9 +922,11 @@
     },
   )
 
-  // --- Effective sidebar sections (contact removed when header-band active) ---
+  // --- Effective sidebar sections ---
   let effective-sidebar-sections = if show-header-band {
     sidebar-sections.filter(s => s != "contact")
+  } else if ats-split {
+    sidebar-sections.filter(s => s != "photo")
   } else {
     sidebar-sections
   }
@@ -903,44 +957,7 @@
             fill: t.accent,
           )[#if headline != none { headline.replace("*", "") }]
           #v(gap.header-headline-below)
-          #show link: set text(fill: t.primary)
-          #let contact-items = ()
-          #if location != none {
-            contact-items.push(text(
-              font: ff.header-location,
-              size: ts.header-location,
-              weight: fw.header-location,
-              location,
-            ))
-          }
-          #if email != none {
-            contact-items.push(
-              link("mailto:" + email)[#text(size: ts.header-location)[#email]],
-            )
-          }
-          #if phone != none {
-            contact-items.push(text(size: ts.header-location, phone))
-          }
-          #if profiles != none {
-            for profile in profiles {
-              let cfg = profiles-config.at(profile.network, default: none)
-              if cfg != none {
-                contact-items.push(
-                  link(cfg.url-base + profile.username)[
-                    #text(size: ts.header-location)[#profile.username]
-                  ],
-                )
-              }
-            }
-          }
-          #if contact-items.len() > 0 [
-            #v(-2pt)
-            #text(
-              size: ts.header-location,
-              fill: t.summary,
-              contact-items.join([  ·  ]),
-            )
-          ]
+          #build-contact-line()
         ],
         [
           #if keywords != none and keywords.len() > 0 {
@@ -973,6 +990,66 @@
     ]
   }
 
+  // --- ATS split header (photo | name+headline+contacts+keywords, same column proportions as content) ---
+  let build-ats-header() = [
+    #grid(
+      columns: (layout.sidebar-width, 1fr),
+      column-gutter: gap.column-gutter,
+      // Left: photo (same padding as sidebar)
+      pad(left: layout.sidebar-left-pad, right: layout.sidebar-right-pad)[
+        #if photo != none {
+          let d = (
+            sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
+          ) * photo-size
+          pad(top: 0pt, bottom: gap.sidebar-section-below)[
+            #align(center)[
+              #box(width: d, height: d, clip: true, radius: 50%, photo)
+            ]
+          ]
+        }
+      ],
+      // Right: name, headline, contacts, keywords (same structure as build-main header)
+      [
+        #h(gap.section-indent - 0.5mm)
+        #grid(
+          columns: (1fr, auto),
+          column-gutter: gap.icon-to-text,
+          [
+            #text(
+              font: ff.header-name,
+              size: ts.header-name,
+              weight: fw.header-name,
+              fill: t.primary,
+            )[#name]
+            #v(gap.header-name-below)
+            #pad(left: gap.section-indent, right: 0pt)[
+              #text(
+                font: ff.header-headline,
+                size: ts.header-headline,
+                weight: fw.header-headline,
+                fill: t.accent,
+              )[#if headline != none { headline.replace("*", "") }]
+            ]
+            #v(gap.header-headline-below)
+          ],
+          [
+            #if keywords != none and keywords.len() > 0 {
+              v(0.3em)
+              align(right)[
+                #stack(
+                  dir: ttb,
+                  spacing: gap.header-tags-stack,
+                  ..keywords.map(tag => tag-badge(tag)),
+                )
+              ]
+            }
+          ],
+        )
+        #v(gap.header-to-content)
+      ],
+    )
+  ]
+
   // --- Sidebar ---
   let build-sidebar() = [
     #set text(size: ts.sidebar)
@@ -987,8 +1064,8 @@
 
   // --- Main column ---
   let build-main() = [
-    // HEADER (skipped when show-header-band is true)
-    #if not show-header-band [
+    // HEADER (skipped when show-header-band or ats-split is active)
+    #if not show-header-band and not ats-split [
     #grid(
       columns: (1fr, auto),
       column-gutter: gap.icon-to-text,
@@ -1063,6 +1140,7 @@
 
   // --- Assembly ---
   if show-header-band { build-header-band() }
+  if ats-split { build-ats-header() }
   grid(
     columns: (layout.sidebar-width, 1fr),
     column-gutter: gap.column-gutter,
