@@ -12,6 +12,11 @@ thumbs: link
     @magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail-all.png
     @rm thumbnail1.png thumbnail2.png thumbnail3.png
 
+# compile cv with ATS-friendly header band
+cv-ats: link && unlink
+    @mkdir -p out
+    @typst compile template/cv.typ out/cv-ats.pdf --input header-band=true
+
 # watch cv.typ for changes
 watch: link
     typst watch template/cv.typ template/cv.pdf

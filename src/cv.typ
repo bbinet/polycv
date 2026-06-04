@@ -118,6 +118,7 @@
     "courses",
   ),
   section-titles: (:),
+  show-header-band: false,
   body,
 ) = {
   // --- Default theme ---
@@ -217,6 +218,8 @@
     header-name-below: 0pt,
     header-headline-below: -2pt,
     header-to-content: 8pt,
+    header-band-padding-y: 12pt,
+    header-band-rule: 0.5pt,
     header-tags-stack: 0.35em,
     column-gutter: 0.5cm,
     section-indent: 2.5mm,
@@ -867,12 +870,115 @@
     },
   )
 
+  // --- Effective sidebar sections (contact removed when header-band active) ---
+  let effective-sidebar-sections = if show-header-band {
+    sidebar-sections.filter(s => s != "contact")
+  } else {
+    sidebar-sections
+  }
+
+  // --- Header band (full-width, above grid, page 1 only) ---
+  let build-header-band() = context {
+    let band = block(
+      width: content-width,
+      fill: none,
+      stroke: none,
+      inset: (x: 0pt, top: 0pt, bottom: gap.header-band-padding-y),
+    )[
+      #grid(
+        columns: (1fr, auto),
+        column-gutter: gap.icon-to-text,
+        [
+          #text(
+            font: ff.header-name,
+            size: ts.header-name,
+            weight: fw.header-name,
+            fill: t.primary,
+          )[#name]
+          #v(gap.header-name-below)
+          #text(
+            font: ff.header-headline,
+            size: ts.header-headline,
+            weight: fw.header-headline,
+            fill: t.accent,
+          )[#if headline != none { headline.replace("*", "") }]
+          #v(gap.header-headline-below)
+          #show link: set text(fill: t.primary)
+          #let contact-items = ()
+          #if location != none {
+            contact-items.push(text(
+              font: ff.header-location,
+              size: ts.header-location,
+              weight: fw.header-location,
+              location,
+            ))
+          }
+          #if email != none {
+            contact-items.push(
+              link("mailto:" + email)[#text(size: ts.header-location)[#email]],
+            )
+          }
+          #if phone != none {
+            contact-items.push(text(size: ts.header-location, phone))
+          }
+          #if profiles != none {
+            for profile in profiles {
+              let cfg = profiles-config.at(profile.network, default: none)
+              if cfg != none {
+                contact-items.push(
+                  link(cfg.url-base + profile.username)[
+                    #text(size: ts.header-location)[#profile.username]
+                  ],
+                )
+              }
+            }
+          }
+          #if contact-items.len() > 0 [
+            #v(-2pt)
+            #text(
+              size: ts.header-location,
+              fill: t.summary,
+              contact-items.join([  ·  ]),
+            )
+          ]
+        ],
+        [
+          #if keywords != none and keywords.len() > 0 {
+            v(0.3em)
+            align(right)[
+              #stack(
+                dir: ttb,
+                spacing: gap.header-tags-stack,
+                ..keywords.map(tag => tag-badge(tag)),
+              )
+            ]
+          }
+        ],
+      )
+    ]
+    let h = measure(band).height
+    [
+      #place(
+        top + left,
+        dx: -layout.margin-left,
+        dy: -layout.margin-top,
+        rect(
+          width: page-width,
+          height: layout.margin-top + h,
+          fill: t.sidebar-bg,
+          stroke: none,
+        ),
+      )
+      #band
+    ]
+  }
+
   // --- Sidebar ---
   let build-sidebar() = [
     #set text(size: ts.sidebar)
     #set par(justify: justify-sidebar)
     #pad(left: layout.sidebar-left-pad, right: layout.sidebar-right-pad)[
-      #for section-name in sidebar-sections {
+      #for section-name in effective-sidebar-sections {
         let render = sidebar-renderers.at(section-name, default: none)
         if render != none { render() }
       }
@@ -881,7 +987,8 @@
 
   // --- Main column ---
   let build-main() = [
-    // HEADER
+    // HEADER (skipped when show-header-band is true)
+    #if not show-header-band [
     #grid(
       columns: (1fr, auto),
       column-gutter: gap.icon-to-text,
@@ -927,6 +1034,7 @@
     )
 
     #v(gap.header-to-content)
+    ] // end if not show-header-band
 
     #for section-name in main-sections {
       let render = main-renderers.at(section-name, default: none)
@@ -954,6 +1062,7 @@
   show link: set text(fill: t.links)
 
   // --- Assembly ---
+  if show-header-band { build-header-band() }
   grid(
     columns: (layout.sidebar-width, 1fr),
     column-gutter: gap.column-gutter,
