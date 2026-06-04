@@ -2,7 +2,8 @@
 #import "@preview/nabcv:0.1.0": letter
 
 #let fmt = sys.inputs.at("fmt", default: "yaml")
-#let ld = if fmt == "yaml" { yaml("letter.yml").letter } else { toml("letter.toml").letter }
+#let data-file = sys.inputs.at("data", default: if fmt == "toml" { "letter.toml" } else { "letter.yml" })
+#let ld = (if fmt == "yaml" { yaml(data-file) } else { toml(data-file) }).letter
 
 #show: letter.with(
   sender: ld.sender,

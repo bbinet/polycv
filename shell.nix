@@ -8,7 +8,8 @@ let
 in pkgs.mkShell {
   buildInputs = with pkgs; [
     typst
-    just
+    gnumake
+    cue
     font-awesome
     ibm-plex
     imagemagick
