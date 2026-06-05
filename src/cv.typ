@@ -657,12 +657,26 @@
   // --- Skill icon defaults ---
   let ski = (
     (
+      // English
       "Domain Knowledge": "brain",
       "Programming": "terminal",
       "DevOps & Cloud": "server",
       "Specialized Software": "cogs",
       "Soft Skills": "handshake-angle",
       "Languages": "language",
+      "Human Languages": "language",
+      "Frameworks & Libraries": "cubes",
+      "Geospatial & GIS": "map",
+      "Tools & Infra": "server",
+      "Embedded": "microchip",
+      "Methods": "handshake-angle",
+      // French
+      "Langages": "terminal",
+      "Frameworks & Librairies": "cubes",
+      "Cartographie & SIG": "map",
+      "Outils & Infra": "server",
+      "Embarqué": "microchip",
+      "Méthodes": "handshake-angle",
     )
       + skill-icons
   )
