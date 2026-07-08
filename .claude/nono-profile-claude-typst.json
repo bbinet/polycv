@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "name": "claude-typst",
+    "description": "Claude Code avec accès au cache Typst et aux fontes utilisateur"
+  },
+  "extends": "claude",
+  "filesystem": {
+    "allow": [
+      "$HOME/.local/share/typst/packages/preview",
+      "$HOME/.cache/typst"
+    ],
+    "read": [
+      "$HOME/.bin",
+      "$HOME/.dotfiles/dot/bin",
+      "$HOME/.local/share/fonts"
+    ]
+  }
+}

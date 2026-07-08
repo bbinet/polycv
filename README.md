@@ -26,9 +26,31 @@ A data-driven CV and cover letter package for Typst. All personal data lives in 
 ## Prerequisites
 
 1. **Typst CLI** — follow the [official instructions](https://github.com/typst/typst#installation).
-2. **Fonts** — nabcv requires two font families:
-   - **IBM Plex Sans** — [Google Fonts](https://fonts.google.com/specimen/IBM+Plex+Sans)
-   - **Font Awesome 7 Free** — [fontawesome.com/download](https://fontawesome.com/download)
+2. **Fonts** — nabcv requires two font families installed as system fonts:
+
+   **IBM Plex Sans**
+
+   ```sh
+   # Debian/Ubuntu (Bookworm+)
+   sudo apt install fonts-ibm-plex
+
+   # Manual (all platforms)
+   mkdir -p ~/.local/share/fonts/ibm-plex
+   curl -L https://github.com/IBM/plex/releases/latest/download/OpenType.zip \
+     | unzip -j - "ibm-plex-sans/fonts/complete/ttf/*.ttf" -d ~/.local/share/fonts/ibm-plex/
+   fc-cache -f
+   ```
+
+   **Font Awesome 7 Free**
+
+   Download the **Free for Desktop** package from [fontawesome.com/download](https://fontawesome.com/download), then:
+
+   ```sh
+   mkdir -p ~/.local/share/fonts/font-awesome-7
+   # extract the downloaded archive, then:
+   cp path/to/fontawesome-free-*-desktop/otfs/*.otf ~/.local/share/fonts/font-awesome-7/
+   fc-cache -f
+   ```
 
 ## Quick Start
 
@@ -202,6 +224,42 @@ For the letter:
 | `footer-items`      | `("phone", "email", "linkedin")` | Fields shown in the page footer        |
 | `contact-icons`     | _(defaults)_                     | Icon names for contact fields          |
 | `contact-url-bases` | _(defaults)_                     | URL prefixes for email/linkedin/github |
+
+## Development
+
+### Setup
+
+```sh
+git clone https://github.com/xrsl/nabcv
+cd nabcv
+make build          # compile examples + personal CVs in content/
+make watch          # live preview (typst watch)
+make build-examples # compile template/examples/ only
+```
+
+Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or `letter-<slug>.yml` — `make build` picks them up automatically.
+
+### Dependencies
+
+| Tool | Purpose |
+| ---- | ------- |
+| `typst` | Compiler |
+| `make` | Build orchestration |
+| `cue` | Schema authoring (`make schema`) |
+| `bump-my-version` | Version bumping (`make bump-patch`) |
+| `cspell` | Spell checking (`make spell`) |
+| `imagemagick` | Thumbnail generation (`make thumbs`) |
+
+A `shell.nix` is provided for a reproducible environment with all tools and font paths pre-configured.
+
+### Claude Code (nono sandbox)
+
+If you use [Claude Code](https://claude.ai/code) with the [nono](https://github.com/always-further/nono) sandbox, a ready-made profile is included at `.claude/nono-profile-claude-typst.json`. It grants the sandbox access to the Typst package cache and system fonts.
+
+```sh
+cp .claude/nono-profile-claude-typst.json ~/.config/nono/profiles/claude-typst.json
+nono run --profile claude-typst -- claude
+```
 
 ## Inspirations
 
