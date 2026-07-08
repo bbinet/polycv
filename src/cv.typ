@@ -219,6 +219,8 @@
     header-name-below: 0pt,
     header-headline-below: -2pt,
     header-to-content: 8pt,
+    ats-header-to-content: 4pt,
+    ats-photo-below: 4pt,
     header-band-padding-y: 12pt,
     header-band-rule: 0.5pt,
     header-tags-stack: 0.35em,
@@ -251,6 +253,7 @@
     sidebar-width: 30%,
     sidebar-left-pad: 0pt,
     sidebar-right-pad: 6pt,
+    ats-photo-scale: 75%,
   )
 
   // --- Computed layout ---
@@ -672,11 +675,18 @@
       "Methods": "handshake-angle",
       // French
       "Langages": "terminal",
+      "Langages informatiques": "terminal",
       "Frameworks & Librairies": "cubes",
+      "Frameworks et librairies": "cubes",
+      "Frameworks et libs carto": "map",
       "Cartographie & SIG": "map",
       "Outils & Infra": "server",
+      "Outils": "toolbox",
+      "Bases de données": "database",
+      "Administration système": "server",
       "Embarqué": "microchip",
       "Méthodes": "handshake-angle",
+      "Langues": "language",
     )
       + skill-icons
   )
@@ -1014,8 +1024,8 @@
         #if photo != none {
           let d = (
             sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
-          ) * photo-size
-          pad(top: 0pt, bottom: gap.sidebar-section-below)[
+          ) * photo-size * layout.ats-photo-scale
+          pad(top: 0pt, bottom: gap.ats-photo-below)[
             #align(center)[
               #box(width: d, height: d, clip: true, radius: 50%, photo)
             ]
@@ -1059,7 +1069,7 @@
             }
           ],
         )
-        #v(gap.header-to-content)
+        #v(gap.ats-header-to-content)
       ],
     )
   ]

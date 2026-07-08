@@ -27,6 +27,20 @@
       "juil.", "août", "sep.", "oct.", "nov.", "déc.",
     ),
     date-separator: " – ",
+    section-titles: (
+      contact: "CONTACT",
+      skills: "COMPÉTENCES",
+      values: "VALEURS",
+      hobbies: "LOISIRS",
+      references: "RÉFÉRENCES",
+      publications: "PUBLICATIONS",
+      summary: "RÉSUMÉ",
+      motivation: "MOTIVATION",
+      experience: "EXPÉRIENCE",
+      education: "FORMATION",
+      awards: "ENGAGEMENTS",
+      courses: "FORMATIONS",
+    ),
   )
 } else { (:) }
 
