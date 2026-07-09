@@ -143,6 +143,37 @@ typst compile application.typ --input fmt=toml
 | `cv.toml`          | CV data in TOML (alternative format, `--input fmt=toml`)  |
 | `letter.toml`      | Letter data in TOML (alternative format)                  |
 
+## Layouts
+
+The CV offers four header layouts, selectable without touching any `.typ` file — either from the command line or from the `meta:` block of your data file.
+
+| Layout | Flags | Description |
+| ------ | ----- | ----------- |
+| **Standard** | _(none)_ | Name and headline at the top of the main column, photo and contact in the tinted sidebar |
+| **Header band** | `header-band: true` | Full-width header: round photo on the left (sized to the text block height), name, headline and a one-line contact row; no sidebar tint |
+| **ATS split** | `ats-split: true` | Two-column header (photo left, name/headline right), sidebar keeps the tint; friendlier to ATS parsers |
+
+The header band can be tuned further: `header-band-summary: true` moves the summary into the band, and `header-band-contact: false` keeps the contact section in the sidebar instead of the band's contact line.
+
+Via command line:
+
+```sh
+typst compile cv.typ --input header-band=true --input keywords-lines=3
+```
+
+Or via the `meta:` block in `cv.yml` (command-line inputs take priority):
+
+```yaml
+meta:
+  photo: photo.jpg           # path to your photo
+  locale: fr                 # translates section titles and month names
+  header-band: true          # pick a layout
+  header-band-summary: true  # summary inside the band
+  keywords-lines: 3          # distribute keyword badges over 3 lines
+```
+
+Available meta/input keys: `data`, `fmt`, `photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines` (0 = one badge per line).
+
 ## Customization
 
 All customization is done through named parameters in the template `.typ` file. Nothing in `src/` needs to be touched.
@@ -204,18 +235,40 @@ Portfolio: (icon: "globe",     url-base: "https://"),
 )
 ```
 
+Available keys:
+
+| Key | Default | Description |
+| --- | ------- | ----------- |
+| `primary` | `#000000` | Main text colour |
+| `secondary` | `#0D47A1` | Section titles and keyword badges |
+| `accent` | `#000000` | Dates, entry summaries, headline |
+| `links` | `#1565C0` | Hyperlinks |
+| `sidebar-bg` | `#F5F1ED` | Sidebar tint (standard and ats-split layouts) |
+| `summary` | `#6B6B6B` | Summary text and header contact line |
+| `header-bg` | `white` | Header band background (`none` = transparent) |
+| `header-rule` | `none` | Horizontal rule under the header band |
+| `sidebar-rule` | `none` | Vertical rule between the columns (header-band layouts) |
+
+With header-band layouts the sidebar tint is dropped; set `header-rule` and/or `sidebar-rule` to a colour (e.g. `rgb("#D5D5D5")`) to draw separators instead.
+
 ### Other parameters
 
-| Parameter         | Default           | Description                              |
-| ----------------- | ----------------- | ---------------------------------------- |
-| `bullet-icon`     | `"angle-right"`   | Icon for all list bullets                |
-| `address-icon`    | `"location-dot"`  | Icon for address field                   |
-| `doi-icon`        | `"external-link"` | Icon on publication DOI links            |
-| `show-timeline`   | `true`            | Toggle the experience/education timeline |
-| `justify-sidebar` | `false`           | Justify text in the sidebar              |
-| `skill-icons`     | _(defaults)_      | Map skill group names to icons           |
-| `text-size`       | _(defaults)_      | Override any font size by key            |
-| `font-weight`     | _(defaults)_      | Override any font weight by key          |
+| Parameter          | Default           | Description                              |
+| ------------------ | ----------------- | ---------------------------------------- |
+| `show-header-band` | `false`           | Full-width header band layout (photo at its left) |
+| `header-band-summary` | `false`        | Summary inside the header band           |
+| `header-band-contact` | `true`         | Contact line in the band (false = sidebar) |
+| `ats-split`        | `false`           | Two-column header layout                 |
+| `keywords-lines`   | `auto`            | Lines for keyword badges (`auto` = one per line) |
+| `photo-size`       | `70%`             | Photo diameter as a fraction of sidebar width (ignored by the header band, which sizes the photo to the text block height) |
+| `bullet-icon`      | `"angle-right"`   | Icon for all list bullets                |
+| `address-icon`     | `"location-dot"`  | Icon for address field                   |
+| `doi-icon`         | `"external-link"` | Icon on publication DOI links            |
+| `show-timeline`    | `true`            | Toggle the experience/education timeline |
+| `justify-sidebar`  | `false`           | Justify text in the sidebar              |
+| `skill-icons`      | _(defaults)_      | Map skill group names to icons           |
+| `text-size`        | _(defaults)_      | Override any font size by key            |
+| `font-weight`      | _(defaults)_      | Override any font weight by key          |
 
 For the letter:
 
@@ -235,6 +288,7 @@ cd nabcv
 make build          # compile examples + personal CVs in content/
 make watch          # live preview (typst watch)
 make build-examples # compile template/examples/ only
+make build-layouts  # compile the header layout variants side by side
 ```
 
 Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or `letter-<slug>.yml` — `make build` picks them up automatically.

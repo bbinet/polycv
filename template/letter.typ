@@ -5,6 +5,9 @@
 #let data-file = sys.inputs.at("data", default: if fmt == "toml" { "letter.toml" } else { "letter.yml" })
 #let ld = (if fmt == "yaml" { yaml(data-file) } else { toml(data-file) }).letter
 
+// Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
+#set document(title: ld.sender.name, author: ld.sender.name)
+
 #show: letter.with(
   sender: ld.sender,
   recipient: {

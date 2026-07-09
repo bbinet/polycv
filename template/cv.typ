@@ -10,15 +10,19 @@
 
 // --- Helpers: sys.inputs take priority, meta is the fallback ---
 #let input-str(key, default: "") = sys.inputs.at(key, default: str(meta.at(key, default: default)))
-#let input-bool(key) = {
+#let input-bool(key, default: false) = {
   if key in sys.inputs { sys.inputs.at(key) == "true" }
-  else { meta.at(key, default: false) }
+  else { meta.at(key, default: default) }
 }
 
 #let photo-file = input-str("photo", default: "assets/avatar.svg")
 #let header-band = input-bool("header-band")
+#let header-band-summary = input-bool("header-band-summary")
+#let header-band-contact = input-bool("header-band-contact", default: true)
 #let ats-split = input-bool("ats-split")
 #let locale = input-str("locale", default: "en")
+// 0 = auto (one badge per line)
+#let keywords-lines = int(input-str("keywords-lines", default: "0"))
 
 #let locale-args = if locale == "fr" {
   (
@@ -44,12 +48,16 @@
   )
 } else { (:) }
 
+// Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
+#set document(title: cd.name, author: cd.name)
+
 #show: cv.with(
-  photo: image(photo-file, width: 100%, height: 100%, fit: "cover"),
+  photo: image(photo-file, alt: cd.name, width: 100%, height: 100%, fit: "cover"),
   name: cd.name,
   headline: cd.at("headline", default: none),
   location: cd.at("location", default: none),
   keywords: cd.at("keywords", default: none),
+  keywords-lines: if keywords-lines == 0 { auto } else { keywords-lines },
   email: cd.at("email", default: none),
   phone: cd.at("phone", default: none),
   address: cd.at("address", default: none),
@@ -66,6 +74,8 @@
   references: cd.at("references", default: none),
   publications: cd.at("publications", default: none),
   show-header-band: header-band,
+  header-band-summary: header-band-summary,
+  header-band-contact: header-band-contact,
   ats-split: ats-split,
   ..locale-args,
   // sidebar-sections: ("contact", "skills", "values", "hobbies", "references", "publications"),

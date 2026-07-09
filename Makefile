@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help build build-examples watch thumbs clean spell schema link unlink sync test-yaml prek prek-ci ci
+.PHONY: help build build-examples build-layouts watch thumbs clean spell schema link unlink sync test-yaml prek prek-ci ci
 
 # ---------------------------------------------------------------------------
 # Version & platform
@@ -18,6 +18,10 @@ PREVIEW_TARGET := $(DATA_DIR)/typst/packages/preview/nabcv/$(VERSION)
 # ---------------------------------------------------------------------------
 SRC_TYPS := $(wildcard src/*.typ)
 
+# Tagged PDF (PDF/UA-1): logical reading order + document title, improves
+# ATS text extraction and accessibility.
+PDF_FLAGS := --pdf-standard ua-1
+
 # ---------------------------------------------------------------------------
 # Dynamic PDF rules
 # $1 = data file path, $2 = path prefix as seen from template/ (e.g. ../content/)
@@ -33,7 +37,7 @@ $(eval _o := $3$(_b).pdf)
 $(_o): $1 $(_t) $(SRC_TYPS)
 	@mkdir -p $$(dir $$@)
 	@echo "  compiling: $(_b).pdf"
-	typst compile $(_t) $(_o) --root . --input "data=$2$(notdir $1)" --input "fmt=$(_f)"
+	typst compile $(_t) $(_o) --root . $$(PDF_FLAGS) --input "data=$2$(notdir $1)" --input "fmt=$(_f)"
 
 endef
 
@@ -55,6 +59,26 @@ EXAMPLES_PDFS :=
 $(foreach f,$(EXAMPLES_DATA),$(eval $(call PDF_RULE,$f,examples/,out/examples/)))
 $(foreach f,$(EXAMPLES_DATA),$(eval EXAMPLES_PDFS += out/examples/$(basename $(notdir $f)).pdf))
 
+# --- layout variants : the four header modes → out/ ---
+# $1 = variant suffix, $2 = extra --input flags
+_LAYOUT_DATA := content/cv-brunobinet-fr.yml
+_LAYOUT_DEPS := $(_LAYOUT_DATA) template/cv.typ $(SRC_TYPS)
+LAYOUT_PDFS :=
+
+define LAYOUT_RULE
+out/cv-brunobinet-fr-$1.pdf: $(_LAYOUT_DEPS)
+	@mkdir -p $$(dir $$@)
+	@echo "  compiling: cv-brunobinet-fr-$1.pdf"
+	typst compile template/cv.typ $$@ --root . $$(PDF_FLAGS) --input "data=../content/cv-brunobinet-fr.yml" $2
+LAYOUT_PDFS += out/cv-brunobinet-fr-$1.pdf
+
+endef
+
+$(eval $(call LAYOUT_RULE,standard,--input "ats-split=false" --input "header-band=false"))
+$(eval $(call LAYOUT_RULE,header-band-photo,--input "ats-split=false" --input "header-band=true" --input "keywords-lines=3" --input "header-band-summary=true"))
+$(eval $(call LAYOUT_RULE,header-band-photo-sidebar-contact,--input "ats-split=false" --input "header-band=true" --input "keywords-lines=3" --input "header-band-summary=true" --input "header-band-contact=false"))
+$(eval $(call LAYOUT_RULE,ats-split,--input "ats-split=true" --input "header-band=false"))
+
 # ---------------------------------------------------------------------------
 # Targets
 # ---------------------------------------------------------------------------
@@ -62,6 +86,7 @@ $(foreach f,$(EXAMPLES_DATA),$(eval EXAMPLES_PDFS += out/examples/$(basename $(n
 help:
 	@printf "%-22s %s\n" "build" "compile content/ data files"
 	@printf "%-22s %s\n" "build-examples" "compile template/examples/ data files"
+	@printf "%-22s %s\n" "build-layouts" "compile the 3 header layout variants"
 	@printf "%-22s %s\n" "watch" "watch cv.typ for changes"
 	@printf "%-22s %s\n" "thumbs" "generate combined thumbnail strip"
 	@printf "%-22s %s\n" "clean" "remove build artifacts"
@@ -87,6 +112,12 @@ build-examples:
 	@$(MAKE) --no-print-directory link
 	@echo "Building template/examples/..."
 	@$(MAKE) --no-print-directory $(EXAMPLES_PDFS)
+	@$(MAKE) --no-print-directory unlink
+
+build-layouts:
+	@$(MAKE) --no-print-directory link
+	@echo "Building layout variants..."
+	@$(MAKE) --no-print-directory $(LAYOUT_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
 watch: link

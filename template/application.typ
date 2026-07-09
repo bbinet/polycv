@@ -5,6 +5,9 @@
 #let cd = if fmt == "yaml" { yaml("cv.yml").cv } else { toml("cv.toml").cv }
 #let ld = if fmt == "yaml" { yaml("letter.yml").letter } else { toml("letter.toml").letter }
 
+// Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
+#set document(title: cd.name, author: cd.name)
+
 #cv(
   // photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
   name: cd.name,

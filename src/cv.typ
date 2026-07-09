@@ -6,6 +6,8 @@
 /// - headline (str, none): Tagline shown below the name.
 /// - location (str, none): Location shown below the headline.
 /// - keywords (array, none): Tag badges shown in the header.
+/// - keywords-lines (int, auto): Number of lines the keyword badges are
+///   distributed over, right-aligned like a tag cloud (auto = one per line).
 /// - email (str, none): Email address.
 /// - phone (str, none): Phone number.
 /// - address (str, array, none): Physical address (string or array of lines).
@@ -22,7 +24,12 @@
 /// - references (str, array, none): References text or list.
 /// - publications (array, none): Publication entries.
 /// - theme (dictionary): Override any theme colour. Keys: primary, secondary,
-///   accent, links, sidebar-bg, summary.
+///   accent, links, sidebar-bg, header-bg, header-rule, sidebar-rule,
+///   summary. header-bg fills the header band (white by default; none for
+///   fully transparent). With header-band layouts the sidebar tint is
+///   dropped; header-rule draws a horizontal rule under the band and
+///   sidebar-rule a vertical rule between the columns (both none by
+///   default).
 /// - text-size (dictionary): Override any font size.
 /// - font-family (dictionary): Override any font family.
 /// - font-weight (dictionary): Override any font weight.
@@ -47,12 +54,19 @@
 /// - photo (content, none): Profile photo, e.g. image("assets/avatar.png").
 ///   Rendered as a circle at the top of the sidebar.
 /// - photo-size (ratio): Diameter of the circular photo as a fraction of sidebar width.
+/// - show-header-band (bool): Full-width header band layout; the photo (if
+///   any) is shown as a circle at the left of the band.
+/// - header-band-summary (bool): With show-header-band, render the summary
+///   inside the band (under the contact line) instead of the main column.
+/// - header-band-contact (bool): With show-header-band, show the contact
+///   line in the band (true) or keep contact in the sidebar (false).
 /// - body (content): Optional content appended after the CV.
 #let cv(
   name: "",
   headline: none,
   location: none,
   keywords: none,
+  keywords-lines: auto,
   email: none,
   phone: none,
   address: none,
@@ -119,6 +133,8 @@
   ),
   section-titles: (:),
   show-header-band: false,
+  header-band-summary: false,
+  header-band-contact: true,
   ats-split: false,
   body,
 ) = {
@@ -130,6 +146,9 @@
       accent: rgb("#000000"),
       links: rgb("#1565C0"),
       sidebar-bg: rgb("#F5F1ED"),
+      header-bg: white,
+      header-rule: none,
+      sidebar-rule: none,
       summary: rgb("#6B6B6B"),
     )
       + theme
@@ -221,9 +240,14 @@
     header-to-content: 8pt,
     ats-header-to-content: 4pt,
     ats-photo-below: 4pt,
-    header-band-padding-y: 12pt,
-    header-band-rule: 0.5pt,
+    header-band-padding-y: 14pt,
+    header-band-rule: 2pt,
+    sidebar-rule: 2pt,
+    header-band-photo-gap: 24pt,
+    header-band-name-below: 12pt,
+    header-band-headline-below: 20pt,
     header-tags-stack: 0.35em,
+    header-tags-gap: 0.35em,
     column-gutter: 0.5cm,
     section-indent: 2.5mm,
     icon-to-text: 0.5em,
@@ -265,7 +289,6 @@
   )
 
   // --- Per-section style overrides ---
-  let text-style = (:)
   let text-fill = (summary: t.summary)
 
   // --- Utilities ---
@@ -274,7 +297,6 @@
       font: ff.at(section, default: ff.body),
       weight: fw.at(section, default: fw.body),
       size: ts.at(section, default: ts.body),
-      style: text-style.at(section, default: "normal"),
       fill: text-fill.at(section, default: t.primary),
     )
     body
@@ -424,6 +446,23 @@
     ),
   )
 
+  // Right-aligned badge stack; keywords-lines distributes badges over
+  // that many lines (tag-cloud style), auto keeps one badge per line.
+  let build-tag-stack() = {
+    let n = keywords.len()
+    let lines = if keywords-lines == auto { n } else {
+      calc.max(1, calc.min(keywords-lines, n))
+    }
+    let rows = keywords.chunks(calc.ceil(n / lines))
+    align(right)[
+      #stack(
+        dir: ttb,
+        spacing: gap.header-tags-stack,
+        ..rows.map(row => row.map(tag-badge).join(h(gap.header-tags-gap))),
+      )
+    ]
+  }
+
   // Inline contact line with FA icons, used in header-band and ats-split
   let build-contact-line() = {
     let items = ()
@@ -470,7 +509,9 @@
       #show link: set text(fill: t.primary)
       #v(-2pt)
       #text(size: ts.header-location, fill: t.summary)[
-        #items.join([#h(0.4em) · #h(0.4em)])
+        // box() keeps each icon+value pair unbreakable; the line only
+        // wraps between items.
+        #items.map(box).join([#h(0.4em) · #h(0.4em)])
       ]
     ]
   }
@@ -779,21 +820,8 @@
       }
     },
     hobbies: () => {
-      if hobbies != none [
-        #block(
-          above: gap.sidebar-section-above,
-          below: gap.sidebar-section-below,
-        )[
-          #text(
-            font: ff.section-title,
-            size: ts.section-title,
-            weight: fw.section-title,
-            fill: t.secondary,
-          )[
-            #fa-icon(si.hobbies) #st.hobbies
-          ]
-        ]
-        #block(above: 0pt, below: gap.sidebar-section-above)[
+      if hobbies != none {
+        sidebar-section(si.hobbies, st.hobbies)[
           #show: section-text("hobbies")
           #icon-list(
             bullet-icon,
@@ -801,7 +829,7 @@
             spacing: gap.sidebar-hobbies-between-items,
           )
         ]
-      ]
+      }
     },
     references: () => {
       if references != none {
@@ -840,6 +868,31 @@
     },
   )
 
+  // Shared renderer for experience/education timelines. Education entries
+  // may use degree/institution as aliases for company/summary.
+  let timeline-entries(entries) = stack(spacing: 0pt, ..entries
+    .enumerate()
+    .map(((i, e)) => entry(
+      e.at("company", default: e.at("degree", default: "")),
+      format-date(e.start_date, e.end_date),
+      subtitle: e.at("position", default: none),
+      location: e.at("location", default: none),
+      summary: e.at("summary", default: e.at("institution", default: none)),
+      highlights: if e.at("highlights", default: none) != none {
+        e.highlights
+      } else { () },
+      show-tl: show-timeline,
+      is-first: i == 0,
+      is-last: i == entries.len() - 1,
+    )))
+
+  // Awards/courses accept either a single date or a start/end range.
+  let flexible-date(e) = if e.at("date", default: none) != none {
+    format-date(e.date, none)
+  } else {
+    format-date(e.start_date, e.end_date)
+  }
+
   // --- Main column section renderers ---
   let main-renderers = (
     summary: () => {
@@ -860,21 +913,7 @@
       if experience != none {
         main-section(si.experience, st.experience)[
           #show: section-text("experience")
-          #stack(spacing: 0pt, ..experience
-            .enumerate()
-            .map(((i, exp)) => entry(
-              exp.company,
-              format-date(exp.start_date, exp.end_date),
-              subtitle: exp.at("position", default: none),
-              location: exp.at("location", default: none),
-              summary: exp.at("summary", default: none),
-              highlights: if exp.at("highlights", default: none) != none {
-                exp.highlights
-              } else { () },
-              show-tl: show-timeline,
-              is-first: i == 0,
-              is-last: i == experience.len() - 1,
-            )))
+          #timeline-entries(experience)
         ]
       }
     },
@@ -882,21 +921,7 @@
       if education != none {
         main-section(si.education, st.education)[
           #show: section-text("education")
-          #stack(spacing: 0pt, ..education
-            .enumerate()
-            .map(((i, edu)) => entry(
-              edu.at("company", default: edu.at("degree", default: "")),
-              format-date(edu.start_date, edu.end_date),
-              subtitle: edu.at("position", default: none),
-              location: edu.at("location", default: none),
-              summary: edu.at("summary", default: edu.at("institution", default: none)),
-              highlights: if edu.at("highlights", default: none) != none {
-                edu.highlights
-              } else { () },
-              show-tl: show-timeline,
-              is-first: i == 0,
-              is-last: i == education.len() - 1,
-            )))
+          #timeline-entries(education)
         ]
       }
     },
@@ -905,14 +930,9 @@
         main-section(si.awards, st.awards)[
           #show: section-text("awards")
           #for award in awards {
-            let date-str = if award.at("date", default: none) != none {
-              format-date(award.date, none)
-            } else {
-              format-date(award.start_date, award.end_date)
-            }
             list-entry(
               award.name,
-              date-str,
+              flexible-date(award),
               description: if award.at("summary", default: none) != none {
                 parse-markup(award.summary)
               },
@@ -927,16 +947,11 @@
         main-section(si.courses, st.courses)[
           #show: section-text("courses")
           #for course in courses {
-            let date-str = if course.at("date", default: none) != none {
-              format-date(course.date, none)
-            } else {
-              format-date(course.start_date, course.end_date)
-            }
             list-entry(
               course.name,
-              date-str,
+              flexible-date(course),
               description: if course.at("summary", default: none) != none {
-                course.summary
+                parse-markup(course.summary)
               },
               show-bullet: true,
             )
@@ -947,22 +962,27 @@
   )
 
   // --- Effective sidebar sections ---
-  let effective-sidebar-sections = if show-header-band {
-    sidebar-sections.filter(s => s != "contact")
+  // Sections already shown in the header are excluded from the sidebar.
+  let excluded-sections = if show-header-band {
+    ("photo",) + if header-band-contact { ("contact",) } else { () }
   } else if ats-split {
-    sidebar-sections.filter(s => s != "photo")
-  } else {
-    sidebar-sections
-  }
+    ("photo",)
+  } else { () }
+  let effective-sidebar-sections = sidebar-sections.filter(s => (
+    s not in excluded-sections
+  ))
+  let effective-main-sections = if show-header-band and header-band-summary {
+    main-sections.filter(s => s != "summary")
+  } else { main-sections }
 
   // --- Header band (full-width, above grid, page 1 only) ---
   let build-header-band() = context {
-    let band = block(
-      width: content-width,
-      fill: none,
-      stroke: none,
-      inset: (x: 0pt, top: 0pt, bottom: gap.header-band-padding-y),
-    )[
+    let with-photo = photo != none
+    // Right side: (name + headline | tags) row, then the contact line
+    // spanning the full remaining width so it never gets squeezed by the
+    // tags column.
+    let right-cell = [
+      #set par(spacing: 0pt)
       #grid(
         columns: (1fr, auto),
         column-gutter: gap.icon-to-text,
@@ -973,44 +993,86 @@
             weight: fw.header-name,
             fill: t.primary,
           )[#name]
-          #v(gap.header-name-below)
+          #v(gap.header-band-name-below)
           #text(
             font: ff.header-headline,
             size: ts.header-headline,
             weight: fw.header-headline,
             fill: t.accent,
           )[#if headline != none { headline.replace("*", "") }]
-          #v(gap.header-headline-below)
-          #build-contact-line()
         ],
         [
           #if keywords != none and keywords.len() > 0 {
             v(0.3em)
-            align(right)[
-              #stack(
-                dir: ttb,
-                spacing: gap.header-tags-stack,
-                ..keywords.map(tag => tag-badge(tag)),
-              )
-            ]
+            build-tag-stack()
           }
         ],
       )
+      #if header-band-summary and summary != none [
+        #v(gap.header-band-headline-below)
+        #set par(justify: true, leading: 0.65em)
+        #show: section-text("summary")
+        #summary
+      ]
+      #if header-band-contact [
+        #v(gap.header-band-headline-below)
+        #build-contact-line()
+      ]
+    ]
+    // Photo diameter matches the measured height of the right side.
+    // Two passes: its height depends on the width left over by the photo
+    // itself, which is only known after a first guess.
+    let photo-cell = if with-photo {
+      let d0 = measure(block(width: content-width, right-cell)).height
+      let d = measure(block(
+        width: content-width - gap.header-band-photo-gap - d0,
+        right-cell,
+      )).height
+      (
+        align(horizon)[
+          #box(width: d, height: d, clip: true, radius: 50%, photo)
+        ],
+      )
+    } else { () }
+    // The rule is the band's last element so the backing rect (measured
+    // from the band) ends exactly at the rule: the vertical sidebar rule
+    // then starts right under it, forming a clean T junction.
+    let band = block(
+      width: content-width,
+      fill: none,
+      stroke: none,
+    )[
+      #set block(spacing: 0pt)
+      #grid(
+        columns: if with-photo { (auto, 1fr) } else { (1fr,) },
+        column-gutter: gap.header-band-photo-gap,
+        ..photo-cell,
+        right-cell,
+      )
+      #v(gap.header-band-padding-y)
+      #if t.header-rule != none {
+        line(length: 100%, stroke: gap.header-band-rule + t.header-rule)
+      }
     ]
     let h = measure(band).height
     [
-      #place(
-        top + left,
-        dx: -layout.margin-left,
-        dy: -layout.margin-top,
-        rect(
-          width: page-width,
-          height: layout.margin-top + h,
-          fill: t.sidebar-bg,
-          stroke: none,
-        ),
-      )
+      // The rect also hides the sidebar strip behind the band; with
+      // header-bg: none the strip shows through (fully transparent band).
+      #if t.header-bg != none {
+        place(
+          top + left,
+          dx: -layout.margin-left,
+          dy: -layout.margin-top,
+          rect(
+            width: page-width,
+            height: layout.margin-top + h,
+            fill: t.header-bg,
+            stroke: none,
+          ),
+        )
+      }
       #band
+      #v(gap.header-to-content)
     ]
   }
 
@@ -1059,13 +1121,7 @@
           [
             #if keywords != none and keywords.len() > 0 {
               v(0.3em)
-              align(right)[
-                #stack(
-                  dir: ttb,
-                  spacing: gap.header-tags-stack,
-                  ..keywords.map(tag => tag-badge(tag)),
-                )
-              ]
+              build-tag-stack()
             }
           ],
         )
@@ -1123,13 +1179,7 @@
       [
         #if keywords != none and keywords.len() > 0 {
           v(0.3em)
-          align(right)[
-            #stack(
-              dir: ttb,
-              spacing: gap.header-tags-stack,
-              ..keywords.map(tag => tag-badge(tag)),
-            )
-          ]
+          build-tag-stack()
         }
       ],
     )
@@ -1137,7 +1187,7 @@
     #v(gap.header-to-content)
     ] // end if not show-header-band
 
-    #for section-name in main-sections {
+    #for section-name in effective-main-sections {
       let render = main-renderers.at(section-name, default: none)
       if render != none { render() }
     }
@@ -1152,11 +1202,24 @@
       top: layout.margin-top,
       bottom: layout.margin-bottom,
     ),
-    background: place(top + left, rect(
-      width: sidebar-bg-width,
-      height: 100% + layout.margin-top + layout.margin-bottom,
-      fill: t.sidebar-bg,
-    )),
+    background: if show-header-band {
+      // Header-band layouts drop the sidebar tint. An optional vertical
+      // rule between the columns can be enabled via theme.sidebar-rule;
+      // on page 1 the header's backing rect covers its top part.
+      if t.sidebar-rule != none {
+        place(top + left, dx: sidebar-bg-width - gap.sidebar-rule / 2, rect(
+          width: gap.sidebar-rule,
+          height: 100%,
+          fill: t.sidebar-rule,
+        ))
+      }
+    } else {
+      place(top + left, rect(
+        width: sidebar-bg-width,
+        height: 100% + layout.margin-top + layout.margin-bottom,
+        fill: t.sidebar-bg,
+      ))
+    },
   )
   set text(font: ff.body, size: ts.body, weight: fw.body)
   set par(justify: false, leading: 0.65em)
