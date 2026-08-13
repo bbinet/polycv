@@ -20,7 +20,7 @@ package nabcv
 // ============================================================================
 
 // A timeline or list entry, reused by experience, education, awards,
-// involvement and courses. Not all fields apply to every section.
+// volunteering and courses. Not all fields apply to every section.
 #Entry: {
 	// Primary title (award/course name). Alias of company for list sections.
 	name?: string
@@ -109,8 +109,8 @@ package nabcv
 	education?: [...#Entry]
 	// Honours and awards.
 	awards?: [...#Entry]
-	// Community involvement / volunteering entries.
-	involvement?: [...#Entry]
+	// Volunteering and community involvement entries.
+	volunteering?: [...#Entry]
 	// Courses and certifications.
 	courses?: [...#Entry]
 	// Publications.
@@ -120,7 +120,7 @@ package nabcv
 // Section keys usable in sidebar-sections / main-sections (either column).
 #SectionName: "photo" | "contact" | "skills" | "values" | "hobbies" |
 	"references" | "publications" | "summary" | "motivation" |
-	"experience" | "education" | "awards" | "involvement" | "courses"
+	"experience" | "education" | "awards" | "volunteering" | "courses"
 
 // Layout/config block; consumed by the template, not part of the CV data.
 #CvMeta: {

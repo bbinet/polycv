@@ -151,9 +151,9 @@
             "$ref": "#/$defs/Entry"
           }
         },
-        "involvement": {
+        "volunteering": {
           "type": "array",
-          "description": "Community involvement / volunteering entries.",
+          "description": "Volunteering and community involvement entries.",
           "items": {
             "$ref": "#/$defs/Entry"
           }
@@ -291,7 +291,7 @@
     },
     "Entry": {
       "type": "object",
-      "description": "A timeline or list entry, reused by experience, education, awards,\ninvolvement and courses. Not all fields apply to every section.",
+      "description": "A timeline or list entry, reused by experience, education, awards,\nvolunteering and courses. Not all fields apply to every section.",
       "additionalProperties": true,
       "properties": {
         "name": {
@@ -475,7 +475,7 @@
         "experience",
         "education",
         "awards",
-        "involvement",
+        "volunteering",
         "courses"
       ]
     },

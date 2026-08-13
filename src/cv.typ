@@ -17,7 +17,7 @@
 /// - experience (array, none): Experience entries.
 /// - education (array, none): Education entries.
 /// - awards (array, none): Award entries.
-/// - involvement (array, none): Community involvement / volunteering entries.
+/// - volunteering (array, none): Volunteering / community involvement entries.
 /// - courses (array, none): Course entries.
 /// - skills (array, none): Skill groups. Each entry: (group, items).
 /// - values (array, none): Values list.
@@ -52,7 +52,7 @@
 /// - sidebar-sections (array): Ordered list of sidebar section keys to render.
 ///   Valid keys: "contact", "skills", "values", "hobbies", "references", "publications".
 /// - main-sections (array): Ordered list of main column section keys to render.
-///   Valid keys: "summary", "motivation", "experience", "education", "awards", "involvement", "courses".
+///   Valid keys: "summary", "motivation", "experience", "education", "awards", "volunteering", "courses".
 /// - section-titles (dictionary): Override any section display title.
 ///   Keys match section keys above. Defaults are all-caps e.g. "HONORS & AWARDS".
 /// - photo (content, none): Profile photo, e.g. image("assets/avatar.png").
@@ -80,7 +80,7 @@
   experience: none,
   education: none,
   awards: none,
-  involvement: none,
+  volunteering: none,
   courses: none,
   skills: none,
   values: none,
@@ -135,7 +135,7 @@
     "experience",
     "education",
     "awards",
-    "involvement",
+    "volunteering",
     "courses",
   ),
   section-titles: (:),
@@ -731,7 +731,7 @@
       experience: "EXPERIENCE",
       education: "EDUCATION",
       awards: "HONORS & AWARDS",
-      involvement: "INVOLVEMENT",
+      volunteering: "VOLUNTEERING",
       courses: "COURSES",
     )
       + section-titles
@@ -751,7 +751,7 @@
       experience: "suitcase",
       education: "graduation-cap",
       awards: "trophy",
-      involvement: "hand-holding-heart",
+      volunteering: "hand-holding-heart",
       courses: "chalkboard-teacher",
     )
       + section-icons
@@ -969,14 +969,14 @@
       is-last: i == entries.len() - 1,
     )))
 
-  // Awards/involvement/courses accept either a single date or a range.
+  // Awards/volunteering/courses accept either a single date or a range.
   let flexible-date(e) = if e.at("date", default: none) != none {
     format-date(e.date, none)
   } else {
     format-date(e.start_date, e.end_date)
   }
 
-  // Shared renderer for bulleted list sections (awards, involvement, courses):
+  // Shared renderer for bulleted list sections (awards, volunteering, courses):
   // one entry per line with name, flexible date, and an optional description.
   let list-section(key, items) = {
     if items != none {
@@ -1029,7 +1029,7 @@
       }
     },
     awards: () => list-section("awards", awards),
-    involvement: () => list-section("involvement", involvement),
+    volunteering: () => list-section("volunteering", volunteering),
     courses: () => list-section("courses", courses),
   )
 
