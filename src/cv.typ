@@ -34,6 +34,9 @@
 /// - font-family (dictionary): Override any font family.
 /// - font-weight (dictionary): Override any font weight.
 /// - show-timeline (bool): Toggle timeline on/off for experience/education.
+/// - entry-inline-meta (bool): For experience/education entries, put
+///   company, location and dates inline as the title, then the position on
+///   the next line (default: company/position inline, date/location right).
 /// - justify-sidebar (bool): Toggle sidebar text justification.
 /// - skill-icons (dictionary): Map skill group names to FontAwesome icon names.
 /// - section-icons (dictionary): Override any section FontAwesome icon name.
@@ -87,6 +90,7 @@
   font-family: (:),
   font-weight: (:),
   show-timeline: true,
+  entry-inline-meta: false,
   justify-sidebar: false,
   photo: none,
   photo-size: 70%,
@@ -535,8 +539,61 @@
     is-first: false,
     is-last: false,
   ) = {
-    let entry-inner = {
-      v(gap.main-entry-above)
+    // Optional summary line, shared by both entry layouts.
+    let entry-summary = if summary != none {
+      [
+        #v(gap.main-entry-title-to-date)
+        #text(font: ff.entry-text, size: ts.entry-text, fill: t.accent, summary)
+      ]
+    }
+
+    let entry-header = if entry-inline-meta {
+      // Title line: company (left) with location · dates right-aligned;
+      // the position then follows on its own line.
+      let meta-parts = ()
+      if location != none {
+        meta-parts.push(text(
+          font: ff.entry-text,
+          size: ts.entry-location,
+          weight: fw.entry-location,
+          fill: t.accent,
+          location,
+        ))
+      }
+      if date != none and date != "" {
+        meta-parts.push(text(
+          font: ff.entry-text,
+          size: ts.entry-date,
+          weight: fw.entry-date,
+          fill: t.accent,
+          date,
+        ))
+      }
+      [
+        #grid(
+          columns: (1fr, auto),
+          column-gutter: gap.icon-to-text,
+          align: (left + horizon, right + horizon),
+          text(
+            font: ff.entry-text,
+            size: ts.entry-text,
+            weight: fw.entry-title,
+            title,
+          ),
+          meta-parts.join(text(fill: t.accent)[#h(0.4em)·#h(0.4em)]),
+        )
+        #if subtitle != none [
+          #v(gap.main-entry-date-to-location)
+          #text(
+            font: ff.entry-text,
+            size: ts.entry-text,
+            weight: fw.entry-position,
+            subtitle,
+          )
+        ]
+        #entry-summary
+      ]
+    } else {
       grid(
         columns: (1fr, auto),
         [
@@ -548,15 +605,7 @@
           )#if (
             subtitle != none
           ) [, #text(font: ff.entry-text, size: ts.entry-text, weight: fw.entry-position, subtitle)]
-          #if summary != none [
-            #v(gap.main-entry-title-to-date)
-            #text(
-              font: ff.entry-text,
-              size: ts.entry-text,
-              fill: t.accent,
-              summary,
-            )
-          ]
+          #entry-summary
         ],
         [
           #align(right)[
@@ -580,6 +629,11 @@
           ]
         ],
       )
+    }
+
+    let entry-inner = {
+      v(gap.main-entry-above)
+      entry-header
       if highlights.len() > 0 {
         pad(left: gap.main-entry-highlights-indent)[
           #block(above: gap.main-entry-highlights-above)[

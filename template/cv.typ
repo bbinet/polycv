@@ -20,6 +20,7 @@
 #let header-band-summary = input-bool("header-band-summary")
 #let header-band-contact = input-bool("header-band-contact", default: true)
 #let ats-split = input-bool("ats-split")
+#let entry-inline-meta = input-bool("entry-inline-meta")
 #let locale = input-str("locale", default: "en")
 // 0 = auto (one badge per line)
 #let keywords-lines = int(input-str("keywords-lines", default: "0"))
@@ -77,6 +78,7 @@
   header-band-summary: header-band-summary,
   header-band-contact: header-band-contact,
   ats-split: ats-split,
+  entry-inline-meta: entry-inline-meta,
   ..locale-args,
   // sidebar-sections: ("contact", "skills", "values", "hobbies", "references", "publications"),
   // main-sections: ("summary", "motivation", "experience", "education", "awards", "courses"),

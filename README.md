@@ -172,7 +172,7 @@ meta:
   keywords-lines: 3          # distribute keyword badges over 3 lines
 ```
 
-Available meta/input keys: `data`, `fmt`, `photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines` (0 = one badge per line).
+Available meta/input keys: `data`, `fmt`, `photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines` (0 = one badge per line), `entry-inline-meta`.
 
 ## Customization
 
@@ -265,6 +265,7 @@ With header-band layouts the sidebar tint is dropped; set `header-rule` and/or `
 | `address-icon`     | `"location-dot"`  | Icon for address field                   |
 | `doi-icon`         | `"external-link"` | Icon on publication DOI links            |
 | `show-timeline`    | `true`            | Toggle the experience/education timeline |
+| `entry-inline-meta`| `false`           | Company + location/dates on the title line (dates right-aligned), position below |
 | `justify-sidebar`  | `false`           | Justify text in the sidebar              |
 | `skill-icons`      | _(defaults)_      | Map skill group names to icons           |
 | `text-size`        | _(defaults)_      | Override any font size by key            |
