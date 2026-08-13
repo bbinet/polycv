@@ -34,7 +34,8 @@
 /// - text-size (dictionary): Override any font size.
 /// - font-family (dictionary): Override any font family.
 /// - font-weight (dictionary): Override any font weight.
-/// - show-timeline (bool): Toggle timeline on/off for experience/education.
+/// - show-timeline (bool): Toggle the dots + vertical line on/off for
+///   experience/education entries.
 /// - entry-inline-meta (bool): For experience/education entries, put
 ///   company, location and dates inline as the title, then the position on
 ///   the next line (default: company/position inline, date/location right).

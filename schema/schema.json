@@ -266,6 +266,10 @@
           "description": "Override section display titles, keyed by section name.",
           "additionalProperties": true
         },
+        "show-timeline": {
+          "type": "boolean",
+          "description": "Show the dots + vertical line on experience/education entries."
+        },
         "sidebar-sections": {
           "type": "array",
           "description": "Ordered sidebar section keys.",

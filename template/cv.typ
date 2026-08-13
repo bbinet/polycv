@@ -21,6 +21,7 @@
 #let header-band-contact = input-bool("header-band-contact", default: true)
 #let ats-split = input-bool("ats-split")
 #let entry-inline-meta = input-bool("entry-inline-meta")
+#let show-timeline = input-bool("show-timeline", default: true)
 #let locale = input-str("locale", default: "en")
 
 // Optional section ordering from meta (arrays); omitted keys use cv() defaults.
@@ -103,6 +104,7 @@
   header-band-contact: header-band-contact,
   ats-split: ats-split,
   entry-inline-meta: entry-inline-meta,
+  show-timeline: show-timeline,
   ..locale-args,
   ..section-args,
   // Reorder/move sections, retitle or re-icon them from the meta block:

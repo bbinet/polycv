@@ -138,6 +138,8 @@ package nabcv
 	"ats-split"?: bool
 	// Company + location/dates on the title line, position below.
 	"entry-inline-meta"?: bool
+	// Show the dots + vertical line on experience/education entries.
+	"show-timeline"?: bool
 	// Number of right-aligned lines for keyword badges (0 = one per line).
 	"keywords-lines"?: int & >=0
 	// Ordered sidebar section keys.
