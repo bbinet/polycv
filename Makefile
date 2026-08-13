@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help build build-examples build-layouts watch thumbs clean spell schema link unlink sync test-yaml prek prek-ci ci
+.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema link unlink sync test-yaml prek prek-ci ci
 
 # ---------------------------------------------------------------------------
 # Version & platform
@@ -59,6 +59,10 @@ EXAMPLES_PDFS :=
 $(foreach f,$(EXAMPLES_DATA),$(eval $(call PDF_RULE,$f,examples/,out/examples/)))
 $(foreach f,$(EXAMPLES_DATA),$(eval EXAMPLES_PDFS += out/examples/$(basename $(notdir $f)).pdf))
 
+# --- all data files, validated against schema.cue via `cue vet` ---
+VALIDATE_DATA := $(wildcard content/*.yml content/*.toml \
+                           template/examples/*.yml template/examples/*.toml)
+
 # --- layout variants : the four header modes → out/ ---
 # $1 = variant suffix, $2 = extra --input flags
 _LAYOUT_DATA := content/cv-brunobinet-fr.yml
@@ -87,6 +91,7 @@ help:
 	@printf "%-22s %s\n" "build" "compile content/ data files"
 	@printf "%-22s %s\n" "build-examples" "compile template/examples/ data files"
 	@printf "%-22s %s\n" "build-layouts" "compile the 3 header layout variants"
+	@printf "%-22s %s\n" "validate" "validate data files against schema.cue (cue vet)"
 	@printf "%-22s %s\n" "watch" "watch cv.typ for changes"
 	@printf "%-22s %s\n" "thumbs" "generate combined thumbnail strip"
 	@printf "%-22s %s\n" "clean" "remove build artifacts"
@@ -102,19 +107,36 @@ help:
 	@printf "%-22s %s\n" "prek-ci" "run pre-commit hooks (CI mode)"
 	@printf "%-22s %s\n" "ci" "run full CI suite"
 
-build:
+validate:
+	@command -v cue >/dev/null 2>&1 || { \
+	  echo "cue not found — skipping validation (see cuelang.org/docs/introduction/installation)"; \
+	  exit 0; \
+	}
+	@echo "Validating data files against schema.cue..."
+	@for f in $(VALIDATE_DATA); do \
+	  case "$$(basename $$f)" in \
+	    cv*)     def='#CVSchema' ;; \
+	    letter*) def='#LetterSchema' ;; \
+	    *)       def='#UnifiedSchema' ;; \
+	  esac; \
+	  echo "  $$f ($$def)"; \
+	  cue vet -d "$$def" schema/schema.cue "$$f" || exit 1; \
+	done
+	@echo "OK: all data files valid"
+
+build: validate
 	@$(MAKE) --no-print-directory link
 	@echo "Building content/..."
 	@$(MAKE) --no-print-directory $(CONTENT_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
-build-examples:
+build-examples: validate
 	@$(MAKE) --no-print-directory link
 	@echo "Building template/examples/..."
 	@$(MAKE) --no-print-directory $(EXAMPLES_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
-build-layouts:
+build-layouts: validate
 	@$(MAKE) --no-print-directory link
 	@echo "Building layout variants..."
 	@$(MAKE) --no-print-directory $(LAYOUT_PDFS)

@@ -11,11 +11,6 @@ repos:
       - id: cspell
         args: ["--config", "cspell.toml", "--no-must-find-files"]
 
-  - repo: https://github.com/instrumentl/pre-commit-just
-    rev: v0.1
-    hooks:
-      - id: format-justfile
-
   - repo: local
     hooks:
       - id: typstyle
@@ -27,7 +22,7 @@ repos:
 
       - id: schema
         name: Regenerate schema.json from schema.cue
-        entry: bash -c "just schema"
+        entry: bash -c "make schema"
         language: system
         files: ^schema/schema\.cue$
         pass_filenames: false
