@@ -1160,17 +1160,19 @@
   let build-ats-header() = context {
     // Right column: name, headline, keywords, and optionally the summary.
     let right-content = [
-      #h(gap.section-indent - 0.5mm)
       #grid(
         columns: (1fr, auto),
         column-gutter: gap.icon-to-text,
         [
-          #text(
-            font: ff.header-name,
-            size: ts.header-name,
-            weight: fw.header-name,
-            fill: t.primary,
-          )[#name]
+          // Name shares the same left edge as headline and summary.
+          #pad(left: gap.section-indent, right: 0pt)[
+            #text(
+              font: ff.header-name,
+              size: ts.header-name,
+              weight: fw.header-name,
+              fill: t.primary,
+            )[#name]
+          ]
           #v(gap.header-name-below)
           #pad(left: gap.section-indent, right: 0pt)[
             #text(
@@ -1250,13 +1252,15 @@
       columns: (1fr, auto),
       column-gutter: gap.icon-to-text,
       [
-        #h(gap.section-indent - 0.5mm)
-        #text(
-          font: ff.header-name,
-          size: ts.header-name,
-          weight: fw.header-name,
-          fill: t.primary,
-        )[#name]
+        // Name shares the same left edge as headline, location and sections.
+        #pad(left: gap.section-indent, right: 0pt)[
+          #text(
+            font: ff.header-name,
+            size: ts.header-name,
+            weight: fw.header-name,
+            fill: t.primary,
+          )[#name]
+        ]
         #v(gap.header-name-below)
         #pad(left: gap.section-indent, right: 0pt)[
           #text(

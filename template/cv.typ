@@ -24,13 +24,6 @@
 #let locale = input-str("locale", default: "en")
 
 // Optional section ordering from meta (arrays); omitted keys use cv() defaults.
-#let section-args = (:)
-#if "sidebar-sections" in meta {
-  section-args.insert("sidebar-sections", meta.sidebar-sections)
-}
-#if "main-sections" in meta {
-  section-args.insert("main-sections", meta.main-sections)
-}
 // 0 = auto (one badge per line)
 #let keywords-lines = int(input-str("keywords-lines", default: "0"))
 
@@ -41,22 +34,42 @@
       "juil.", "août", "sep.", "oct.", "nov.", "déc.",
     ),
     date-separator: " – ",
-    section-titles: (
-      contact: "CONTACT",
-      skills: "COMPÉTENCES",
-      values: "VALEURS",
-      hobbies: "LOISIRS",
-      references: "RÉFÉRENCES",
-      publications: "PUBLICATIONS",
-      summary: "RÉSUMÉ",
-      motivation: "MOTIVATION",
-      experience: "EXPÉRIENCE",
-      education: "FORMATION",
-      awards: "ENGAGEMENTS",
-      courses: "FORMATIONS",
-    ),
   )
 } else { (:) }
+
+#let locale-titles = if locale == "fr" {
+  (
+    contact: "CONTACT",
+    skills: "COMPÉTENCES",
+    values: "VALEURS",
+    hobbies: "LOISIRS",
+    references: "RÉFÉRENCES",
+    publications: "PUBLICATIONS",
+    summary: "RÉSUMÉ",
+    motivation: "MOTIVATION",
+    experience: "EXPÉRIENCE",
+    education: "FORMATION",
+    awards: "ENGAGEMENTS",
+    courses: "FORMATIONS",
+  )
+} else { (:) }
+
+// Section ordering / titles / icons from meta (all optional). section-titles
+// merges over the locale titles so meta overrides win.
+#let section-args = (:)
+#if "sidebar-sections" in meta {
+  section-args.insert("sidebar-sections", meta.sidebar-sections)
+}
+#if "main-sections" in meta {
+  section-args.insert("main-sections", meta.main-sections)
+}
+#if "section-icons" in meta {
+  section-args.insert("section-icons", meta.section-icons)
+}
+#let merged-titles = locale-titles + meta.at("section-titles", default: (:))
+#if merged-titles.len() > 0 {
+  section-args.insert("section-titles", merged-titles)
+}
 
 // Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
 #set document(title: cd.name, author: cd.name)
@@ -90,8 +103,6 @@
   entry-inline-meta: entry-inline-meta,
   ..locale-args,
   ..section-args,
-  // Set sidebar-sections / main-sections in the meta block to reorder or move
-  // sections between columns, e.g. put "education" in the sidebar.
-  // section-icons: (experience: "briefcase", awards: "medal"),
-  // section-titles: (awards: "PRIZES & RECOGNITION"),
+  // Reorder/move sections, retitle or re-icon them from the meta block:
+  //   sidebar-sections / main-sections / section-titles / section-icons
 )

@@ -90,6 +90,8 @@ package nabcv
 	"keywords-lines"?:    int & >=0
 	"sidebar-sections"?: [...#SectionName]
 	"main-sections"?: [...#SectionName]
+	"section-titles"?: {[#SectionName]: string}
+	"section-icons"?: {[#SectionName]: string}
 }
 
 #CVSchema: {

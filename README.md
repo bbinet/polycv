@@ -172,7 +172,7 @@ meta:
   keywords-lines: 3          # distribute keyword badges over 3 lines
 ```
 
-Available meta/input keys: `data`, `fmt`, `photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines` (0 = one badge per line), `entry-inline-meta`.
+Available meta/input keys: `data`, `fmt`, `photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines` (0 = one badge per line), `entry-inline-meta`, `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`.
 
 ## Customization
 
@@ -209,6 +209,17 @@ meta:
 ```
 
 Icon names are [FontAwesome 7](https://fontawesome.com/icons) identifiers.
+
+With the provided template these are also settable from the `meta:` block (they override the built-in defaults, and any locale titles):
+
+```yaml
+meta:
+  section-titles:
+    awards: "ENGAGEMENTS"
+  section-icons:
+    awards: hand-holding-heart
+    hobbies: person-running
+```
 
 ### Social profiles
 

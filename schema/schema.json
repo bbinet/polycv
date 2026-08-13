@@ -213,6 +213,18 @@
           "items": {
             "$ref": "#/$defs/#SectionName"
           }
+        },
+        "section-titles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "section-icons": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       },
       "x-tombi-table-keys-order": "schema"
