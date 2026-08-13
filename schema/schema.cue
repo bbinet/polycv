@@ -153,8 +153,10 @@ package nabcv
 }
 
 #CVSchema: {
-	cv:    #CV
-	meta?: #CvMeta
+	// Path (relative to this file) of a parent CV to deep-merge over.
+	inherit?: string
+	cv:       #CV
+	meta?:    #CvMeta
 }
 
 // ============================================================================
@@ -220,7 +222,9 @@ package nabcv
 }
 
 #LetterSchema: {
-	letter: #Letter
+	// Path (relative to this file) of a parent letter to deep-merge over.
+	inherit?: string
+	letter:   #Letter
 }
 
 // ============================================================================
@@ -228,6 +232,8 @@ package nabcv
 // ============================================================================
 
 #UnifiedSchema: {
+	// Path (relative to this file) of a parent to deep-merge over.
+	inherit?: string
 	// CV data.
 	cv?: #CV
 	// Layout / configuration block.

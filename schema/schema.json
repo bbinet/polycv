@@ -585,6 +585,10 @@
       "description": "CV data.",
       "$ref": "#/$defs/CV"
     },
+    "inherit": {
+      "type": "string",
+      "description": "Path (relative to this file) of a parent to deep-merge over."
+    },
     "letter": {
       "description": "Cover-letter data.",
       "$ref": "#/$defs/Letter"

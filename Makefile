@@ -34,12 +34,16 @@ $(eval _p := $(firstword $(subst -, ,$(_b))))
 $(eval _t := template/$(_p).typ)
 $(eval _f := $(if $(filter .toml,$(suffix $1)),toml,yaml))
 $(eval _o := $3$(_b).pdf)
-$(_o): $1 $(_t) $(SRC_TYPS)
+$(_o): $1 $(_t) $(SRC_TYPS) $4
 	@mkdir -p $$(dir $$@)
 	@echo "  compiling: $(_b).pdf"
 	typst compile $(_t) $(_o) --root . $$(PDF_FLAGS) --input "data=$2$(notdir $1)" --input "fmt=$(_f)"
 
 endef
+
+# Same-kind siblings of a data file (same template prefix), so editing a
+# parent rebuilds every content file that inherits it.
+_siblings = $(filter content/$(firstword $(subst -, ,$(basename $(notdir $1))))%,$(CONTENT_DATA))
 
 # --- content/ : personal data (gitignored) → out/ ---
 _c_yml      := $(wildcard content/*.yml)
@@ -47,16 +51,16 @@ _c_toml     := $(wildcard content/*.toml)
 _c_toml_only := $(filter-out $(patsubst content/%.yml,content/%.toml,$(_c_yml)),$(_c_toml))
 CONTENT_DATA := $(foreach f,$(_c_yml) $(_c_toml_only),$(call _has_tmpl,$f))
 CONTENT_PDFS :=
-$(foreach f,$(CONTENT_DATA),$(eval $(call PDF_RULE,$f,../content/,out/)))
+$(foreach f,$(CONTENT_DATA),$(eval $(call PDF_RULE,$f,../content/,out/,$(call _siblings,$f))))
 $(foreach f,$(CONTENT_DATA),$(eval CONTENT_PDFS += out/$(basename $(notdir $f)).pdf))
 
-# --- template/examples/ : sample data (committed) → out/examples/ ---
-_e_yml      := $(wildcard template/examples/*.yml)
-_e_toml     := $(wildcard template/examples/*.toml)
-_e_toml_only := $(filter-out $(patsubst template/examples/%.yml,template/examples/%.toml,$(_e_yml)),$(_e_toml))
+# --- template/ : sample data shipped with the template (committed) → out/examples/ ---
+_e_yml      := $(wildcard template/*.yml)
+_e_toml     := $(wildcard template/*.toml)
+_e_toml_only := $(filter-out $(patsubst template/%.yml,template/%.toml,$(_e_yml)),$(_e_toml))
 EXAMPLES_DATA := $(foreach f,$(_e_yml) $(_e_toml_only),$(call _has_tmpl,$f))
 EXAMPLES_PDFS :=
-$(foreach f,$(EXAMPLES_DATA),$(eval $(call PDF_RULE,$f,examples/,out/examples/)))
+$(foreach f,$(EXAMPLES_DATA),$(eval $(call PDF_RULE,$f,,out/examples/)))
 $(foreach f,$(EXAMPLES_DATA),$(eval EXAMPLES_PDFS += out/examples/$(basename $(notdir $f)).pdf))
 
 # --- data sets validated against schema.cue via `cue vet` ---
@@ -92,10 +96,10 @@ $(eval $(call LAYOUT_RULE,ats-split,--input "ats-split=true" --input "header-ban
 
 help:
 	@printf "%-22s %s\n" "build" "compile content/ data files"
-	@printf "%-22s %s\n" "build-examples" "compile template/examples/ data files"
+	@printf "%-22s %s\n" "build-examples" "compile the template's shipped sample data"
 	@printf "%-22s %s\n" "build-layouts" "compile the 3 header layout variants"
 	@printf "%-22s %s\n" "validate" "validate data files against schema.cue (cue vet)"
-	@printf "%-22s %s\n" "watch" "watch cv.typ for changes"
+	@printf "%-22s %s\n" "watch" "live-preview all content/ files (WATCH=one file)"
 	@printf "%-22s %s\n" "thumbs" "generate combined thumbnail strip"
 	@printf "%-22s %s\n" "clean" "remove build artifacts"
 	@printf "%-22s %s\n" "spell" "spell check data files and README"
@@ -112,20 +116,23 @@ help:
 	@printf "%-22s %s\n" "ci" "run full CI suite"
 
 validate:
-	@command -v cue >/dev/null 2>&1 || { \
-	  echo "cue not found — skipping validation (see cuelang.org/docs/introduction/installation)"; \
+	@command -v cue >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1 || { \
+	  echo "cue or python3 not found — skipping validation (see cuelang.org)"; \
 	  exit 0; \
 	}
 	@echo "Validating data files against schema.cue..."
-	@for f in $(VALIDATE_DATA); do \
+	@tmp=$$(mktemp); mv "$$tmp" "$$tmp.json"; tmp="$$tmp.json"; \
+	for f in $(VALIDATE_DATA); do \
 	  case "$$(basename $$f)" in \
 	    cv*)     def='#CVSchema' ;; \
 	    letter*) def='#LetterSchema' ;; \
 	    *)       def='#UnifiedSchema' ;; \
 	  esac; \
 	  echo "  $$f ($$def)"; \
-	  cue vet -d "$$def" schema/schema.cue "$$f" || exit 1; \
-	done
+	  python3 schema/resolve.py "$$f" > "$$tmp" || { rm -f "$$tmp"; exit 1; }; \
+	  cue vet -d "$$def" schema/schema.cue "$$tmp" || { rm -f "$$tmp"; exit 1; }; \
+	done; \
+	rm -f "$$tmp"
 	@echo "OK: all data files valid"
 
 build:
@@ -138,7 +145,7 @@ build:
 build-examples:
 	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(EXAMPLES_ALL_DATA)"
 	@$(MAKE) --no-print-directory link
-	@echo "Building template/examples/..."
+	@echo "Building sample data..."
 	@$(MAKE) --no-print-directory $(EXAMPLES_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
@@ -149,8 +156,21 @@ build-layouts:
 	@$(MAKE) --no-print-directory $(LAYOUT_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
+# Live-preview every content/ file at once (each with its template, in
+# parallel; Ctrl-C stops them all). Set WATCH=content/<file>.yml for just one.
+WATCH ?=
 watch: link
-	typst watch template/cv.typ out/cv.pdf
+	@mkdir -p out
+	@trap 'kill 0' EXIT INT TERM; \
+	files="$(WATCH)"; [ -n "$$files" ] || files="$(CONTENT_DATA)"; \
+	for f in $$files; do \
+	  b=$$(basename $$f); b=$${b%.*}; tmpl=$${b%%-*}; \
+	  case "$$f" in *.toml) fmt=toml;; *) fmt=yaml;; esac; \
+	  echo "  watching $$f -> out/$$b.pdf"; \
+	  typst watch template/$$tmpl.typ out/$$b.pdf --root . \
+	    --input data=../$$f --input fmt=$$fmt & \
+	done; \
+	wait
 
 thumbs: link
 	typst compile template/application.typ "thumbnail{p}.png" --ppi 150
@@ -165,13 +185,13 @@ clean:
 	@echo "Done"
 
 spell:
-	cspell template/examples/cv.toml template/examples/letter.toml template/examples/cv.yml template/examples/letter.yml README.md --config cspell.toml
+	cspell template/cv.toml template/letter.toml template/cv.yml template/letter.yml README.md --config cspell.toml
 
 schema:
 	$(MAKE) -C schema json
 
 yaml-reference:
-	@python3 schema/gen-reference.py
+	@python3 template/gen-reference.py schema/schema.json
 
 link:
 	@mkdir -p "$(dir $(PREVIEW_TARGET))"
@@ -198,9 +218,9 @@ test-yaml:
 	@$(MAKE) --no-print-directory link
 	@mkdir -p out
 	@echo "Compiling YAML variant..."
-	typst compile template/cv.typ "out/test-yaml{p}.png" --root . --ppi 150 --input data=examples/cv.yml
+	typst compile template/cv.typ "out/test-yaml{p}.png" --root . --ppi 150 --input data=cv.yml
 	@echo "Compiling TOML variant..."
-	typst compile template/cv.typ "out/test-toml{p}.png" --root . --ppi 150 --input data=examples/cv.toml --input fmt=toml
+	typst compile template/cv.typ "out/test-toml{p}.png" --root . --ppi 150 --input data=cv.toml --input fmt=toml
 	@echo "Comparing pages..."
 	@for f in out/test-yaml*.png; do \
 	  toml_f="$${f/test-yaml/test-toml}"; \

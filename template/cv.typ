@@ -4,7 +4,48 @@
 // --- Load data (fmt and data-file from sys.inputs, with sensible defaults) ---
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let data-file = sys.inputs.at("data", default: if fmt == "toml" { "cv.toml" } else { "cv.yml" })
-#let raw = if fmt == "yaml" { yaml(data-file) } else { toml(data-file) }
+#let load-data(f) = if fmt == "yaml" { yaml(f) } else { toml(f) }
+
+// Recursively merge a child over its parent: dicts merge key by key, arrays
+// merge by index, other values are replaced. `none` keeps the parent value —
+// use null at an array position to leave that item untouched.
+#let deep-merge(base, over) = {
+  if over == none {
+    base
+  } else if type(base) == dictionary and type(over) == dictionary {
+    let out = base
+    for (k, v) in over { out.insert(k, deep-merge(base.at(k, default: none), v)) }
+    out
+  } else if type(base) == array and type(over) == array {
+    range(calc.max(base.len(), over.len())).map(i => deep-merge(
+      base.at(i, default: none),
+      over.at(i, default: none),
+    ))
+  } else { over }
+}
+
+// Directory part of a path ("sub/cv-fr.yml" -> "sub/", "cv-fr.yml" -> "").
+#let dir-of(f) = {
+  let parts = f.split("/")
+  if parts.len() <= 1 { "" } else { parts.slice(0, -1).join("/") + "/" }
+}
+
+// Resolve `inherit: <path>` chains: load a file, and if it declares a parent
+// (path relative to the file itself), deep-merge this file over the
+// recursively-resolved parent. Lets a customized CV hold only what changes.
+#let load-inherited(f) = {
+  let raw = load-data(f)
+  let parent = raw.at("inherit", default: none)
+  if parent == none {
+    raw
+  } else {
+    let child = raw
+    let _ = child.remove("inherit")
+    deep-merge(load-inherited(dir-of(f) + parent), child)
+  }
+}
+
+#let raw = load-inherited(data-file)
 #let meta = raw.at("meta", default: (:))
 #let cd = raw.cv
 

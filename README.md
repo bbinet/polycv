@@ -131,6 +131,35 @@ typst compile letter.typ --input fmt=toml
 typst compile application.typ --input fmt=toml
 ```
 
+The initialized project also ships a `Makefile` with shortcuts:
+
+```sh
+make                              # build every cv*.yml / letter*.yml that changed
+make watch                        # live-preview them all (WATCH=<file> for one)
+make yaml-reference               # print every available field, its type and doc
+```
+
+`make` rebuilds only the files whose source changed. The prefix before the first `-` picks the template, so a **bilingual CV** is just two files: name them `cv-en.yml` and `cv-fr.yml` (set `meta: locale` in each). The same applies to letters (`letter-en.yml`, …).
+
+### 5. Customize for a company (optional)
+
+A customized CV is just another data file that **inherits** a base and overrides only what changes. Add `cv-acme.yml`:
+
+```yaml
+inherit: cv.yml                                      # or cv-fr.yml — path relative to this file
+cv:
+  headline: "Backend Engineer — Distributed Systems"
+  keywords: ["Go", "Kubernetes", "observability"]    # replaces the base list
+  experience:
+    - highlights:
+        - ~                                           # keep base highlight 0
+        - "Rephrased for Acme"                        # replace highlight 1
+```
+
+`make` compiles it to `cv-acme.pdf` like any other file — no special command. The parent is deep-merged: dictionaries merge key by key, arrays by index, other values are replaced, and `~` (null) at an array position keeps the base item. Inheritance can chain (`cv-acme.yml` → `cv-fr.yml` → `cv.yml`), and a change to a base propagates to everything that inherits it.
+
+A customized letter works the same way — `letter-acme.yml` with `inherit: letter.yml` keeps the `sender` and overrides `recipient`, `subject` and `body`.
+
 ## Templates
 
 | File               | Description                                             |
@@ -305,17 +334,21 @@ For the letter:
 ```sh
 git clone https://github.com/xrsl/nabcv
 cd nabcv
-make build          # compile examples + personal CVs in content/
-make watch          # live preview (typst watch)
-make build-examples # compile template/examples/ only
+make build          # compile every content/ file (incremental)
+make watch          # live-preview all content/ files (WATCH=one file)
+make build-examples # compile the shipped sample data only
 make build-layouts  # compile the header layout variants side by side
 make validate       # validate data files against schema.cue (cue vet)
 make yaml-reference # print an annotated reference of every CV field
 ```
 
-Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or `letter-<slug>.yml` — `make build` picks them up automatically. Every build validates its data against the schema first.
+Personal data files go in `content/` (gitignored). The **prefix before the first `-`** selects the template: `cv-<slug>.yml` → `cv.typ`, `letter-<slug>.yml` → `letter.typ` (a file whose prefix has no matching `template/<prefix>.typ` is skipped). `make build` compiles every such file, and `make watch` live-previews them all. Every build validates its data against the schema first.
 
-`make yaml-reference` prints a commented YAML skeleton listing every field, its type, whether it is required, and a one-line description — generated from the schema so it never drifts. It documents the structure; for a filled example see `template/examples/cv.yml`.
+### Customizing a CV per company
+
+Same `inherit:` mechanism as [Quick Start §5](#5-customize-for-a-company-optional), on the repo's personal CVs: add `content/cv-brunobinet-fr-acme.yml` with `inherit: cv-brunobinet-fr.yml` and the overrides — `make build` builds it to `out/cv-brunobinet-fr-acme.pdf`. Validation first resolves the `inherit:` chain (`schema/resolve.py`) and checks the **merged** document, so customized files are validated as the complete CV they produce, not skipped.
+
+`make yaml-reference` prints a commented YAML skeleton listing every field, its type, whether it is required, and a one-line description — generated from the schema so it never drifts. It documents the structure; for a filled example see `template/cv.yml`.
 
 ### Dependencies
 
@@ -325,7 +358,7 @@ Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or 
 | `make` | Build orchestration |
 | `cue` | Schema authoring + data validation (`make schema`, `make validate`) |
 | `jq` | Schema key ordering (`make schema`) |
-| `python3` | Field reference generator (`make yaml-reference`) |
+| `python3` | Inherit resolver for validation + field reference (`make validate`, `make yaml-reference`) |
 | `bump-my-version` | Version bumping (`make bump-patch`) |
 | `cspell` | Spell checking (`make spell`) |
 | `imagemagick` | Thumbnail generation (`make thumbs`) |
