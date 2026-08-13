@@ -133,6 +133,12 @@
             "$ref": "#/$defs/#Entry"
           }
         },
+        "involvement": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#Entry"
+          }
+        },
         "courses": {
           "type": "array",
           "items": {
@@ -256,6 +262,7 @@
         "experience",
         "education",
         "awards",
+        "involvement",
         "courses"
       ]
     },

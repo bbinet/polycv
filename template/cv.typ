@@ -49,7 +49,8 @@
     motivation: "MOTIVATION",
     experience: "EXPÉRIENCE",
     education: "FORMATION",
-    awards: "ENGAGEMENTS",
+    awards: "DISTINCTIONS",
+    involvement: "ENGAGEMENTS",
     courses: "FORMATIONS",
   )
 } else { (:) }
@@ -90,6 +91,7 @@
   experience: cd.at("experience", default: none),
   education: cd.at("education", default: none),
   awards: cd.at("awards", default: none),
+  involvement: cd.at("involvement", default: none),
   courses: cd.at("courses", default: none),
   skills: cd.at("skills", default: none),
   values: cd.at("values", default: none),

@@ -69,6 +69,7 @@ package nabcv
 	experience?: [...#Entry]
 	education?: [...#Entry]
 	awards?: [...#Entry]
+	involvement?: [...#Entry]
 	courses?: [...#Entry]
 	publications?: [...#PublicationEntry]
 }
@@ -76,7 +77,7 @@ package nabcv
 // Section keys usable in sidebar-sections / main-sections (either column).
 #SectionName: "photo" | "contact" | "skills" | "values" | "hobbies" |
 	"references" | "publications" | "summary" | "motivation" |
-	"experience" | "education" | "awards" | "courses"
+	"experience" | "education" | "awards" | "involvement" | "courses"
 
 // Layout/config block; consumed by the template, not part of the CV data.
 #CvMeta: {

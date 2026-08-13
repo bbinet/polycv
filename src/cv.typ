@@ -17,6 +17,7 @@
 /// - experience (array, none): Experience entries.
 /// - education (array, none): Education entries.
 /// - awards (array, none): Award entries.
+/// - involvement (array, none): Community involvement / volunteering entries.
 /// - courses (array, none): Course entries.
 /// - skills (array, none): Skill groups. Each entry: (group, items).
 /// - values (array, none): Values list.
@@ -51,7 +52,7 @@
 /// - sidebar-sections (array): Ordered list of sidebar section keys to render.
 ///   Valid keys: "contact", "skills", "values", "hobbies", "references", "publications".
 /// - main-sections (array): Ordered list of main column section keys to render.
-///   Valid keys: "summary", "motivation", "experience", "education", "awards", "courses".
+///   Valid keys: "summary", "motivation", "experience", "education", "awards", "involvement", "courses".
 /// - section-titles (dictionary): Override any section display title.
 ///   Keys match section keys above. Defaults are all-caps e.g. "HONORS & AWARDS".
 /// - photo (content, none): Profile photo, e.g. image("assets/avatar.png").
@@ -79,6 +80,7 @@
   experience: none,
   education: none,
   awards: none,
+  involvement: none,
   courses: none,
   skills: none,
   values: none,
@@ -133,6 +135,7 @@
     "experience",
     "education",
     "awards",
+    "involvement",
     "courses",
   ),
   section-titles: (:),
@@ -728,6 +731,7 @@
       experience: "EXPERIENCE",
       education: "EDUCATION",
       awards: "HONORS & AWARDS",
+      involvement: "INVOLVEMENT",
       courses: "COURSES",
     )
       + section-titles
@@ -747,6 +751,7 @@
       experience: "suitcase",
       education: "graduation-cap",
       awards: "trophy",
+      involvement: "hand-holding-heart",
       courses: "chalkboard-teacher",
     )
       + section-icons
@@ -964,11 +969,31 @@
       is-last: i == entries.len() - 1,
     )))
 
-  // Awards/courses accept either a single date or a start/end range.
+  // Awards/involvement/courses accept either a single date or a range.
   let flexible-date(e) = if e.at("date", default: none) != none {
     format-date(e.date, none)
   } else {
     format-date(e.start_date, e.end_date)
+  }
+
+  // Shared renderer for bulleted list sections (awards, involvement, courses):
+  // one entry per line with name, flexible date, and an optional description.
+  let list-section(key, items) = {
+    if items != none {
+      main-section(si.at(key), st.at(key))[
+        #show: section-text(key)
+        #for e in items {
+          list-entry(
+            e.name,
+            flexible-date(e),
+            description: if e.at("summary", default: none) != none {
+              parse-markup(e.summary)
+            },
+            show-bullet: true,
+          )
+        }
+      ]
+    }
   }
 
   // --- Main column section renderers ---
@@ -1003,40 +1028,9 @@
         ]
       }
     },
-    awards: () => {
-      if awards != none {
-        main-section(si.awards, st.awards)[
-          #show: section-text("awards")
-          #for award in awards {
-            list-entry(
-              award.name,
-              flexible-date(award),
-              description: if award.at("summary", default: none) != none {
-                parse-markup(award.summary)
-              },
-              show-bullet: true,
-            )
-          }
-        ]
-      }
-    },
-    courses: () => {
-      if courses != none {
-        main-section(si.courses, st.courses)[
-          #show: section-text("courses")
-          #for course in courses {
-            list-entry(
-              course.name,
-              flexible-date(course),
-              description: if course.at("summary", default: none) != none {
-                parse-markup(course.summary)
-              },
-              show-bullet: true,
-            )
-          }
-        ]
-      }
-    },
+    awards: () => list-section("awards", awards),
+    involvement: () => list-section("involvement", involvement),
+    courses: () => list-section("courses", courses),
   )
 
   // --- Effective sidebar sections ---
