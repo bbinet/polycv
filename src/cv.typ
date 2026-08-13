@@ -56,8 +56,8 @@
 /// - photo-size (ratio): Diameter of the circular photo as a fraction of sidebar width.
 /// - show-header-band (bool): Full-width header band layout; the photo (if
 ///   any) is shown as a circle at the left of the band.
-/// - header-band-summary (bool): With show-header-band, render the summary
-///   inside the band (under the contact line) instead of the main column.
+/// - header-band-summary (bool): With show-header-band or ats-split, render
+///   the summary inside the header instead of the main column.
 /// - header-band-contact (bool): With show-header-band, show the contact
 ///   line in the band (true) or keep contact in the sidebar (false).
 /// - body (content): Optional content appended after the CV.
@@ -971,7 +971,9 @@
   let effective-sidebar-sections = sidebar-sections.filter(s => (
     s not in excluded-sections
   ))
-  let effective-main-sections = if show-header-band and header-band-summary {
+  let effective-main-sections = if (
+    (show-header-band or ats-split) and header-band-summary
+  ) {
     main-sections.filter(s => s != "summary")
   } else { main-sections }
 
@@ -1077,16 +1079,61 @@
   }
 
   // --- ATS split header (photo | name+headline+contacts+keywords, same column proportions as content) ---
-  let build-ats-header() = [
-    #grid(
+  let build-ats-header() = context {
+    // Right column: name, headline, keywords, and optionally the summary.
+    let right-content = [
+      #h(gap.section-indent - 0.5mm)
+      #grid(
+        columns: (1fr, auto),
+        column-gutter: gap.icon-to-text,
+        [
+          #text(
+            font: ff.header-name,
+            size: ts.header-name,
+            weight: fw.header-name,
+            fill: t.primary,
+          )[#name]
+          #v(gap.header-name-below)
+          #pad(left: gap.section-indent, right: 0pt)[
+            #text(
+              font: ff.header-headline,
+              size: ts.header-headline,
+              weight: fw.header-headline,
+              fill: t.accent,
+            )[#if headline != none { headline.replace("*", "") }]
+          ]
+          #v(gap.header-headline-below)
+        ],
+        [
+          #if keywords != none and keywords.len() > 0 {
+            v(0.3em)
+            build-tag-stack()
+          }
+        ],
+      )
+      #if header-band-summary and summary != none [
+        #pad(left: gap.section-indent)[
+          #set par(justify: true, leading: 0.65em)
+          #show: section-text("summary")
+          #summary
+        ]
+      ]
+    ]
+    // Photo grows with the header height (e.g. when the summary is shown),
+    // floored at the default size and capped at the sidebar column width.
+    let max-d = (
+      sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
+    )
+    let default-d = max-d * photo-size * layout.ats-photo-scale
+    let right-w = content-width * (100% - layout.sidebar-width) - gap.column-gutter
+    let right-h = measure(block(width: right-w, right-content)).height
+    let d = calc.min(calc.max(default-d, right-h), max-d)
+    grid(
       columns: (layout.sidebar-width, 1fr),
       column-gutter: gap.column-gutter,
       // Left: photo (same padding as sidebar)
       pad(left: layout.sidebar-left-pad, right: layout.sidebar-right-pad)[
         #if photo != none {
-          let d = (
-            sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
-          ) * photo-size * layout.ats-photo-scale
           pad(top: 0pt, bottom: gap.ats-photo-below)[
             #align(center)[
               #box(width: d, height: d, clip: true, radius: 50%, photo)
@@ -1096,39 +1143,11 @@
       ],
       // Right: name, headline, contacts, keywords (same structure as build-main header)
       [
-        #h(gap.section-indent - 0.5mm)
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: gap.icon-to-text,
-          [
-            #text(
-              font: ff.header-name,
-              size: ts.header-name,
-              weight: fw.header-name,
-              fill: t.primary,
-            )[#name]
-            #v(gap.header-name-below)
-            #pad(left: gap.section-indent, right: 0pt)[
-              #text(
-                font: ff.header-headline,
-                size: ts.header-headline,
-                weight: fw.header-headline,
-                fill: t.accent,
-              )[#if headline != none { headline.replace("*", "") }]
-            ]
-            #v(gap.header-headline-below)
-          ],
-          [
-            #if keywords != none and keywords.len() > 0 {
-              v(0.3em)
-              build-tag-stack()
-            }
-          ],
-        )
+        #right-content
         #v(gap.ats-header-to-content)
       ],
     )
-  ]
+  }
 
   // --- Sidebar ---
   let build-sidebar() = [

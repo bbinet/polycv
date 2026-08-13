@@ -153,7 +153,7 @@ The CV offers four header layouts, selectable without touching any `.typ` file â
 | **Header band** | `header-band: true` | Full-width header: round photo on the left (sized to the text block height), name, headline and a one-line contact row; no sidebar tint |
 | **ATS split** | `ats-split: true` | Two-column header (photo left, name/headline right), sidebar keeps the tint; friendlier to ATS parsers |
 
-The header band can be tuned further: `header-band-summary: true` moves the summary into the band, and `header-band-contact: false` keeps the contact section in the sidebar instead of the band's contact line.
+The header can be tuned further: `header-band-summary: true` moves the summary into the header (works with both header-band and ats-split), and `header-band-contact: false` keeps the contact section in the sidebar instead of the band's contact line.
 
 Via command line:
 
