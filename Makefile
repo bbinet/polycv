@@ -59,9 +59,12 @@ EXAMPLES_PDFS :=
 $(foreach f,$(EXAMPLES_DATA),$(eval $(call PDF_RULE,$f,examples/,out/examples/)))
 $(foreach f,$(EXAMPLES_DATA),$(eval EXAMPLES_PDFS += out/examples/$(basename $(notdir $f)).pdf))
 
-# --- all data files, validated against schema.cue via `cue vet` ---
-VALIDATE_DATA := $(wildcard content/*.yml content/*.toml \
-                           template/examples/*.yml template/examples/*.toml)
+# --- data sets validated against schema.cue via `cue vet` ---
+# Per-target scopes; each build validates only what it compiles. The
+# standalone `validate` target checks everything (VALIDATE_DATA default).
+CONTENT_ALL_DATA  := $(_c_yml) $(_c_toml)
+EXAMPLES_ALL_DATA := $(_e_yml) $(_e_toml)
+VALIDATE_DATA     := $(CONTENT_ALL_DATA) $(EXAMPLES_ALL_DATA)
 
 # --- layout variants : the four header modes → out/ ---
 # $1 = variant suffix, $2 = extra --input flags
@@ -124,19 +127,22 @@ validate:
 	done
 	@echo "OK: all data files valid"
 
-build: validate
+build:
+	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(CONTENT_ALL_DATA)"
 	@$(MAKE) --no-print-directory link
 	@echo "Building content/..."
 	@$(MAKE) --no-print-directory $(CONTENT_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
-build-examples: validate
+build-examples:
+	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(EXAMPLES_ALL_DATA)"
 	@$(MAKE) --no-print-directory link
 	@echo "Building template/examples/..."
 	@$(MAKE) --no-print-directory $(EXAMPLES_PDFS)
 	@$(MAKE) --no-print-directory unlink
 
-build-layouts: validate
+build-layouts:
+	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(_LAYOUT_DATA)"
 	@$(MAKE) --no-print-directory link
 	@echo "Building layout variants..."
 	@$(MAKE) --no-print-directory $(LAYOUT_PDFS)
