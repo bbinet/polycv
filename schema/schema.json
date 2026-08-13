@@ -170,6 +170,53 @@
       },
       "x-tombi-table-keys-order": "schema"
     },
+    "#CvMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "photo": {
+          "type": "string"
+        },
+        "locale": {
+          "enum": [
+            "en",
+            "fr"
+          ]
+        },
+        "header-band": {
+          "type": "boolean"
+        },
+        "header-band-summary": {
+          "type": "boolean"
+        },
+        "header-band-contact": {
+          "type": "boolean"
+        },
+        "ats-split": {
+          "type": "boolean"
+        },
+        "entry-inline-meta": {
+          "type": "boolean"
+        },
+        "keywords-lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sidebar-sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#SectionName"
+          }
+        },
+        "main-sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/#SectionName"
+          }
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
     "#Date": {
       "anyOf": [
         {
@@ -181,6 +228,23 @@
         {
           "type": "null"
         }
+      ]
+    },
+    "#SectionName": {
+      "enum": [
+        "photo",
+        "contact",
+        "skills",
+        "values",
+        "hobbies",
+        "references",
+        "publications",
+        "summary",
+        "motivation",
+        "experience",
+        "education",
+        "awards",
+        "courses"
       ]
     },
     "#Entry": {
@@ -418,6 +482,9 @@
   "properties": {
     "cv": {
       "$ref": "#/$defs/#CV"
+    },
+    "meta": {
+      "$ref": "#/$defs/#CvMeta"
     },
     "letter": {
       "$ref": "#/$defs/#Letter"

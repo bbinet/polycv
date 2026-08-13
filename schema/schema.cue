@@ -73,8 +73,28 @@ package nabcv
 	publications?: [...#PublicationEntry]
 }
 
+// Section keys usable in sidebar-sections / main-sections (either column).
+#SectionName: "photo" | "contact" | "skills" | "values" | "hobbies" |
+	"references" | "publications" | "summary" | "motivation" |
+	"experience" | "education" | "awards" | "courses"
+
+// Layout/config block; consumed by the template, not part of the CV data.
+#CvMeta: {
+	photo?:               string
+	locale?:              "en" | "fr"
+	"header-band"?:       bool
+	"header-band-summary"?: bool
+	"header-band-contact"?: bool
+	"ats-split"?:         bool
+	"entry-inline-meta"?: bool
+	"keywords-lines"?:    int & >=0
+	"sidebar-sections"?: [...#SectionName]
+	"main-sections"?: [...#SectionName]
+}
+
 #CVSchema: {
-	cv: #CV
+	cv:    #CV
+	meta?: #CvMeta
 }
 
 // ============================================================================
@@ -129,5 +149,6 @@ package nabcv
 
 #UnifiedSchema: {
 	cv?:     #CV
+	meta?:   #CvMeta
 	letter?: #Letter
 }
