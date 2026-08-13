@@ -35,9 +35,11 @@ for type in $TYPES; do
     order=$(get_field_order "$type")
     # Create a safe variable name for jq (remove #)
     var_name=$(echo "$type" | tr -d '#' | tr '[:upper:]' '[:lower:]')
+    # cue exports JSON Schema $defs without the leading '#'.
+    json_name="${type#\#}"
     JQ_ARGS+=(--argjson "$var_name" "$order")
-    JQ_FILTER+=".[\"\$defs\"][\"$type\"].properties |= reorder_props(\$$var_name) |
-.[\"\$defs\"][\"$type\"] += {\"x-tombi-table-keys-order\": \"schema\"} |
+    JQ_FILTER+=".[\"\$defs\"][\"$json_name\"].properties |= reorder_props(\$$var_name) |
+.[\"\$defs\"][\"$json_name\"] += {\"x-tombi-table-keys-order\": \"schema\"} |
 "
 done
 

@@ -309,9 +309,13 @@ make build          # compile examples + personal CVs in content/
 make watch          # live preview (typst watch)
 make build-examples # compile template/examples/ only
 make build-layouts  # compile the header layout variants side by side
+make validate       # validate data files against schema.cue (cue vet)
+make yaml-reference # print an annotated reference of every CV field
 ```
 
-Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or `letter-<slug>.yml` — `make build` picks them up automatically.
+Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or `letter-<slug>.yml` — `make build` picks them up automatically. Every build validates its data against the schema first.
+
+`make yaml-reference` prints a commented YAML skeleton listing every field, its type, whether it is required, and a one-line description — generated from the schema so it never drifts. It documents the structure; for a filled example see `template/examples/cv.yml`.
 
 ### Dependencies
 
@@ -319,7 +323,9 @@ Personal data files go in `content/` (gitignored). Name them `cv-<slug>.yml` or 
 | ---- | ------- |
 | `typst` | Compiler |
 | `make` | Build orchestration |
-| `cue` | Schema authoring (`make schema`) |
+| `cue` | Schema authoring + data validation (`make schema`, `make validate`) |
+| `jq` | Schema key ordering (`make schema`) |
+| `python3` | Field reference generator (`make yaml-reference`) |
 | `bump-my-version` | Version bumping (`make bump-patch`) |
 | `cspell` | Spell checking (`make spell`) |
 | `imagemagick` | Thumbnail generation (`make thumbs`) |

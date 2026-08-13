@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$defs": {
-    "#BodyParagraph": {
+    "BodyParagraph": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "paragraph": {
-          "type": "string"
+          "type": "string",
+          "description": "One letter paragraph; supports inline markup."
         }
       },
       "required": [
@@ -14,26 +15,31 @@
       ],
       "x-tombi-table-keys-order": "schema"
     },
-    "#CV": {
+    "CV": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Full name, shown large in the header."
         },
         "headline": {
-          "type": "string"
+          "type": "string",
+          "description": "Tagline under the name."
         },
         "location": {
-          "type": "string"
+          "type": "string",
+          "description": "Location line (city, country)."
         },
         "keywords": {
           "type": "array",
+          "description": "Tag badges shown in the header.",
           "items": {
             "type": "string"
           }
         },
         "email": {
+          "description": "Email address; a single string or a list of lines.",
           "anyOf": [
             {
               "type": "string"
@@ -47,6 +53,7 @@
           ]
         },
         "phone": {
+          "description": "Phone number; a single string or a list of lines.",
           "anyOf": [
             {
               "type": "string"
@@ -60,6 +67,7 @@
           ]
         },
         "address": {
+          "description": "Postal address; a single string or a list of lines.",
           "anyOf": [
             {
               "type": "string"
@@ -73,24 +81,29 @@
           ]
         },
         "summary": {
-          "type": "string"
+          "type": "string",
+          "description": "Summary / profile paragraph."
         },
         "motivation": {
-          "type": "string"
+          "type": "string",
+          "description": "Motivation paragraph (cover-letter style intro)."
         },
         "values": {
           "type": "array",
+          "description": "Personal values, one bullet each.",
           "items": {
             "type": "string"
           }
         },
         "hobbies": {
           "type": "array",
+          "description": "Hobbies / interests, one bullet each.",
           "items": {
             "type": "string"
           }
         },
         "references": {
+          "description": "References text, or a list of bullets.",
           "anyOf": [
             {
               "type": "string"
@@ -105,137 +118,165 @@
         },
         "profiles": {
           "type": "array",
+          "description": "Social profiles (network + username).",
           "items": {
-            "$ref": "#/$defs/#SocialNetwork"
+            "$ref": "#/$defs/SocialNetwork"
           }
         },
         "skills": {
           "type": "array",
+          "description": "Skill groups.",
           "items": {
-            "$ref": "#/$defs/#SkillEntry"
+            "$ref": "#/$defs/SkillEntry"
           }
         },
         "experience": {
           "type": "array",
+          "description": "Professional experience entries.",
           "items": {
-            "$ref": "#/$defs/#Entry"
+            "$ref": "#/$defs/Entry"
           }
         },
         "education": {
           "type": "array",
+          "description": "Education entries.",
           "items": {
-            "$ref": "#/$defs/#Entry"
+            "$ref": "#/$defs/Entry"
           }
         },
         "awards": {
           "type": "array",
+          "description": "Honours and awards.",
           "items": {
-            "$ref": "#/$defs/#Entry"
+            "$ref": "#/$defs/Entry"
           }
         },
         "involvement": {
           "type": "array",
+          "description": "Community involvement / volunteering entries.",
           "items": {
-            "$ref": "#/$defs/#Entry"
+            "$ref": "#/$defs/Entry"
           }
         },
         "courses": {
           "type": "array",
+          "description": "Courses and certifications.",
           "items": {
-            "$ref": "#/$defs/#Entry"
+            "$ref": "#/$defs/Entry"
           }
         },
         "publications": {
           "type": "array",
+          "description": "Publications.",
           "items": {
-            "$ref": "#/$defs/#PublicationEntry"
+            "$ref": "#/$defs/PublicationEntry"
           }
         }
       },
       "x-tombi-table-keys-order": "schema"
     },
-    "#Content": {
+    "Content": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "subject": {
-          "type": "string"
+          "type": "string",
+          "description": "Subject line, shown as \"Re: …\"."
         },
         "salutation": {
-          "type": "string"
+          "type": "string",
+          "description": "Opening salutation."
         },
         "closing": {
-          "type": "string"
+          "type": "string",
+          "description": "Closing phrase before the signature."
         },
         "body": {
           "type": "array",
+          "description": "Letter body paragraphs.",
           "items": {
-            "$ref": "#/$defs/#BodyParagraph"
+            "$ref": "#/$defs/BodyParagraph"
           }
         }
       },
       "x-tombi-table-keys-order": "schema"
     },
-    "#CvMeta": {
+    "CvMeta": {
       "type": "object",
+      "description": "Layout/config block; consumed by the template, not part of the CV data.",
       "additionalProperties": false,
       "properties": {
         "photo": {
-          "type": "string"
+          "type": "string",
+          "description": "Path to the profile photo, relative to the .typ file."
         },
         "locale": {
+          "description": "Language for section titles and month names.",
           "enum": [
             "en",
             "fr"
           ]
         },
-        "header-band": {
-          "type": "boolean"
-        },
-        "header-band-summary": {
-          "type": "boolean"
-        },
-        "header-band-contact": {
-          "type": "boolean"
-        },
         "ats-split": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Two-column ATS-friendly header layout."
         },
         "entry-inline-meta": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Company + location/dates on the title line, position below."
+        },
+        "header-band": {
+          "type": "boolean",
+          "description": "Full-width header band layout (photo on its left)."
+        },
+        "header-band-contact": {
+          "type": "boolean",
+          "description": "With header-band, keep the contact line in the band (false = sidebar)."
+        },
+        "header-band-summary": {
+          "type": "boolean",
+          "description": "With header-band, render the summary inside the header."
         },
         "keywords-lines": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "sidebar-sections": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/#SectionName"
-          }
+          "description": "Number of right-aligned lines for keyword badges (0 = one per line).",
+          "allOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
         },
         "main-sections": {
           "type": "array",
+          "description": "Ordered main-column section keys.",
           "items": {
-            "$ref": "#/$defs/#SectionName"
-          }
-        },
-        "section-titles": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
+            "$ref": "#/$defs/SectionName"
           }
         },
         "section-icons": {
           "type": "object",
-          "additionalProperties": {
-            "type": "string"
+          "description": "Override section FontAwesome icons, keyed by section name.",
+          "additionalProperties": true
+        },
+        "section-titles": {
+          "type": "object",
+          "description": "Override section display titles, keyed by section name.",
+          "additionalProperties": true
+        },
+        "sidebar-sections": {
+          "type": "array",
+          "description": "Ordered sidebar section keys.",
+          "items": {
+            "$ref": "#/$defs/SectionName"
           }
         }
       },
       "x-tombi-table-keys-order": "schema"
     },
-    "#Date": {
+    "Date": {
       "anyOf": [
         {
           "type": "string"
@@ -248,7 +289,179 @@
         }
       ]
     },
-    "#SectionName": {
+    "Entry": {
+      "type": "object",
+      "description": "A timeline or list entry, reused by experience, education, awards,\ninvolvement and courses. Not all fields apply to every section.",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Primary title (award/course name). Alias of company for list sections."
+        },
+        "company": {
+          "type": "string",
+          "description": "Organisation or employer (experience). Alias: degree for education."
+        },
+        "position": {
+          "type": "string",
+          "description": "Job title or role, shown after the company."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short subtitle under the title. Alias: institution for education."
+        },
+        "location": {
+          "type": "string",
+          "description": "Place (city, country) shown on the right."
+        },
+        "start_date": {
+          "description": "Start date, \"YYYY-MM\" or \"YYYY\".",
+          "$ref": "#/$defs/Date"
+        },
+        "end_date": {
+          "description": "End date, \"YYYY-MM\", \"YYYY\" or \"present\".",
+          "$ref": "#/$defs/ExactDate"
+        },
+        "date": {
+          "description": "Single date, alternative to start_date/end_date (awards, courses).",
+          "$ref": "#/$defs/Date"
+        },
+        "highlights": {
+          "type": "array",
+          "description": "Bullet points; supports *bold* and _italic_ inline markup.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "ExactDate": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "const": "present"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Letter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sender": {
+          "description": "Sender block.",
+          "$ref": "#/$defs/Sender"
+        },
+        "recipient": {
+          "description": "Recipient block.",
+          "$ref": "#/$defs/Recipient"
+        },
+        "content": {
+          "description": "Letter content (subject, salutation, body, closing).",
+          "$ref": "#/$defs/Content"
+        },
+        "metadata": {
+          "description": "Letter metadata (date).",
+          "$ref": "#/$defs/Metadata"
+        }
+      },
+      "required": [
+        "sender"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "description": "Letter date; a display string or \"auto\" for today.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": "auto"
+            }
+          ]
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "PublicationEntry": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Publication title."
+        },
+        "authors": {
+          "type": "array",
+          "description": "List of author names.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short description or venue note."
+        },
+        "doi": {
+          "type": "string",
+          "description": "Digital Object Identifier; rendered as a doi.org link."
+        },
+        "url": {
+          "type": "string",
+          "description": "Direct URL to the publication."
+        },
+        "journal": {
+          "type": "string",
+          "description": "Journal or conference name."
+        },
+        "date": {
+          "description": "Publication date.",
+          "$ref": "#/$defs/Date"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "x-tombi-table-keys-order": "schema"
+    },
+    "Recipient": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Recipient's name."
+        },
+        "title": {
+          "type": "string",
+          "description": "Recipient's job title."
+        },
+        "company": {
+          "type": "string",
+          "description": "Recipient's company."
+        },
+        "address": {
+          "type": "string",
+          "description": "Recipient's postal address."
+        }
+      },
+      "x-tombi-table-keys-order": "schema"
+    },
+    "SectionName": {
+      "description": "Section keys usable in sidebar-sections / main-sections (either column).",
       "enum": [
         "photo",
         "contact",
@@ -266,172 +479,33 @@
         "courses"
       ]
     },
-    "#Entry": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "company": {
-          "type": "string"
-        },
-        "position": {
-          "type": "string"
-        },
-        "summary": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "start_date": {
-          "$ref": "#/$defs/#Date"
-        },
-        "end_date": {
-          "$ref": "#/$defs/#ExactDate"
-        },
-        "date": {
-          "$ref": "#/$defs/#Date"
-        },
-        "highlights": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "x-tombi-table-keys-order": "schema"
-    },
-    "#ExactDate": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "integer"
-        },
-        {
-          "const": "present"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "#Letter": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "sender": {
-          "$ref": "#/$defs/#Sender"
-        },
-        "recipient": {
-          "$ref": "#/$defs/#Recipient"
-        },
-        "content": {
-          "$ref": "#/$defs/#Content"
-        },
-        "metadata": {
-          "$ref": "#/$defs/#Metadata"
-        }
-      },
-      "required": [
-        "sender"
-      ],
-      "x-tombi-table-keys-order": "schema"
-    },
-    "#Metadata": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "date": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "const": "auto"
-            }
-          ]
-        }
-      },
-      "x-tombi-table-keys-order": "schema"
-    },
-    "#PublicationEntry": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "authors": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "summary": {
-          "type": "string"
-        },
-        "doi": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "journal": {
-          "type": "string"
-        },
-        "date": {
-          "$ref": "#/$defs/#Date"
-        }
-      },
-      "required": [
-        "title"
-      ],
-      "x-tombi-table-keys-order": "schema"
-    },
-    "#Recipient": {
+    "Sender": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "name": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "company": {
-          "type": "string"
-        },
-        "address": {
-          "type": "string"
-        }
-      },
-      "x-tombi-table-keys-order": "schema"
-    },
-    "#Sender": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Sender's full name."
         },
         "phone": {
-          "type": "string"
+          "type": "string",
+          "description": "Sender's phone number."
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "Sender's email address."
         },
         "linkedin": {
-          "type": "string"
+          "type": "string",
+          "description": "LinkedIn handle."
         },
         "github": {
-          "type": "string"
+          "type": "string",
+          "description": "GitHub handle."
         },
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "Sender's postal address."
         }
       },
       "required": [
@@ -439,14 +513,16 @@
       ],
       "x-tombi-table-keys-order": "schema"
     },
-    "#SkillEntry": {
+    "SkillEntry": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
         "group": {
-          "type": "string"
+          "type": "string",
+          "description": "Skill group heading (e.g. \"Languages\")."
         },
         "items": {
+          "description": "Skills: a single string, or a list rendered one per line.",
           "anyOf": [
             {
               "type": "string"
@@ -466,15 +542,17 @@
       ],
       "x-tombi-table-keys-order": "schema"
     },
-    "#SocialNetwork": {
+    "SocialNetwork": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "username": {
-          "type": "string"
-        },
         "network": {
-          "type": "string"
+          "type": "string",
+          "description": "Network name; must match a key in the template's profiles-config\n(e.g. \"LinkedIn\", \"GitHub\")."
+        },
+        "username": {
+          "type": "string",
+          "description": "Handle appended to the network's URL base (e.g. \"janedoe\")."
         }
       },
       "required": [
@@ -483,15 +561,15 @@
       ],
       "x-tombi-table-keys-order": "schema"
     },
-    "#CVSchema": {
+    "CVSchema": {
       "properties": {},
       "x-tombi-table-keys-order": "schema"
     },
-    "#LetterSchema": {
+    "LetterSchema": {
       "properties": {},
       "x-tombi-table-keys-order": "schema"
     },
-    "#UnifiedSchema": {
+    "UnifiedSchema": {
       "properties": {},
       "x-tombi-table-keys-order": "schema"
     }
@@ -500,13 +578,16 @@
   "additionalProperties": false,
   "properties": {
     "cv": {
-      "$ref": "#/$defs/#CV"
-    },
-    "meta": {
-      "$ref": "#/$defs/#CvMeta"
+      "description": "CV data.",
+      "$ref": "#/$defs/CV"
     },
     "letter": {
-      "$ref": "#/$defs/#Letter"
+      "description": "Cover-letter data.",
+      "$ref": "#/$defs/Letter"
+    },
+    "meta": {
+      "description": "Layout / configuration block.",
+      "$ref": "#/$defs/CvMeta"
     }
   }
 }

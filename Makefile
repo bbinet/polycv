@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema link unlink sync test-yaml prek prek-ci ci
+.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema yaml-reference link unlink sync test-yaml prek prek-ci ci
 
 # ---------------------------------------------------------------------------
 # Version & platform
@@ -100,6 +100,7 @@ help:
 	@printf "%-22s %s\n" "clean" "remove build artifacts"
 	@printf "%-22s %s\n" "spell" "spell check data files and README"
 	@printf "%-22s %s\n" "schema" "regenerate schema/schema.json"
+	@printf "%-22s %s\n" "yaml-reference" "print an annotated YAML field reference (stdout)"
 	@printf "%-22s %s\n" "link" "symlink package into @preview cache"
 	@printf "%-22s %s\n" "unlink" "remove symlink from @preview cache"
 	@printf "%-22s %s\n" "sync" "sync dependencies to latest"
@@ -168,6 +169,9 @@ spell:
 
 schema:
 	$(MAKE) -C schema json
+
+yaml-reference:
+	@python3 schema/gen-reference.py
 
 link:
 	@mkdir -p "$(dir $(PREVIEW_TARGET))"
