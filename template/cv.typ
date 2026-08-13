@@ -22,6 +22,15 @@
 #let ats-split = input-bool("ats-split")
 #let entry-inline-meta = input-bool("entry-inline-meta")
 #let locale = input-str("locale", default: "en")
+
+// Optional section ordering from meta (arrays); omitted keys use cv() defaults.
+#let section-args = (:)
+#if "sidebar-sections" in meta {
+  section-args.insert("sidebar-sections", meta.sidebar-sections)
+}
+#if "main-sections" in meta {
+  section-args.insert("main-sections", meta.main-sections)
+}
 // 0 = auto (one badge per line)
 #let keywords-lines = int(input-str("keywords-lines", default: "0"))
 
@@ -80,8 +89,9 @@
   ats-split: ats-split,
   entry-inline-meta: entry-inline-meta,
   ..locale-args,
-  // sidebar-sections: ("contact", "skills", "values", "hobbies", "references", "publications"),
-  // main-sections: ("summary", "motivation", "experience", "education", "awards", "courses"),
+  ..section-args,
+  // Set sidebar-sections / main-sections in the meta block to reorder or move
+  // sections between columns, e.g. put "education" in the sidebar.
   // section-icons: (experience: "briefcase", awards: "medal"),
   // section-titles: (awards: "PRIZES & RECOGNITION"),
 )

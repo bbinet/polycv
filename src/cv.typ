@@ -788,6 +788,30 @@
 
   // --- Sidebar section renderers ---
   let sidebar-renderers = (
+    // Compact education for the narrow sidebar: degree, institution,
+    // location and dates stacked, without timeline or right-aligned grid.
+    education: () => {
+      if education != none {
+        sidebar-section(si.education, st.education)[
+          #show: section-text("education")
+          #for edu in education [
+            #text(weight: fw.skill-group)[
+              #edu.at("degree", default: edu.at("company", default: ""))
+            ] \
+            #let inst = edu.at("summary", default: edu.at("institution", default: none))
+            #if inst != none [ #inst \ ]
+            #let loc = edu.at("location", default: none)
+            #let d = format-date(edu.start_date, edu.end_date)
+            #if loc != none or d != "" [
+              #text(fill: t.accent)[
+                #loc#if loc != none and d != "" [ · ]#d
+              ]
+            ]
+            #v(gap.sidebar-skill-between-items)
+          ]
+        ]
+      }
+    },
     photo: () => {
       if photo != none {
         let sidebar-content-width = (
@@ -1209,7 +1233,10 @@
     #set par(justify: justify-sidebar)
     #pad(left: layout.sidebar-left-pad, right: layout.sidebar-right-pad)[
       #for section-name in effective-sidebar-sections {
-        let render = sidebar-renderers.at(section-name, default: none)
+        let render = sidebar-renderers.at(
+          section-name,
+          default: main-renderers.at(section-name, default: none),
+        )
         if render != none { render() }
       }
     ]

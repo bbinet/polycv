@@ -188,7 +188,15 @@ All customization is done through named parameters in the template `.typ` file. 
 )
 ```
 
-Omit a key to hide that section entirely.
+Omit a key to hide that section entirely. A section can live in either column: for example, put `"education"` in `sidebar-sections` and it renders as a compact block (degree, institution, location · dates) instead of the wide timeline.
+
+With the provided template, set these lists in the `meta:` block of your data file instead of editing the `.typ`:
+
+```yaml
+meta:
+  sidebar-sections: ["photo", "contact", "education", "skills"]
+  main-sections: ["summary", "experience", "awards", "courses"]
+```
 
 ### Section titles & icons
 
