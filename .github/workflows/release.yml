@@ -48,10 +48,14 @@ jobs:
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='.claude' \
+            --exclude='.gitignore' \
             --exclude='.bumpversion.toml' \
             --exclude='.pre-commit-config.yaml' \
             --exclude='schema' \
             --exclude='justfile' \
+            --exclude='Makefile' \
+            --exclude='shell.nix' \
             --exclude='cspell.toml' \
             --exclude='CLAUDE.md' \
             --exclude='thumbnail-all.png' \
