@@ -11,38 +11,38 @@ replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
 filename = "template/cv.toml"
-search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
-replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+search = "https://raw.githubusercontent.com/bbinet/polycv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/bbinet/polycv/v{new_version}/schema/schema.json"
 
 [[tool.bumpversion.files]]
 filename = "template/letter.toml"
-search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
-replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+search = "https://raw.githubusercontent.com/bbinet/polycv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/bbinet/polycv/v{new_version}/schema/schema.json"
 
 [[tool.bumpversion.files]]
 filename = "template/cv.yml"
-search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
-replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+search = "https://raw.githubusercontent.com/bbinet/polycv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/bbinet/polycv/v{new_version}/schema/schema.json"
 
 [[tool.bumpversion.files]]
 filename = "template/letter.yml"
-search = "https://raw.githubusercontent.com/xrsl/nabcv/v{current_version}/schema/schema.json"
-replace = "https://raw.githubusercontent.com/xrsl/nabcv/v{new_version}/schema/schema.json"
+search = "https://raw.githubusercontent.com/bbinet/polycv/v{current_version}/schema/schema.json"
+replace = "https://raw.githubusercontent.com/bbinet/polycv/v{new_version}/schema/schema.json"
 
 [[tool.bumpversion.files]]
 filename = "template/cv.typ"
-search = "@preview/nabcv:{current_version}"
-replace = "@preview/nabcv:{new_version}"
+search = "@preview/polycv:{current_version}"
+replace = "@preview/polycv:{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "template/letter.typ"
-search = "@preview/nabcv:{current_version}"
-replace = "@preview/nabcv:{new_version}"
+search = "@preview/polycv:{current_version}"
+replace = "@preview/polycv:{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "template/application.typ"
-search = "@preview/nabcv:{current_version}"
-replace = "@preview/nabcv:{new_version}"
+search = "@preview/polycv:{current_version}"
+replace = "@preview/polycv:{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "README.md"
@@ -51,5 +51,5 @@ replace = "version-{new_version}-blue"
 
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = "@preview/nabcv:{current_version}"
-replace = "@preview/nabcv:{new_version}"
+search = "@preview/polycv:{current_version}"
+replace = "@preview/polycv:{new_version}"

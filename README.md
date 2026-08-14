@@ -1,4 +1,4 @@
-# nabcv
+# polycv
 
 <div align="center">
 
@@ -6,7 +6,7 @@
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/xrsl/nabcv)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/bbinet/polycv)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Typst](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
@@ -26,7 +26,7 @@ A data-driven CV and cover letter package for Typst. All personal data lives in 
 ## Prerequisites
 
 1. **Typst CLI** — follow the [official instructions](https://github.com/typst/typst#installation).
-2. **Fonts** — nabcv requires two font families installed as system fonts:
+2. **Fonts** — polycv requires two font families installed as system fonts:
 
    **IBM Plex Sans**
 
@@ -57,10 +57,10 @@ A data-driven CV and cover letter package for Typst. All personal data lives in 
 ### 1. Initialize
 
 ```sh
-typst init @preview/nabcv:0.1.0
+typst init @preview/polycv:0.1.0
 ```
 
-This creates a `nabcv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their data files.
+This creates a `polycv/` folder with `cv.typ`, `letter.typ`, `application.typ` and their data files.
 
 ### 2. Install editor extensions (optional)
 
@@ -332,8 +332,8 @@ For the letter:
 ### Setup
 
 ```sh
-git clone https://github.com/xrsl/nabcv
-cd nabcv
+git clone https://github.com/bbinet/polycv
+cd polycv
 make build          # compile every content/ file (incremental)
 make watch          # live-preview all content/ files (WATCH=one file)
 make build-examples # compile the shipped sample data only

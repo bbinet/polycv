@@ -1,6 +1,6 @@
 #import "@preview/fontawesome:0.6.0": *
 
-/// A two-column CV template matching the nabcv design.
+/// A two-column CV template matching the polycv design.
 ///
 /// - name (str): Full name displayed in the header.
 /// - headline (str, none): Tagline shown below the name.

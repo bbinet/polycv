@@ -33,7 +33,7 @@ jobs:
             VERSION="${{ github.event.inputs.version }}"
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "branch=nabcv-$VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch=polycv-$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release
         if: github.event_name == 'push'
@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare package files
         run: |
-          mkdir -p packages/preview/nabcv/${{ steps.version.outputs.version }}
+          mkdir -p packages/preview/polycv/${{ steps.version.outputs.version }}
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
@@ -57,7 +57,7 @@ jobs:
             --exclude='thumbnail-all.png' \
             --exclude='out' \
             --exclude='packages' \
-            . packages/preview/nabcv/${{ steps.version.outputs.version }}/
+            . packages/preview/polycv/${{ steps.version.outputs.version }}/
 
       - name: Publish to fork and create PR
         env:
@@ -68,7 +68,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           gh auth setup-git
 
-          gh repo clone xrsl/typst-packages temp-fork -- --depth=1
+          gh repo clone bbinet/typst-packages temp-fork -- --depth=1
           cd temp-fork
 
           BRANCH="${{ steps.version.outputs.branch }}"
@@ -76,11 +76,11 @@ jobs:
           git ls-remote --heads origin $BRANCH | grep -q $BRANCH && git push origin --delete $BRANCH || true
           git checkout -b "$BRANCH"
 
-          mkdir -p packages/preview/nabcv
-          cp -r "$MAIN_DIR/packages/preview/nabcv/${{ steps.version.outputs.version }}" packages/preview/nabcv/
+          mkdir -p packages/preview/polycv
+          cp -r "$MAIN_DIR/packages/preview/polycv/${{ steps.version.outputs.version }}" packages/preview/polycv/
 
           git add .
-          git commit -m "nabcv:${{ steps.version.outputs.version }}"
+          git commit -m "polycv:${{ steps.version.outputs.version }}"
           git push -u origin "$BRANCH"
 
           if [ "${{ github.event.inputs.dry-run }}" = "true" ]; then
@@ -90,12 +90,12 @@ jobs:
 
           gh pr create \
             --repo typst/packages \
-            --title "nabcv:${{ steps.version.outputs.version }}" \
+            --title "polycv:${{ steps.version.outputs.version }}" \
             --body "I am submitting
           - [X] a new package
           - [ ] an update for a package
 
-          Description: nabcv ${{ steps.version.outputs.version }} — a data-driven two-column CV package for Typst.
+          Description: polycv ${{ steps.version.outputs.version }} — a data-driven two-column CV package for Typst.
 
           I have read and followed the submission guidelines and, in particular, I
           - [X] selected a name that isn't the most obvious or canonical name for what the package does
@@ -105,5 +105,5 @@ jobs:
           - [X] tested my package locally on my system and it worked
           - [X] \`exclude\`d PDFs or README images, if any, but not the LICENSE
           - [X] ensured that my package is licensed such that users can use and distribute the contents of its template directory without restriction, after modifying them through normal use." \
-            --head "xrsl:$BRANCH" \
+            --head "bbinet:$BRANCH" \
             --base main

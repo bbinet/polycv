@@ -1,4 +1,4 @@
-# nabcv
+# polycv
 
 Typst CV package. Data-driven: all personal info lives in TOML files; `.typ` templates stay untouched.
 

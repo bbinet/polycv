@@ -1,5 +1,5 @@
 // typst compile --root . template/letter.typ
-#import "@preview/nabcv:0.1.0": letter
+#import "@preview/polycv:0.1.0": letter
 
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let data-file = sys.inputs.at("data", default: if fmt == "toml" { "letter.toml" } else { "letter.yml" })

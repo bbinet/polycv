@@ -10,11 +10,11 @@ ignorePaths = [
   "CLAUDE.md"
 ]
 words = [
-  "nabcv",
+  "polycv",
   "fontawesome",
   "toml",
   "typst",
-  "xrsl",
+  "bbinet",
   "Resul",
   "resulal",
   "ppi",

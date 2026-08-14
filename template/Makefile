@@ -1,4 +1,4 @@
-# Helpers for documents created with `typst init @preview/nabcv`.
+# Helpers for documents created with `typst init @preview/polycv`.
 #   make            → build every cv*/letter* whose source changed
 #   make watch      → live-preview them all (WATCH=<file> for one; Ctrl-C stops)
 #   make yaml-reference → print every available field, its type and doc (stdout)

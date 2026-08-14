@@ -1,6 +1,6 @@
 #import "@preview/fontawesome:0.6.0": *
 
-/// A cover letter template matching the nabcv design.
+/// A cover letter template matching the polycv design.
 ///
 /// - sender (dictionary): Keys: name (required), phone (opt),
 ///   email (opt), linkedin (opt), github (opt), address (opt).

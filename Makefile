@@ -11,7 +11,7 @@ ifeq ($(UNAME),Darwin)
 else
   DATA_DIR := $(or $(XDG_DATA_HOME),$(HOME)/.local/share)
 endif
-PREVIEW_TARGET := $(DATA_DIR)/typst/packages/preview/nabcv/$(VERSION)
+PREVIEW_TARGET := $(DATA_DIR)/typst/packages/preview/polycv/$(VERSION)
 
 # ---------------------------------------------------------------------------
 # Source files — any change triggers recompile of dependent PDFs
