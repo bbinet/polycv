@@ -50,16 +50,27 @@ $(foreach s,$(CV_SRCS) $(LET_SRCS),$(eval $(s:.$(EXT)=.pdf): $(call _ancestors,$
 $(SCHEMA_CACHE):
 	@[ -n "$(SCHEMA_URL)" ] || { echo "no \$$schema URL found in cv.$(EXT)/letter.$(EXT)" >&2; exit 1; }
 	@echo "Fetching schema: $(SCHEMA_URL)"
-	@python3 -c "import urllib.request,sys; open(sys.argv[2],'wb').write(urllib.request.urlopen(sys.argv[1]).read())" '$(SCHEMA_URL)' '$@'
+	@python3 -c "import urllib.request,sys; open(sys.argv[2],'wb').write(urllib.request.urlopen(sys.argv[1],timeout=10).read())" '$(SCHEMA_URL)' '$@' \
+	  || { echo "error: could not fetch schema (offline?)" >&2; rm -f '$@'; exit 1; }
 
 # Validate each data file against the schema. _schema.typ loads the data,
 # resolves any `inherit:` chain and prints the merged document as JSON, which
-# validate.py checks — needs only typst + python3 (no extra installs).
-validate: $(SCHEMA_CACHE)
-	@ok=1; for f in $(CV_SRCS) $(LET_SRCS); do \
+# validate.py checks — needs only typst + python3 (no extra installs). If the
+# schema can't be fetched (offline, first run), validation is skipped with a
+# warning instead of failing the build.
+validate:
+	@sch='$(SCHEMA_CACHE)'; url='$(SCHEMA_URL)'; \
+	if [ ! -f "$$sch" ]; then \
+	  if [ -n "$$url" ] && echo "Fetching schema: $$url" && \
+	     python3 -c "import urllib.request,sys; open(sys.argv[2],'wb').write(urllib.request.urlopen(sys.argv[1],timeout=10).read())" "$$url" "$$sch" 2>/dev/null; then :; \
+	  else \
+	    echo "warning: schema unavailable (offline?) — skipping validation" >&2; rm -f "$$sch"; exit 0; \
+	  fi; \
+	fi; \
+	ok=1; for f in $(CV_SRCS) $(LET_SRCS); do \
 	  if json=$$(typst eval 'query(<polycv-data>).first().value' --in _schema.typ \
 	      --input data=$$f --input fmt=$(FMT) --format json --root . 2>/dev/null); then \
-	    printf '%s' "$$json" | python3 validate.py '$(SCHEMA_CACHE)' $$f || ok=0; \
+	    printf '%s' "$$json" | python3 validate.py "$$sch" $$f || ok=0; \
 	  else \
 	    echo "$$f: could not be read (invalid $(FMT)?)" >&2; ok=0; \
 	  fi; \

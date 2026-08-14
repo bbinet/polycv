@@ -66,7 +66,8 @@ document (inheritance included). It uses only Typst and Python 3, nothing to
 install. The schema is the version-pinned one referenced in your data files
 (`# yaml-language-server: $schema=…`), fetched once and cached locally (see
 `.polycv-schema-<version>.json`), so it stays offline afterwards and always
-matches the polycv version you use. The first run needs network access.
+matches the polycv version you use. The first fetch needs network access; if
+it's unavailable, validation is skipped with a warning and the build proceeds.
 
 Editors help too: thanks to that same `$schema` header, an editor with the
 [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
