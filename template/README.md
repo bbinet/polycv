@@ -1,7 +1,10 @@
 # My CV & cover letter
 
 Created from the [polycv](https://github.com/bbinet/polycv) Typst template.
-Everything is data-driven: edit the YAML (or TOML) files — never the `.typ`.
+It's data-driven: you fill in the YAML (or TOML) files and compile. For everyday
+changes you don't edit the `.typ` files — but they're yours to tweak for advanced
+options (colours, fonts…); see the [polycv README](https://github.com/bbinet/polycv#advanced-template-parameters).
+Only the polycv package itself is off-limits.
 
 ## Prerequisites
 
@@ -15,7 +18,7 @@ Everything is data-driven: edit the YAML (or TOML) files — never the `.typ`.
 | --- | --- |
 | `cv.yml` | Your CV data (personal info, experience, skills…) |
 | `letter.yml` | A cover letter |
-| `cv.typ`, `letter.typ`, `application.typ` | Templates — leave them alone |
+| `cv.typ`, `letter.typ`, `application.typ` | Entrypoints you compile (edit only for advanced options) |
 | `.toml` variants | Same data in TOML, if you prefer it to YAML |
 
 Pick **one** format and delete the other (`.yml` or `.toml`); mixing works but
@@ -77,5 +80,6 @@ and autocompletes every field as you type.
 ## Files you can ignore
 
 `validate.py`, `_schema.typ` and `gen-reference.py` power validation and
-`make yaml-reference`; leave them as they are. Regenerate documents from
-`cv.typ`, `letter.typ` and `application.typ` — don't edit those.
+`make yaml-reference`; leave them as they are. Compile your documents from
+`cv.typ`, `letter.typ` and `application.typ` (edit those only for the advanced
+options linked above).
