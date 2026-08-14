@@ -6,7 +6,7 @@
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/bbinet/polycv)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/bbinet/polycv)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Typst](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
@@ -57,7 +57,7 @@ A data-driven CV and cover letter package for Typst. **You write your résumé i
 ### 1. Create your project
 
 ```sh
-typst init @preview/polycv:0.1.0
+typst init @preview/polycv:0.1.1
 ```
 
 This creates a `polycv/` folder containing your data files (`cv.yml`, `letter.yml`, and their `.toml` equivalents) and the template entrypoints (`cv.typ`, `letter.typ`, `application.typ`). **You edit the data files; the `.typ` files you only compile.**

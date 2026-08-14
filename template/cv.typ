@@ -1,5 +1,5 @@
 // typst compile --root . template/cv.typ
-#import "@preview/polycv:0.1.0": cv
+#import "@preview/polycv:0.1.1": cv
 
 // --- Load data (fmt and data-file from sys.inputs, with sensible defaults) ---
 #let fmt = sys.inputs.at("fmt", default: "yaml")
