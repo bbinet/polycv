@@ -41,9 +41,12 @@ $(_o): $1 $(_t) $(SRC_TYPS) $4
 
 endef
 
-# Same-kind siblings of a data file (same template prefix), so editing a
-# parent rebuilds every content file that inherits it.
-_siblings = $(filter content/$(firstword $(subst -, ,$(basename $(notdir $1))))%,$(CONTENT_DATA))
+# The file a data file inherits from (`inherit:` value, resolved relative to
+# it), and its full ancestor chain. A PDF depends on its ancestors, so editing
+# a parent rebuilds only the files that inherit it — not unrelated CVs.
+_inherit   = $(shell [ -f '$1' ] && sed -n 's/^[[:space:]]*inherit:[[:space:]]*//p' '$1' | head -n1)
+_parent    = $(strip $(if $(call _inherit,$1),$(dir $1)$(call _inherit,$1)))
+_ancestors = $(if $(call _parent,$1),$(call _parent,$1) $(call _ancestors,$(call _parent,$1)))
 
 # --- content/ : personal data (gitignored) → out/ ---
 _c_yml      := $(wildcard content/*.yml)
@@ -51,7 +54,7 @@ _c_toml     := $(wildcard content/*.toml)
 _c_toml_only := $(filter-out $(patsubst content/%.yml,content/%.toml,$(_c_yml)),$(_c_toml))
 CONTENT_DATA := $(foreach f,$(_c_yml) $(_c_toml_only),$(call _has_tmpl,$f))
 CONTENT_PDFS :=
-$(foreach f,$(CONTENT_DATA),$(eval $(call PDF_RULE,$f,../content/,out/,$(call _siblings,$f))))
+$(foreach f,$(CONTENT_DATA),$(eval $(call PDF_RULE,$f,../content/,out/,$(call _ancestors,$f))))
 $(foreach f,$(CONTENT_DATA),$(eval CONTENT_PDFS += out/$(basename $(notdir $f)).pdf))
 
 # --- template/ : sample data shipped with the template (committed) → out/examples/ ---

@@ -24,12 +24,14 @@ is noise. To use TOML, pass `FMT=toml` to every `make` command.
 ## Build
 
 ```sh
-make                 # compile every cv*/letter* whose source changed → PDFs
+make                 # validate, then compile every cv*/letter* that changed → PDFs
+make validate        # check each data file against the polycv schema
 make watch           # live-preview them all while you edit (Ctrl-C to stop)
 make yaml-reference  # print every available field, its type and its doc
 ```
 
-`make` only recompiles what changed. Add `FMT=toml` to build the TOML files.
+`make` only recompiles what changed — and when you edit a base file, only the
+variants that inherit it. Add `FMT=toml` to work with the TOML files.
 
 ## Bilingual & per-company CVs
 
@@ -58,7 +60,21 @@ customized file rebuilds whenever its parent changes.
 
 ## Validation
 
-The YAML files carry a `# yaml-language-server: $schema=…` header, so an editor
-with the [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+`make validate` (run automatically by `make`) checks every data file — catching
+unknown fields, wrong types and invalid enum values on the fully resolved
+document (inheritance included). It uses only Typst and Python 3, nothing to
+install. The schema is the version-pinned one referenced in your data files
+(`# yaml-language-server: $schema=…`), fetched once and cached locally (see
+`.polycv-schema-<version>.json`), so it stays offline afterwards and always
+matches the polycv version you use. The first run needs network access.
+
+Editors help too: thanks to that same `$schema` header, an editor with the
+[YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
 (or [Tombi](https://tombi-toml.github.io/tombi/) for TOML) extension validates
-and autocompletes every field against the polycv schema as you type.
+and autocompletes every field as you type.
+
+## Files you can ignore
+
+`validate.py`, `_schema.typ` and `gen-reference.py` power validation and
+`make yaml-reference`; leave them as they are. Regenerate documents from
+`cv.typ`, `letter.typ` and `application.typ` — don't edit those.
