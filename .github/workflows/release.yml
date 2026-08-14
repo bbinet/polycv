@@ -55,6 +55,7 @@ jobs:
             --exclude='cspell.toml' \
             --exclude='CLAUDE.md' \
             --exclude='thumbnail-all.png' \
+            --exclude='thumbnail-layouts.png' \
             --exclude='out' \
             --exclude='packages' \
             . packages/preview/polycv/${{ steps.version.outputs.version }}/

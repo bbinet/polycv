@@ -182,6 +182,10 @@ The CV offers four header layouts, selectable without touching any `.typ` file �
 | **Header band** | `header-band: true` | Full-width header: round photo on the left (sized to the text block height), name, headline and a one-line contact row; no sidebar tint |
 | **ATS split** | `ats-split: true` | Two-column header (photo left, name/headline right), sidebar keeps the tint; friendlier to ATS parsers |
 
+![The standard, header-band and ATS-split layouts side by side](thumbnail-layouts.png)
+
+*Left to right, all from the same data: **Standard** · **Header band** with the summary inside the band · **ATS split** rendered in French with inline entry dates and no timeline.*
+
 The header can be tuned further: `header-band-summary: true` moves the summary into the header (works with both header-band and ats-split), and `header-band-contact: false` keeps the contact section in the sidebar instead of the band's contact line.
 
 Via command line:
@@ -361,7 +365,7 @@ Same `inherit:` mechanism as [Quick Start §5](#5-customize-for-a-company-option
 | `python3` | Inherit resolver for validation + field reference (`make validate`, `make yaml-reference`) |
 | `bump-my-version` | Version bumping (`make bump-patch`) |
 | `cspell` | Spell checking (`make spell`) |
-| `imagemagick` | Thumbnail generation (`make thumbs`) |
+| `imagemagick` | Pixel-diffing the YAML vs TOML output (`make test-yaml`) — optional |
 
 A `shell.nix` is provided for a reproducible environment with all tools and font paths pre-configured.
 

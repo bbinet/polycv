@@ -21,6 +21,7 @@ exclude = [
   ".pre-commit-config.yaml",
   "CLAUDE.md",
   "thumbnail-all.png",
+  "thumbnail-layouts.png",
 ]
 
 [template]

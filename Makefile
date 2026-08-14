@@ -181,11 +181,25 @@ watch: link
 	done; \
 	wait
 
+# Regenerate the Typst Universe thumbnail and the README banners from the John
+# Doe example. Pages are stacked side by side with Typst itself — no ImageMagick.
+# \43 is the octal for '#' (a literal '#' in a make variable starts a comment).
+_STACK = printf '\43set page(width: auto, height: auto, margin: 0pt, fill: white)\n\43stack(dir: ltr, spacing: 8pt, ..(%s).map(p => image(p, height: 22cm)))\n'
 thumbs: link
-	typst compile template/application.typ "thumbnail{p}.png" --ppi 150
-	cp thumbnail1.png thumbnail.png
-	magick thumbnail1.png thumbnail2.png thumbnail3.png +append thumbnail-all.png
-	rm thumbnail1.png thumbnail2.png thumbnail3.png
+	@mkdir -p out
+	@echo "  application (cv + letter) -> thumbnail.png, thumbnail-all.png"
+	typst compile template/application.typ "out/_app{p}.png" --root . --ppi 150
+	cp out/_app1.png thumbnail.png
+	@$(_STACK) '"out/_app1.png","out/_app2.png","out/_app3.png"' | typst compile - thumbnail-all.png --root . --ppi 120
+	@echo "  layouts -> thumbnail-layouts.png (each shows off different meta options)"
+	@# Standard: the classic two-column look, no options
+	typst compile template/cv.typ "out/_std{p}.png"  --root . --ppi 150 --input data=cv.yml --input header-band=false --input ats-split=false
+	@# Header band: full-width band with the summary inside it and keywords over 3 lines
+	typst compile template/cv.typ "out/_band{p}.png" --root . --ppi 150 --input data=cv.yml --input header-band=true --input header-band-summary=true --input keywords-lines=3
+	@# ATS split, in French, with inline entry metadata and no timeline
+	typst compile template/cv.typ "out/_ats{p}.png"  --root . --ppi 150 --input data=cv.yml --input ats-split=true --input locale=fr --input entry-inline-meta=true --input show-timeline=false
+	@$(_STACK) '"out/_std1.png","out/_band1.png","out/_ats1.png"' | typst compile - thumbnail-layouts.png --root . --ppi 120
+	rm -f out/_app*.png out/_std*.png out/_band*.png out/_ats*.png
 
 clean:
 	@echo "Cleaning build artifacts..."
