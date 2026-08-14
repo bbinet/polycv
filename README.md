@@ -380,6 +380,26 @@ nono run --profile claude-typst -- claude
 - [hipster-cv](https://github.com/latex-ninja/hipster-cv) — a LaTeX CV template that inspired the two-column sidebar design
 - [acadennial-cv](https://github.com/whliao5am/acadennial-cv-typst-template) — a Typst academic CV template
 
+## Credits
+
+polycv began as a fork of [nabcv](https://github.com/xrsl/nabcv) (*not-a-boring
+CV*) by xrsl, and keeps its clean two-column, data-driven foundation. The main
+additions since:
+
+- **YAML as well as TOML** for the data files, with identical output
+- **A `meta` block** to configure the layout from data alone — locale (incl. a
+  French preset), section order and placement, per-section titles and icons
+- **ATS-friendly layouts** — an `ats-split` single-column mode and a horizontal
+  header band (photo / summary / contact variants) for better text extraction
+- **Tagged PDF/UA-1 output** for accessibility and reliable ATS parsing
+- **A `volunteering` section**, inline entry metadata, and a toggleable timeline
+- **A schema** (CUE → JSON Schema) driving editor autocomplete, `make validate`,
+  and `make yaml-reference` (a generated, annotated list of every field)
+- **Per-company customization** via `inherit:` — a variant file overrides only
+  what changes and deep-merges over its parent
+- **Incremental Makefiles**, including one shipped with `typst init`, that
+  rebuild only what changed (and, on a parent edit, only its inheritors)
+
 ## License
 
 [MIT](LICENSE)
