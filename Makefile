@@ -74,17 +74,23 @@ EXAMPLES_ALL_DATA := $(_e_yml) $(_e_toml)
 VALIDATE_DATA     := $(CONTENT_ALL_DATA) $(EXAMPLES_ALL_DATA)
 
 # --- layout variants : the four header modes → out/ ---
-# $1 = variant suffix, $2 = extra --input flags
-_LAYOUT_DATA := content/cv-brunobinet-fr.yml
-_LAYOUT_DEPS := $(_LAYOUT_DATA) template/cv.typ $(SRC_TYPS)
+# Which CV to render in each layout. Defaults to the shipped example; override
+# with e.g. LAYOUT_DATA=content/cv-fr.yml to preview your own.
+LAYOUT_DATA ?= template/cv.yml
+_LAYOUT_BASE  := $(basename $(notdir $(LAYOUT_DATA)))
+_LAYOUT_FMT   := $(if $(filter .toml,$(suffix $(LAYOUT_DATA))),toml,yaml)
+# data path as seen from template/ (cv.typ's dir): drop template/, else prefix ../
+_LAYOUT_INPUT := $(if $(filter template/%,$(LAYOUT_DATA)),$(notdir $(LAYOUT_DATA)),../$(LAYOUT_DATA))
+_LAYOUT_DEPS  := $(LAYOUT_DATA) template/cv.typ $(SRC_TYPS)
 LAYOUT_PDFS :=
 
+# $1 = variant suffix, $2 = extra --input flags
 define LAYOUT_RULE
-out/cv-brunobinet-fr-$1.pdf: $(_LAYOUT_DEPS)
+out/$(_LAYOUT_BASE)-$1.pdf: $(_LAYOUT_DEPS)
 	@mkdir -p $$(dir $$@)
-	@echo "  compiling: cv-brunobinet-fr-$1.pdf"
-	typst compile template/cv.typ $$@ --root . $$(PDF_FLAGS) --input "data=../content/cv-brunobinet-fr.yml" $2
-LAYOUT_PDFS += out/cv-brunobinet-fr-$1.pdf
+	@echo "  compiling: $(_LAYOUT_BASE)-$1.pdf"
+	typst compile template/cv.typ $$@ --root . $$(PDF_FLAGS) --input "data=$(_LAYOUT_INPUT)" --input "fmt=$(_LAYOUT_FMT)" $2
+LAYOUT_PDFS += out/$(_LAYOUT_BASE)-$1.pdf
 
 endef
 
@@ -153,7 +159,7 @@ build-examples:
 	@$(MAKE) --no-print-directory unlink
 
 build-layouts:
-	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(_LAYOUT_DATA)"
+	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(LAYOUT_DATA)"
 	@$(MAKE) --no-print-directory link
 	@echo "Building layout variants..."
 	@$(MAKE) --no-print-directory $(LAYOUT_PDFS)

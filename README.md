@@ -346,7 +346,7 @@ Personal data files go in `content/` (gitignored). The **prefix before the first
 
 ### Customizing a CV per company
 
-Same `inherit:` mechanism as [Quick Start §5](#5-customize-for-a-company-optional), on the repo's personal CVs: add `content/cv-brunobinet-fr-acme.yml` with `inherit: cv-brunobinet-fr.yml` and the overrides — `make build` builds it to `out/cv-brunobinet-fr-acme.pdf`. Validation first resolves the `inherit:` chain (`schema/resolve.py`) and checks the **merged** document, so customized files are validated as the complete CV they produce, not skipped.
+Same `inherit:` mechanism as [Quick Start §5](#5-customize-for-a-company-optional), on your `content/` CVs: add `content/cv-fr-acme.yml` with `inherit: cv-fr.yml` and the overrides — `make build` builds it to `out/cv-fr-acme.pdf`. Validation first resolves the `inherit:` chain (`schema/resolve.py`) and checks the **merged** document, so customized files are validated as the complete CV they produce, not skipped.
 
 `make yaml-reference` prints a commented YAML skeleton listing every field, its type, whether it is required, and a one-line description — generated from the schema so it never drifts. It documents the structure; for a filled example see `template/cv.yml`.
 
