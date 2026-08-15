@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate a polycv document against schema.json (JSON Schema, draft 2020-12).
 
-Reads the resolved document as JSON on stdin — `make validate` gets it from
+Reads the resolved document as JSON on stdin - `make validate` gets it from
 Typst (which loads the YAML/TOML and resolves any `inherit:` chain), so this
 script needs only the standard library: no PyYAML, no jsonschema, no install.
 

@@ -6,7 +6,7 @@
 ///   email (opt), linkedin (opt), github (opt), address (opt).
 /// - recipient (content, none): Free-form address block.
 /// - date (content, str, none): Display content, or "auto" for today's date.
-/// - subject (content, none): Subject line shown as "Re: …".
+/// - subject (content, none): Subject line shown as "Re: ...".
 /// - salutation (content, none): Opening salutation line.
 /// - closing (content): Closing phrase before the signature.
 /// - footer-items (array): Sender fields to show in the footer.

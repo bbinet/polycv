@@ -2,8 +2,8 @@
 
 Created from the [polycv](https://github.com/bbinet/polycv) Typst template.
 It's data-driven: you fill in the YAML (or TOML) files and compile. For everyday
-changes you don't edit the `.typ` files — but they're yours to tweak for advanced
-options (colours, fonts…); see the [polycv README](https://github.com/bbinet/polycv#advanced-template-parameters).
+changes you don't edit the `.typ` files - but they're yours to tweak for advanced
+options (colours, fonts...); see the [polycv README](https://github.com/bbinet/polycv#advanced-template-parameters).
 Only the polycv package itself is off-limits.
 
 ## Prerequisites
@@ -16,7 +16,7 @@ Only the polycv package itself is off-limits.
 
 | File | What it is |
 | --- | --- |
-| `cv.yml` | Your CV data (personal info, experience, skills…) |
+| `cv.yml` | Your CV data (personal info, experience, skills...) |
 | `letter.yml` | A cover letter |
 | `cv.typ`, `letter.typ`, `application.typ` | Entrypoints you compile (edit only for advanced options) |
 | `.toml` variants | Same data in TOML, if you prefer it to YAML |
@@ -27,20 +27,20 @@ is noise. To use TOML, pass `FMT=toml` to every `make` command.
 ## Build
 
 ```sh
-make                 # validate, then compile every cv*/letter* that changed → PDFs
+make                 # validate, then compile every cv*/letter* that changed -> PDFs
 make validate        # check each data file against the polycv schema
 make watch           # live-preview them all while you edit (Ctrl-C to stop)
 make yaml-reference  # print every available field, its type and its doc
 ```
 
-`make` only recompiles what changed — and when you edit a base file, only the
+`make` only recompiles what changed - and when you edit a base file, only the
 variants that inherit it. Add `FMT=toml` to work with the TOML files.
 
 ## Bilingual & per-company CVs
 
 The filename prefix before the first `-` picks the template: `cv-*.yml` uses
 `cv.typ`, `letter-*.yml` uses `letter.typ`. So a bilingual CV is just two
-files, `cv-en.yml` and `cv-fr.yml` — both build automatically.
+files, `cv-en.yml` and `cv-fr.yml` - both build automatically.
 
 To customize a CV for one company without duplicating everything, create a
 file that **inherits** from a base and overrides only what differs:
@@ -63,11 +63,11 @@ customized file rebuilds whenever its parent changes.
 
 ## Validation
 
-`make validate` (run automatically by `make`) checks every data file — catching
+`make validate` (run automatically by `make`) checks every data file - catching
 unknown fields, wrong types and invalid enum values on the fully resolved
 document (inheritance included). It uses only Typst and Python 3, nothing to
 install. The schema is the version-pinned one referenced in your data files
-(`# yaml-language-server: $schema=…`), fetched once and cached locally (see
+(`# yaml-language-server: $schema=...`), fetched once and cached locally (see
 `.polycv-schema-<version>.json`), so it stays offline afterwards and always
 matches the polycv version you use. The first fetch needs network access; if
 it's unavailable, validation is skipped with a warning and the build proceeds.

@@ -1,4 +1,4 @@
-// Internal helper for `make validate` — not part of your documents.
+// Internal helper for `make validate` - not part of your documents.
 // Loads a data file, resolves any `inherit:` chain, and exposes the merged
 // document as metadata so the Makefile can pull it out as JSON:
 //   typst eval 'query(<polycv-data>).first().value' --in _schema.typ \

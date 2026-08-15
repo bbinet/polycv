@@ -1,11 +1,11 @@
 # Helpers for documents created with `typst init @preview/polycv`.
-#   make            → validate, then build every cv*/letter* whose source changed
-#   make validate   → check each data file against the polycv schema
-#   make watch      → live-preview them all (WATCH=<file> for one; Ctrl-C stops)
-#   make yaml-reference → print every available field, its type and doc (stdout)
+#   make            -> validate, then build every cv*/letter* whose source changed
+#   make validate   -> check each data file against the polycv schema
+#   make watch      -> live-preview them all (WATCH=<file> for one; Ctrl-C stops)
+#   make yaml-reference -> print every available field, its type and doc (stdout)
 #
-# The prefix before the first '-' picks the template (cv-*.yml → cv.typ,
-# letter-*.yml → letter.typ), so a bilingual CV is just cv-en.yml / cv-fr.yml
+# The prefix before the first '-' picks the template (cv-*.yml -> cv.typ,
+# letter-*.yml -> letter.typ), so a bilingual CV is just cv-en.yml / cv-fr.yml
 # (set `meta: locale` in each). To customize for a company, add a data file that
 # declares its parent, e.g. cv-acme.yml with `inherit: cv-fr.yml` and only the
 # fields that differ; editing a parent then rebuilds only what inherits it.
@@ -39,13 +39,13 @@ $(LET_PDFS): %.pdf: %.$(EXT) letter.typ
 
 # The file a data file inherits from (`inherit:` value, resolved relative to
 # it) and its full ancestor chain. A PDF also depends on its ancestors, so
-# editing a parent rebuilds only what inherits it — not unrelated CVs.
+# editing a parent rebuilds only what inherits it - not unrelated CVs.
 _inherit   = $(shell [ -f '$1' ] && sed -n 's/^[[:space:]]*inherit:[[:space:]]*//p' '$1' | head -n1)
 _parent    = $(strip $(if $(call _inherit,$1),$(dir $1)$(call _inherit,$1)))
 _ancestors = $(if $(call _parent,$1),$(call _parent,$1) $(call _ancestors,$(call _parent,$1)))
 $(foreach s,$(CV_SRCS) $(LET_SRCS),$(eval $(s:.$(EXT)=.pdf): $(call _ancestors,$s)))
 
-# Fetch and cache the schema (Python's urllib — no curl/wget needed). Refetched
+# Fetch and cache the schema (Python's urllib - no curl/wget needed). Refetched
 # only when the version, hence the cache filename, changes.
 $(SCHEMA_CACHE):
 	@[ -n "$(SCHEMA_URL)" ] || { echo "no \$$schema URL found in cv.$(EXT)/letter.$(EXT)" >&2; exit 1; }
@@ -55,7 +55,7 @@ $(SCHEMA_CACHE):
 
 # Validate each data file against the schema. _schema.typ loads the data,
 # resolves any `inherit:` chain and prints the merged document as JSON, which
-# validate.py checks — needs only typst + python3 (no extra installs). If the
+# validate.py checks - needs only typst + python3 (no extra installs). If the
 # schema can't be fetched (offline, first run), validation is skipped with a
 # warning instead of failing the build.
 validate:
@@ -64,7 +64,7 @@ validate:
 	  if [ -n "$$url" ] && echo "Fetching schema: $$url" && \
 	     python3 -c "import urllib.request,sys; open(sys.argv[2],'wb').write(urllib.request.urlopen(sys.argv[1],timeout=10).read())" "$$url" "$$sch" 2>/dev/null; then :; \
 	  else \
-	    echo "warning: schema unavailable (offline?) — skipping validation" >&2; rm -f "$$sch"; exit 0; \
+	    echo "warning: schema unavailable (offline?) - skipping validation" >&2; rm -f "$$sch"; exit 0; \
 	  fi; \
 	fi; \
 	ok=1; for f in $(CV_SRCS) $(LET_SRCS); do \

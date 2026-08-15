@@ -87,7 +87,7 @@ location   = "Edinburgh, Scotland"
 start_date = "2013-09"
 end_date   = "2015-06"
 highlights = [
-  "Thesis: _Optimistic Concurrency and the Illusion of Control_ — received commendation, possibly ironic",
+  "Thesis: _Optimistic Concurrency and the Illusion of Control_ - received commendation, possibly ironic",
   "Graduated with distinction; celebrated responsibly",
 ]
 
@@ -105,7 +105,7 @@ highlights = [
 [[cv.awards]]
 name    = "Employee of the Quarter"
 date    = "2023-01"
-summary = "Infinite Loop Technologies — awarded for fixing an outage at 2am without waking anyone else up"
+summary = "Infinite Loop Technologies - awarded for fixing an outage at 2am without waking anyone else up"
 
 [[cv.awards]]
 name    = "Hackathon Runner-Up"
@@ -113,7 +113,7 @@ date    = "2022-05"
 summary = "Built a working prototype in 24 hours; it became production code, which was not the intention"
 
 [[cv.courses]]
-name    = "AWS Solutions Architect — Associate"
+name    = "AWS Solutions Architect - Associate"
 summary = "Amazon Web Services"
 date    = "2022-09"
 

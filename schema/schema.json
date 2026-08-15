@@ -181,7 +181,7 @@
       "properties": {
         "subject": {
           "type": "string",
-          "description": "Subject line, shown as \"Re: …\"."
+          "description": "Subject line, shown as \"Re: ...\"."
         },
         "salutation": {
           "type": "string",

@@ -195,7 +195,7 @@ package polycv
 }
 
 #Content: {
-	// Subject line, shown as "Re: …".
+	// Subject line, shown as "Re: ...".
 	subject?: string
 	// Opening salutation.
 	salutation?: string

@@ -7,7 +7,7 @@
 #let load-data(f) = if fmt == "yaml" { yaml(f) } else { toml(f) }
 
 // Recursively merge a child over its parent: dicts merge key by key, arrays
-// merge by index, other values are replaced. `none` keeps the parent value —
+// merge by index, other values are replaced. `none` keeps the parent value -
 // use null at an array position to leave that item untouched.
 #let deep-merge(base, over) = {
   if over == none {

@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![polycv — CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-all.png)
+![polycv - CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-all.png)
 
-**A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
+**A Typst package for not-a-boring CV - data-driven, fully configurable, two-column layout**
 
 [![Current version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/bbinet/polycv)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -12,21 +12,21 @@
 
 </div>
 
-A data-driven CV and cover letter package for Typst. **You write your résumé in a `.yml` (or `.toml`) data file** — the template reads it and renders the PDF. Layout, language, section order, icons and per-company variants are all driven from the data, so day to day you only edit data. The `cv.typ` / `letter.typ` files in your project are entrypoints you compile; you *can* also edit them for advanced options (colours, fonts, social-network mapping), but you never touch the package itself (`src/`).
+A data-driven CV and cover letter package for Typst. **You write your resume in a `.yml` (or `.toml`) data file** - the template reads it and renders the PDF. Layout, language, section order, icons and per-company variants are all driven from the data, so day to day you only edit data. The `cv.typ` / `letter.typ` files in your project are entrypoints you compile; you *can* also edit them for advanced options (colours, fonts, social-network mapping), but you never touch the package itself (`src/`).
 
 ## Features
 
-- **Data-driven** — your whole CV lives in `cv.yml` / `letter.yml`; no source edits
-- **YAML or TOML** — pick either, identical output
-- **Configurable from the data** — layout, locale, section order, titles and icons all set in a `meta:` block
-- **ATS-friendly layouts** — a single-column `ats-split` and a full-width header band, plus tagged PDF/UA-1 output
-- **Per-company variants** — a file `inherit:`s a base and overrides only what changes
-- **Schema-backed** — editor autocomplete/validation, `make validate`, and a generated field reference
+- **Data-driven** - your whole CV lives in `cv.yml` / `letter.yml`; no source edits
+- **YAML or TOML** - pick either, identical output
+- **Configurable from the data** - layout, locale, section order, titles and icons all set in a `meta:` block
+- **ATS-friendly layouts** - a single-column `ats-split` and a full-width header band, plus tagged PDF/UA-1 output
+- **Per-company variants** - a file `inherit:`s a base and overrides only what changes
+- **Schema-backed** - editor autocomplete/validation, `make validate`, and a generated field reference
 
 ## Prerequisites
 
-1. **Typst CLI** — follow the [official instructions](https://github.com/typst/typst#installation).
-2. **Fonts** — polycv requires two font families installed as system fonts:
+1. **Typst CLI** - follow the [official instructions](https://github.com/typst/typst#installation).
+2. **Fonts** - polycv requires two font families installed as system fonts:
 
    **IBM Plex Sans**
 
@@ -62,7 +62,7 @@ typst init @preview/polycv:0.1.1
 
 This creates a `polycv/` folder containing your data files (`cv.yml`, `letter.yml`, and their `.toml` equivalents) and the template entrypoints (`cv.typ`, `letter.typ`, `application.typ`). **You edit the data files; the `.typ` files you only compile.**
 
-> **Tip — editor validation.** The data files carry a `$schema` header, so an editor with the [YAML (Red Hat)](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) or [Tombi (TOML)](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) extension autocompletes and validates every field as you type.
+> **Tip - editor validation.** The data files carry a `$schema` header, so an editor with the [YAML (Red Hat)](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) or [Tombi (TOML)](https://marketplace.visualstudio.com/items?itemName=tombi-toml.tombi) extension autocompletes and validates every field as you type.
 
 ### 2. Fill in your data
 
@@ -93,21 +93,21 @@ Prefer TOML? Edit `cv.toml` instead (same fields) and add `--input fmt=toml` whe
 ### 3. Build
 
 ```sh
-# One command, incremental — rebuilds only what changed:
+# One command, incremental - rebuilds only what changed:
 make            # compiles every cv*.yml / letter*.yml to a PDF
 make watch      # live-preview while you edit (WATCH=<file> for a single one)
 
-# …or drive Typst directly:
+# ...or drive Typst directly:
 typst compile cv.typ
 typst compile letter.typ
 typst compile application.typ        # CV + letter in one PDF
 ```
 
-`make` also validates your data against the schema before compiling. **Bilingual CV?** It's just two files — the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, …).
+`make` also validates your data against the schema before compiling. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
 
 ## Configure from your data (`meta:`)
 
-Presentation is controlled by an optional **`meta:` block** at the top of your data file — layout, language, section order, titles and icons. No `.typ` editing.
+Presentation is controlled by an optional **`meta:` block** at the top of your data file - layout, language, section order, titles and icons. No `.typ` editing.
 
 ```yaml
 meta:
@@ -116,14 +116,14 @@ meta:
   header-band: true    # pick a layout (see below)
 cv:
   name: "Jane Smith"
-  # …
+  # ...
 ```
 
 ### Pick a layout
 
 ![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-layouts.png)
 
-*Left to right, all from the same data: **Standard** · **Header band** with the summary inside the band · **ATS split** rendered in French with inline entry dates and no timeline.*
+*Left to right, all from the same data: **Standard** | **Header band** with the summary inside the band | **ATS split** rendered in French with inline entry dates and no timeline.*
 
 | Layout | `meta:` key | Description |
 | ------ | ----------- | ----------- |
@@ -139,7 +139,7 @@ Tune the header further: `header-band-summary: true` moves the summary into the 
 
 ### Sections: order, placement, titles, icons
 
-Every section can be reordered, moved between the two columns, retitled or re-iconed — all from `meta:`:
+Every section can be reordered, moved between the two columns, retitled or re-iconed - all from `meta:`:
 
 ```yaml
 meta:
@@ -160,9 +160,9 @@ meta:
 A tailored CV is just another data file that **inherits** a base and overrides only what differs. Add `cv-acme.yml`:
 
 ```yaml
-inherit: cv.yml                                     # or cv-fr.yml — path relative to this file
+inherit: cv.yml                                     # or cv-fr.yml - path relative to this file
 cv:
-  headline: "Backend Engineer — Distributed Systems"
+  headline: "Backend Engineer - Distributed Systems"
   keywords: ["Go", "Kubernetes", "observability"]   # replaces the base list
   experience:
     - highlights:
@@ -170,7 +170,7 @@ cv:
         - "Rephrased for Acme"                       # replace highlight 1
 ```
 
-`make` builds it to `cv-acme.pdf` like any other file — no special command. The parent is deep-merged: dictionaries by key, arrays by index, other values replaced, and `~` (null) at an array position keeps the base item. Inheritance can chain (`cv-acme.yml` → `cv-fr.yml` → `cv.yml`), and editing a base rebuilds only the files that inherit it. Cover letters work the same way (`letter-acme.yml` with `inherit: letter.yml`).
+`make` builds it to `cv-acme.pdf` like any other file - no special command. The parent is deep-merged: dictionaries by key, arrays by index, other values replaced, and `~` (null) at an array position keeps the base item. Inheritance can chain (`cv-acme.yml` -> `cv-fr.yml` -> `cv.yml`), and editing a base rebuilds only the files that inherit it. Cover letters work the same way (`letter-acme.yml` with `inherit: letter.yml`).
 
 ### All `meta:` keys
 
@@ -178,11 +178,11 @@ cv:
 
 ## Advanced: template parameters
 
-A few knobs aren't exposed through `meta:`: **colours, social-network mapping, non-French locales, fonts and per-icon overrides.** Set them as arguments to the `cv(...)` / `letter(...)` call in your project's **`cv.typ` / `letter.typ`** — the entrypoints you already have. You still never edit the package under `src/`.
+A few knobs aren't exposed through `meta:`: **colours, social-network mapping, non-French locales, fonts and per-icon overrides.** Set them as arguments to the `cv(...)` / `letter(...)` call in your project's **`cv.typ` / `letter.typ`** - the entrypoints you already have. You still never edit the package under `src/`.
 
 ```typ
 #show: cv.with(
-  // … keep your existing arguments …
+  // ... keep your existing arguments ...
   theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")),
   profiles-config: (
     LinkedIn:  (icon: "linkedin", url-base: "https://linkedin.com/in/"),
@@ -192,7 +192,7 @@ A few knobs aren't exposed through `meta:`: **colours, social-network mapping, n
 )
 ```
 
-> The `meta:` keys above (layouts, sections, titles, icons…) are themselves `cv()` parameters, so they can equally be set here — but for those, prefer `meta:` in the data file.
+> The `meta:` keys above (layouts, sections, titles, icons...) are themselves `cv()` parameters, so they can equally be set here - but for those, prefer `meta:` in the data file.
 
 ### Theme / colours
 
@@ -220,7 +220,7 @@ Header-band layouts drop the sidebar tint; set `header-rule` and/or `sidebar-rul
 
 ```typ
 #show: cv.with(
-  // … keep your existing arguments …
+  // ... keep your existing arguments ...
   month-names:    ("jan.", "fév.", "mars", "avr.", "mai", "juin",
                    "juil.", "août", "sep.", "oct.", "nov.", "déc."),
   date-separator: " – ",
@@ -254,7 +254,7 @@ Header-band layouts drop the sidebar tint; set `header-rule` and/or `sidebar-rul
 
 | File | Role |
 | ---- | ---- |
-| `cv.yml` / `cv.toml` | **Your CV data** (personal info, experience, education, `meta:`…) |
+| `cv.yml` / `cv.toml` | **Your CV data** (personal info, experience, education, `meta:`...) |
 | `letter.yml` / `letter.toml` | **Your cover-letter data** (sender, recipient, body) |
 | `cv.typ` | Entrypoint: renders the CV via `#show: cv.with(...)` |
 | `letter.typ` | Entrypoint: renders the cover letter |
@@ -275,7 +275,7 @@ make validate       # validate data files against schema.cue (cue vet)
 make yaml-reference # print an annotated reference of every CV field
 ```
 
-Personal data files go in `content/` (gitignored). The **prefix before the first `-`** selects the template: `cv-<slug>.yml` → `cv.typ`, `letter-<slug>.yml` → `letter.typ`. `make build` compiles every such file and validates it against the schema first (resolving any `inherit:` chain, so a customized file is checked as the complete CV it produces).
+Personal data files go in `content/` (gitignored). The **prefix before the first `-`** selects the template: `cv-<slug>.yml` -> `cv.typ`, `letter-<slug>.yml` -> `letter.typ`. `make build` compiles every such file and validates it against the schema first (resolving any `inherit:` chain, so a customized file is checked as the complete CV it produces).
 
 ### Dependencies
 
@@ -288,7 +288,7 @@ Personal data files go in `content/` (gitignored). The **prefix before the first
 | `python3` | Inherit resolver for validation + field reference (`make validate`, `make yaml-reference`) |
 | `bump-my-version` | Version bumping (`make bump-patch`) |
 | `cspell` | Spell checking (`make spell`) |
-| `imagemagick` | Pixel-diffing the YAML vs TOML output (`make test-yaml`) — optional |
+| `imagemagick` | Pixel-diffing the YAML vs TOML output (`make test-yaml`) - optional |
 
 A `shell.nix` is provided for a reproducible environment with all tools and font paths pre-configured.
 
@@ -303,9 +303,9 @@ nono run --profile claude-typst -- claude
 
 ## Inspirations
 
-- [brilliant-CV](https://github.com/yunanwg/brilliant-CV) — a well-crafted Typst CV package that inspired the overall structure and development workflow of this project
-- [hipster-cv](https://github.com/latex-ninja/hipster-cv) — a LaTeX CV template that inspired the two-column sidebar design
-- [acadennial-cv](https://github.com/whliao5am/acadennial-cv-typst-template) — a Typst academic CV template
+- [brilliant-CV](https://github.com/yunanwg/brilliant-CV) - a well-crafted Typst CV package that inspired the overall structure and development workflow of this project
+- [hipster-cv](https://github.com/latex-ninja/hipster-cv) - a LaTeX CV template that inspired the two-column sidebar design
+- [acadennial-cv](https://github.com/whliao5am/acadennial-cv-typst-template) - a Typst academic CV template
 
 ## Credits
 
@@ -314,15 +314,15 @@ CV*) by xrsl, and keeps its clean two-column, data-driven foundation. The main
 additions since:
 
 - **YAML as well as TOML** for the data files, with identical output
-- **A `meta` block** to configure the layout from data alone — locale (incl. a
+- **A `meta` block** to configure the layout from data alone - locale (incl. a
   French preset), section order and placement, per-section titles and icons
-- **ATS-friendly layouts** — an `ats-split` single-column mode and a horizontal
+- **ATS-friendly layouts** - an `ats-split` single-column mode and a horizontal
   header band (photo / summary / contact variants) for better text extraction
 - **Tagged PDF/UA-1 output** for accessibility and reliable ATS parsing
 - **A `volunteering` section**, inline entry metadata, and a toggleable timeline
-- **A schema** (CUE → JSON Schema) driving editor autocomplete, `make validate`,
+- **A schema** (CUE -> JSON Schema) driving editor autocomplete, `make validate`,
   and `make yaml-reference` (a generated, annotated list of every field)
-- **Per-company customization** via `inherit:` — a variant file overrides only
+- **Per-company customization** via `inherit:` - a variant file overrides only
   what changes and deep-merges over its parent
 - **Incremental Makefiles**, including one shipped with `typst init`, that
   rebuild only what changed (and, on a parent edit, only its inheritors)

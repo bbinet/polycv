@@ -92,14 +92,14 @@ jobs:
           git push -f origin "$BRANCH"
 
           if [ "${{ github.event.inputs.dry-run }}" = "true" ]; then
-            echo "Dry run — skipping PR creation"
+            echo "Dry run - skipping PR creation"
             exit 0
           fi
 
           # The force-push above already updated any open PR for this branch;
           # only open a new one if none exists yet.
           if gh pr list --repo typst/packages --head "$BRANCH" --state open --json number --jq '.[0].number' | grep -q '[0-9]'; then
-            echo "PR already open for $BRANCH — updated in place."
+            echo "PR already open for $BRANCH - updated in place."
             exit 0
           fi
 
@@ -110,7 +110,7 @@ jobs:
           - [X] a new package
           - [ ] an update for a package
 
-          Description: polycv ${{ steps.version.outputs.version }} — a data-driven two-column CV package for Typst.
+          Description: polycv ${{ steps.version.outputs.version }} - a data-driven two-column CV package for Typst.
 
           I have read and followed the submission guidelines and, in particular, I
           - [X] selected a name that isn't the most obvious or canonical name for what the package does

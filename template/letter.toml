@@ -15,7 +15,7 @@ address = "1 Enterprise Boulevard, Seattle, WA 98101"
 date = "auto"
 
 [letter.content]
-subject    = "Senior Software Engineer — Application"
+subject    = "Senior Software Engineer - Application"
 salutation = "Dear Hiring Manager"
 closing    = "Kind regards"
 

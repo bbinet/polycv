@@ -4,10 +4,10 @@ Typst CV package. Data-driven: all personal info lives in TOML files; `.typ` tem
 
 ## Structure
 
-- `src/` — package source (`cv.typ`, `letter.typ`, `lib.typ`)
-- `template/` — user-facing template files (`cv.typ`, `letter.typ`, `application.typ`, `cv.toml`, `letter.toml`, `cv.yml`, `letter.yml`)
-- `schema/` — CUE schema + generated `schema.json` for TOML/YAML validation
-- `typst.toml` — package manifest
+- `src/` - package source (`cv.typ`, `letter.typ`, `lib.typ`)
+- `template/` - user-facing template files (`cv.typ`, `letter.typ`, `application.typ`, `cv.toml`, `letter.toml`, `cv.yml`, `letter.yml`)
+- `schema/` - CUE schema + generated `schema.json` for TOML/YAML validation
+- `typst.toml` - package manifest
 
 ## Key commands
 
@@ -22,11 +22,11 @@ just prek     # run all pre-commit hooks
 
 ## Versioning
 
-`bump-my-version` coordinates version across: `typst.toml`, template imports, schema URLs in TOMLs, README badge and init command. Always use `just bump` — never edit versions manually.
+`bump-my-version` coordinates version across: `typst.toml`, template imports, schema URLs in TOMLs, README badge and init command. Always use `just bump` - never edit versions manually.
 
 ## Schema
 
-`schema/schema.cue` is the source of truth. `schema/schema.json` is generated — edit the `.cue` file and run `just schema`.
+`schema/schema.cue` is the source of truth. `schema/schema.json` is generated - edit the `.cue` file and run `just schema`.
 
 ## Fonts
 

@@ -14,7 +14,7 @@ endif
 PREVIEW_TARGET := $(DATA_DIR)/typst/packages/preview/polycv/$(VERSION)
 
 # ---------------------------------------------------------------------------
-# Source files — any change triggers recompile of dependent PDFs
+# Source files - any change triggers recompile of dependent PDFs
 # ---------------------------------------------------------------------------
 SRC_TYPS := $(wildcard src/*.typ)
 
@@ -43,12 +43,12 @@ endef
 
 # The file a data file inherits from (`inherit:` value, resolved relative to
 # it), and its full ancestor chain. A PDF depends on its ancestors, so editing
-# a parent rebuilds only the files that inherit it — not unrelated CVs.
+# a parent rebuilds only the files that inherit it - not unrelated CVs.
 _inherit   = $(shell [ -f '$1' ] && sed -n 's/^[[:space:]]*inherit:[[:space:]]*//p' '$1' | head -n1)
 _parent    = $(strip $(if $(call _inherit,$1),$(dir $1)$(call _inherit,$1)))
 _ancestors = $(if $(call _parent,$1),$(call _parent,$1) $(call _ancestors,$(call _parent,$1)))
 
-# --- content/ : personal data (gitignored) → out/ ---
+# --- content/ : personal data (gitignored) -> out/ ---
 _c_yml      := $(wildcard content/*.yml)
 _c_toml     := $(wildcard content/*.toml)
 _c_toml_only := $(filter-out $(patsubst content/%.yml,content/%.toml,$(_c_yml)),$(_c_toml))
@@ -57,7 +57,7 @@ CONTENT_PDFS :=
 $(foreach f,$(CONTENT_DATA),$(eval $(call PDF_RULE,$f,../content/,out/,$(call _ancestors,$f))))
 $(foreach f,$(CONTENT_DATA),$(eval CONTENT_PDFS += out/$(basename $(notdir $f)).pdf))
 
-# --- template/ : sample data shipped with the template (committed) → out/examples/ ---
+# --- template/ : sample data shipped with the template (committed) -> out/examples/ ---
 _e_yml      := $(wildcard template/*.yml)
 _e_toml     := $(wildcard template/*.toml)
 _e_toml_only := $(filter-out $(patsubst template/%.yml,template/%.toml,$(_e_yml)),$(_e_toml))
@@ -73,7 +73,7 @@ CONTENT_ALL_DATA  := $(_c_yml) $(_c_toml)
 EXAMPLES_ALL_DATA := $(_e_yml) $(_e_toml)
 VALIDATE_DATA     := $(CONTENT_ALL_DATA) $(EXAMPLES_ALL_DATA)
 
-# --- layout variants : the four header modes → out/ ---
+# --- layout variants : the four header modes -> out/ ---
 # Which CV to render in each layout. Defaults to the shipped example; override
 # with e.g. LAYOUT_DATA=content/cv-fr.yml to preview your own.
 LAYOUT_DATA ?= template/cv.yml
@@ -126,7 +126,7 @@ help:
 
 validate:
 	@command -v cue >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1 || { \
-	  echo "cue or python3 not found — skipping validation (see cuelang.org)"; \
+	  echo "cue or python3 not found - skipping validation (see cuelang.org)"; \
 	  exit 0; \
 	}
 	@echo "Validating data files against schema.cue..."
@@ -182,7 +182,7 @@ watch: link
 	wait
 
 # Regenerate the Typst Universe thumbnail and the README banners from the John
-# Doe example. Pages are stacked side by side with Typst itself — no ImageMagick.
+# Doe example. Pages are stacked side by side with Typst itself - no ImageMagick.
 # \43 is the octal for '#' (a literal '#' in a make variable starts a comment).
 _STACK = printf '\43set page(width: auto, height: auto, margin: 0pt, fill: white)\n\43stack(dir: ltr, spacing: 8pt, ..(%s).map(p => image(p, height: 22cm)))\n'
 thumbs: link
