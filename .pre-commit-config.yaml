@@ -10,6 +10,9 @@ repos:
     hooks:
       - id: cspell
         args: ["--config", "cspell.toml", "--no-must-find-files"]
+        # Spell-check only the prose/data (same scope as `make spell`), not the
+        # code (Makefiles, scripts, .typ), whose identifiers aren't real words.
+        files: '^(README\.md|template/(cv|letter)\.(toml|yml))$'
 
   - repo: local
     hooks:
