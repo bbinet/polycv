@@ -53,3 +53,13 @@ replace = "version-{new_version}-blue"
 filename = "README.md"
 search = "@preview/polycv:{current_version}"
 replace = "@preview/polycv:{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "polycv/v{current_version}/thumbnail-all.png"
+replace = "polycv/v{new_version}/thumbnail-all.png"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "polycv/v{current_version}/thumbnail-layouts.png"
+replace = "polycv/v{new_version}/thumbnail-layouts.png"

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![polycv - CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-all.png)
+![polycv - CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/v0.1.1/thumbnail-all.png)
 
 **A Typst package for not-a-boring CV - data-driven, fully configurable, two-column layout**
 
@@ -121,7 +121,7 @@ cv:
 
 ### Pick a layout
 
-![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-layouts.png)
+![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/v0.1.1/thumbnail-layouts.png)
 
 *Left to right, all from the same data: **Standard** | **Header band** with the summary inside the band | **ATS split** rendered in French with inline entry dates and no timeline.*
 
