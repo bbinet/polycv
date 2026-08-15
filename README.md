@@ -155,6 +155,21 @@ meta:
     hobbies: person-running
 ```
 
+### Skill groups
+
+Skill groups live under `cv.skills`, keyed by a **stable name**. The heading and icon travel with the group, so they stay put across languages (no name-keyed icon map to translate). `meta.skill-order` picks which groups show, and in what order - omit a key to hide it; drop `skill-order` entirely to show them all in data order.
+
+```yaml
+cv:
+  skills:
+    programming: { title: Programming, icon: terminal, items: "Python, Go, SQL" }
+    languages:   { title: Languages,   icon: language, items: ["English", "French"] }
+meta:
+  skill-order: [languages, programming]
+```
+
+The key is the identifier (used by `skill-order` and inheritance); `title` is the display heading (defaults to the key). Because groups are keyed, a variant can rename a group or change its icon by name, and you can add new groups on the fly.
+
 ### Customize for a company
 
 A tailored CV is just another data file that **inherits** a base and overrides only what differs. Add `cv-acme.yml`:
@@ -174,7 +189,7 @@ cv:
 
 ### All `meta:` keys
 
-`photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input header-band=true` (command-line inputs win over `meta:`).
+`photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`, `skill-order`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input header-band=true` (command-line inputs win over `meta:`).
 
 ## Advanced: template parameters
 

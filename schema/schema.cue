@@ -62,9 +62,11 @@ package polycv
 	...
 }
 
-#SkillEntry: {
-	// Skill group heading (e.g. "Languages").
-	group: string
+#SkillGroup: {
+	// Display heading. Defaults to the group's key if omitted.
+	title?: string
+	// FontAwesome icon name shown before the heading.
+	icon?: string
 	// Skills: a single string, or a list rendered one per line.
 	items: string | [...string]
 	...
@@ -101,8 +103,10 @@ package polycv
 	references?: string | [...string]
 	// Social profiles (network + username).
 	profiles?: [...#SocialNetwork]
-	// Skill groups.
-	skills?: [...#SkillEntry]
+	// Skill groups, keyed by a stable name (used by meta.skill-order). Add any
+	// key you like; the key is the icon-independent identifier, the display
+	// heading comes from each group's `title` (default: the key).
+	skills?: {[string]: #SkillGroup}
 	// Professional experience entries.
 	experience?: [...#Entry]
 	// Education entries.
@@ -150,6 +154,9 @@ package polycv
 	"section-titles"?: {[#SectionName]: string}
 	// Override section FontAwesome icons, keyed by section name.
 	"section-icons"?: {[#SectionName]: string}
+	// Which skill groups to show, in order, by their key in cv.skills. Omit a
+	// key to hide that group. If unset, all groups render in their data order.
+	"skill-order"?: [...string]
 }
 
 #CVSchema: {

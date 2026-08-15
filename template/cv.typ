@@ -109,6 +109,9 @@
 #if "section-icons" in meta {
   section-args.insert("section-icons", meta.section-icons)
 }
+#if "skill-order" in meta {
+  section-args.insert("skill-order", meta.skill-order)
+}
 #let merged-titles = locale-titles + meta.at("section-titles", default: (:))
 #if merged-titles.len() > 0 {
   section-args.insert("section-titles", merged-titles)

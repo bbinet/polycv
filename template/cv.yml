@@ -30,18 +30,28 @@ cv:
     - network: GitHub
       username: johndoe
 
+  # Skill groups keyed by a stable name (icon travels with the group, so it is
+  # locale-independent). meta.skill-order controls which show and in what order.
   skills:
-    - group: Programming
+    programming:
+      title: Programming
+      icon: terminal
       items: "Python (pandas, FastAPI, pytest), TypeScript, Go, SQL (sufficient to be dangerous), Bash (sufficient to be a liability)"
-    - group: DevOps & Cloud
+    devops:
+      title: DevOps & Cloud
+      icon: server
       items: "AWS, Docker, Kubernetes (can spell it correctly), GitHub Actions, Terraform, on-call rotations (involuntary)"
-    - group: Soft Skills
+    soft-skills:
+      title: Soft Skills
+      icon: handshake-angle
       items:
         - "Estimating (wildly optimistic, improving)"
         - "Stand-up narration"
         - "Nodding confidently in architecture meetings"
         - "Writing postmortems that assign blame to 'the system'"
-    - group: Languages
+    languages:
+      title: Languages
+      icon: language
       items:
         - "English (Native)"
         - "Python (Fluent)"

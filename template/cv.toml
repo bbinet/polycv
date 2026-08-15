@@ -23,20 +23,26 @@ username = "johndoe"
 network  = "GitHub"
 username = "johndoe"
 
-[[cv.skills]]
-group = "Programming"
+# Skill groups keyed by a stable name (icon travels with the group, so it is
+# locale-independent). meta.skill-order controls which show and in what order.
+[cv.skills.programming]
+title = "Programming"
+icon = "terminal"
 items = "Python (pandas, FastAPI, pytest), TypeScript, Go, SQL (sufficient to be dangerous), Bash (sufficient to be a liability)"
 
-[[cv.skills]]
-group = "DevOps & Cloud"
+[cv.skills.devops]
+title = "DevOps & Cloud"
+icon = "server"
 items = "AWS, Docker, Kubernetes (can spell it correctly), GitHub Actions, Terraform, on-call rotations (involuntary)"
 
-[[cv.skills]]
-group = "Soft Skills"
+[cv.skills.soft-skills]
+title = "Soft Skills"
+icon = "handshake-angle"
 items = ["Estimating (wildly optimistic, improving)", "Stand-up narration", "Nodding confidently in architecture meetings", "Writing postmortems that assign blame to 'the system'"]
 
-[[cv.skills]]
-group = "Languages"
+[cv.skills.languages]
+title = "Languages"
+icon = "language"
 items = ["English (Native)", "Python (Fluent)", "French (Enough to order coffee and cause offence)"]
 
 [[cv.experience]]

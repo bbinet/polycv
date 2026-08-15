@@ -124,10 +124,10 @@
           }
         },
         "skills": {
-          "type": "array",
-          "description": "Skill groups.",
-          "items": {
-            "$ref": "#/$defs/SkillEntry"
+          "type": "object",
+          "description": "Skill groups, keyed by a stable name (used by meta.skill-order). Add any\nkey you like; the key is the icon-independent identifier, the display\nheading comes from each group's `title` (default: the key).",
+          "additionalProperties": {
+            "$ref": "#/$defs/SkillGroup"
           }
         },
         "experience": {
@@ -275,6 +275,13 @@
           "description": "Ordered sidebar section keys.",
           "items": {
             "$ref": "#/$defs/SectionName"
+          }
+        },
+        "skill-order": {
+          "type": "array",
+          "description": "Which skill groups to show, in order, by their key in cv.skills. Omit a\nkey to hide that group. If unset, all groups render in their data order.",
+          "items": {
+            "type": "string"
           }
         }
       },
@@ -517,13 +524,17 @@
       ],
       "x-tombi-table-keys-order": "schema"
     },
-    "SkillEntry": {
+    "SkillGroup": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "group": {
+        "title": {
           "type": "string",
-          "description": "Skill group heading (e.g. \"Languages\")."
+          "description": "Display heading. Defaults to the group's key if omitted."
+        },
+        "icon": {
+          "type": "string",
+          "description": "FontAwesome icon name shown before the heading."
         },
         "items": {
           "description": "Skills: a single string, or a list rendered one per line.",
@@ -541,7 +552,6 @@
         }
       },
       "required": [
-        "group",
         "items"
       ],
       "x-tombi-table-keys-order": "schema"

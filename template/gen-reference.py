@@ -26,7 +26,7 @@ ORDER = {
         "photo", "locale", "header-band", "header-band-summary",
         "header-band-contact", "ats-split", "entry-inline-meta",
         "keywords-lines", "sidebar-sections", "main-sections",
-        "section-titles", "section-icons",
+        "section-titles", "section-icons", "skill-order",
     ],
     "CV": [
         "name", "headline", "location", "keywords", "email", "phone",
@@ -38,14 +38,14 @@ ORDER = {
         "name", "company", "position", "summary", "location",
         "start_date", "end_date", "date", "highlights",
     ],
-    "SkillEntry": ["group", "items"],
+    "SkillGroup": ["title", "icon", "items"],
     "SocialNetwork": ["network", "username"],
     "PublicationEntry": [
         "title", "authors", "summary", "doi", "url", "journal", "date",
     ],
 }
 # Defs expanded inline as a single sample list item.
-ENTRY_LIKE = {"Entry", "PublicationEntry", "SkillEntry", "SocialNetwork"}
+ENTRY_LIKE = {"Entry", "PublicationEntry", "SocialNetwork"}
 COMMENT_COL = 46
 
 

@@ -19,7 +19,9 @@
 /// - awards (array, none): Award entries.
 /// - volunteering (array, none): Volunteering / community involvement entries.
 /// - courses (array, none): Course entries.
-/// - skills (array, none): Skill groups. Each entry: (group, items).
+/// - skills (dictionary, none): Skill groups keyed by a stable name; each value
+///   is (title: default key, icon: none, items: string or array).
+/// - skill-order (array, none): Group keys to show, in order (omit key = hide).
 /// - values (array, none): Values list.
 /// - hobbies (array, none): Hobbies list.
 /// - references (str, array, none): References text or list.
@@ -40,7 +42,6 @@
 ///   company, location and dates inline as the title, then the position on
 ///   the next line (default: company/position inline, date/location right).
 /// - justify-sidebar (bool): Toggle sidebar text justification.
-/// - skill-icons (dictionary): Map skill group names to FontAwesome icon names.
 /// - section-icons (dictionary): Override any section FontAwesome icon name.
 ///   Keys match section keys. Defaults e.g. experience: "suitcase".
 /// - bullet-icon (str): FontAwesome icon name used for all list bullets.
@@ -84,6 +85,7 @@
   volunteering: none,
   courses: none,
   skills: none,
+  skill-order: none,
   values: none,
   hobbies: none,
   references: none,
@@ -97,7 +99,6 @@
   justify-sidebar: false,
   photo: none,
   photo-size: 70%,
-  skill-icons: (:),
   section-icons: (:),
   bullet-icon: "angle-right",
   address-icon: "location-dot",
@@ -758,40 +759,6 @@
       + section-icons
   )
 
-  // --- Skill icon defaults ---
-  let ski = (
-    (
-      // English
-      "Domain Knowledge": "brain",
-      "Programming": "terminal",
-      "DevOps & Cloud": "server",
-      "Specialized Software": "cogs",
-      "Soft Skills": "handshake-angle",
-      "Languages": "language",
-      "Human Languages": "language",
-      "Frameworks & Libraries": "cubes",
-      "Geospatial & GIS": "map",
-      "Tools & Infra": "server",
-      "Embedded": "microchip",
-      "Methods": "handshake-angle",
-      // French
-      "Langages": "terminal",
-      "Langages informatiques": "terminal",
-      "Frameworks & Librairies": "cubes",
-      "Frameworks et librairies": "cubes",
-      "Frameworks et libs carto": "map",
-      "Cartographie & SIG": "map",
-      "Outils & Infra": "server",
-      "Outils": "toolbox",
-      "Bases de données": "database",
-      "Administration système": "server",
-      "Embarqué": "microchip",
-      "Méthodes": "handshake-angle",
-      "Langues": "language",
-    )
-      + skill-icons
-  )
-
   // --- Sidebar section renderers ---
   let sidebar-renderers = (
     // Compact education for the narrow sidebar: degree, institution,
@@ -869,24 +836,30 @@
     ],
     skills: () => {
       if skills != none {
+        // Show the groups named in skill-order, or all of them (data order).
+        let order = if skill-order != none { skill-order } else { skills.keys() }
         sidebar-section(si.skills, st.skills)[
           #show: section-text("skills")
-          #for skill in skills [
-            #text(weight: fw.skill-group)[
-              #let icon = ski.at(skill.group, default: none)
-              #if icon != none [
-                #fa-icon(icon) #h(gap.icon-to-text) #skill.group
+          #for key in order [
+            #let group = skills.at(key, default: none)
+            #if group != none [
+              #let title = group.at("title", default: key)
+              #let icon = group.at("icon", default: none)
+              #text(weight: fw.skill-group)[
+                #if icon != none [
+                  #fa-icon(icon) #h(gap.icon-to-text) #title
+                ] else [
+                  #title
+                ]
+              ] \
+              #v(0pt)
+              #if type(group.items) == array [
+                #group.items.join(linebreak())
               ] else [
-                #skill.group
-              ]
-            ] \
-            #v(0pt)
-            #if type(skill.items) == array [
-              #skill.items.join(linebreak())
-            ] else [
-              #skill.items
-            ] \
-            #v(gap.sidebar-skill-between-items)
+                #group.items
+              ] \
+              #v(gap.sidebar-skill-between-items)
+            ]
           ]
         ]
       }
