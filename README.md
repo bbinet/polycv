@@ -139,7 +139,7 @@ Tune the header further: `header-band-summary: true` moves the summary into the 
 
 ### Sections: order, placement, titles, icons
 
-Every section can be reordered, moved between the two columns, retitled or re-iconed - all from `meta:`:
+Every section can be reordered, moved between the two columns, retitled, or given a different icon - all from `meta:`:
 
 ```yaml
 meta:
