@@ -125,12 +125,12 @@ help:
 	@printf "%-22s %s\n" "ci" "run full CI suite"
 
 validate:
-	@command -v cue >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1 || { \
+	@if ! command -v cue >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then \
 	  echo "cue or python3 not found - skipping validation (see cuelang.org)"; \
 	  exit 0; \
-	}
-	@echo "Validating data files against schema.cue..."
-	@tmp=$$(mktemp); mv "$$tmp" "$$tmp.json"; tmp="$$tmp.json"; \
+	fi; \
+	echo "Validating data files against schema.cue..."; \
+	tmp=$$(mktemp); mv "$$tmp" "$$tmp.json"; tmp="$$tmp.json"; \
 	for f in $(VALIDATE_DATA); do \
 	  case "$$(basename $$f)" in \
 	    cv*)     def='#CVSchema' ;; \
@@ -141,8 +141,8 @@ validate:
 	  python3 schema/resolve.py "$$f" > "$$tmp" || { rm -f "$$tmp"; exit 1; }; \
 	  cue vet -d "$$def" schema/schema.cue "$$tmp" || { rm -f "$$tmp"; exit 1; }; \
 	done; \
-	rm -f "$$tmp"
-	@echo "OK: all data files valid"
+	rm -f "$$tmp"; \
+	echo "OK: all data files valid"
 
 build:
 	@$(MAKE) --no-print-directory validate VALIDATE_DATA="$(CONTENT_ALL_DATA)"
