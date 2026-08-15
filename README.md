@@ -2,13 +2,13 @@
 
 <div align="center">
 
-![](thumbnail-all.png)
+![polycv — CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-all.png)
 
 **A Typst package for not-a-boring CV — data-driven, fully configurable, two-column layout**
 
-[![Version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/bbinet/polycv)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Typst](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
+[![Current version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/bbinet/polycv)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Requires Typst 0.14 or newer](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
 </div>
 
@@ -121,7 +121,7 @@ cv:
 
 ### Pick a layout
 
-![The standard, header-band and ATS-split layouts side by side](thumbnail-layouts.png)
+![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/main/thumbnail-layouts.png)
 
 *Left to right, all from the same data: **Standard** · **Header band** with the summary inside the band · **ATS split** rendered in French with inline entry dates and no timeline.*
 
@@ -182,7 +182,7 @@ A few knobs aren't exposed through `meta:`: **colours, social-network mapping, n
 
 ```typ
 #show: cv.with(
-  ..,
+  // … keep your existing arguments …
   theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")),
   profiles-config: (
     LinkedIn:  (icon: "linkedin", url-base: "https://linkedin.com/in/"),
@@ -197,7 +197,7 @@ A few knobs aren't exposed through `meta:`: **colours, social-network mapping, n
 ### Theme / colours
 
 ```typ
-#show: cv.with(.., theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")))
+#show: cv.with(theme: (secondary: rgb("#B71C1C"), sidebar-bg: rgb("#FFF8F8")))
 ```
 
 | Key | Default | Description |
@@ -220,7 +220,7 @@ Header-band layouts drop the sidebar tint; set `header-rule` and/or `sidebar-rul
 
 ```typ
 #show: cv.with(
-  ..,
+  // … keep your existing arguments …
   month-names:    ("jan.", "fév.", "mars", "avr.", "mai", "juin",
                    "juil.", "août", "sep.", "oct.", "nov.", "déc."),
   date-separator: " – ",

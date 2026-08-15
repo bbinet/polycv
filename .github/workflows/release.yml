@@ -77,19 +77,29 @@ jobs:
           cd temp-fork
 
           BRANCH="${{ steps.version.outputs.branch }}"
-          git show-ref --verify --quiet refs/heads/$BRANCH && git branch -D $BRANCH || true
-          git ls-remote --heads origin $BRANCH | grep -q $BRANCH && git push origin --delete $BRANCH || true
-          git checkout -b "$BRANCH"
+          # Reset the branch onto the fork's default branch and drop in the
+          # package, then force-push. Force-pushing (rather than deleting and
+          # recreating the branch) keeps an already-open PR and updates it in
+          # place instead of closing it.
+          git checkout -B "$BRANCH"
 
           mkdir -p packages/preview/polycv
+          rm -rf "packages/preview/polycv/${{ steps.version.outputs.version }}"
           cp -r "$MAIN_DIR/packages/preview/polycv/${{ steps.version.outputs.version }}" packages/preview/polycv/
 
           git add .
           git commit -m "polycv:${{ steps.version.outputs.version }}"
-          git push -u origin "$BRANCH"
+          git push -f origin "$BRANCH"
 
           if [ "${{ github.event.inputs.dry-run }}" = "true" ]; then
             echo "Dry run — skipping PR creation"
+            exit 0
+          fi
+
+          # The force-push above already updated any open PR for this branch;
+          # only open a new one if none exists yet.
+          if gh pr list --repo typst/packages --head "$BRANCH" --state open --json number --jq '.[0].number' | grep -q '[0-9]'; then
+            echo "PR already open for $BRANCH — updated in place."
             exit 0
           fi
 
