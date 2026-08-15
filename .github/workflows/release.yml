@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          # On a tag push, check out that tag. On manual dispatch, check out the
+          # tag matching the given version (never the branch HEAD), so what gets
+          # published always corresponds to a tag.
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/v{0}', github.event.inputs.version) || github.ref }}
 
       - name: Extract version
         id: version
@@ -36,7 +41,7 @@ jobs:
           echo "branch=polycv-$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && !contains(steps.version.outputs.version, '-')
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
@@ -91,8 +96,13 @@ jobs:
           git commit -m "polycv:${{ steps.version.outputs.version }}"
           git push -f origin "$BRANCH"
 
-          if [ "${{ github.event.inputs.dry-run }}" = "true" ]; then
-            echo "Dry run - skipping PR creation"
+          # Skip opening a PR for a dry run, or for a pre-release tag (a version
+          # containing '-', e.g. v0.1.2-rc.1). A pre-release still builds and
+          # pushes to the fork, so you can test the tag trigger end to end
+          # without submitting anything to typst/packages.
+          if [ "${{ github.event.inputs.dry-run }}" = "true" ] || \
+             echo "${{ steps.version.outputs.version }}" | grep -q '-'; then
+            echo "Dry run or pre-release - skipping PR creation"
             exit 0
           fi
 
