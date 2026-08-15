@@ -167,6 +167,9 @@ build-layouts:
 
 # Live-preview every content/ file at once (each with its template, in
 # parallel; Ctrl-C stops them all). Set WATCH=content/<file>.yml for just one.
+# Alongside the previews, re-validate the data on every change and print any
+# schema errors (with their location) - typst compiles some invalid data
+# silently, this surfaces it.
 WATCH ?=
 watch: link
 	@mkdir -p out
@@ -176,8 +179,17 @@ watch: link
 	  b=$$(basename $$f); b=$${b%.*}; tmpl=$${b%%-*}; \
 	  case "$$f" in *.toml) fmt=toml;; *) fmt=yaml;; esac; \
 	  echo "  watching $$f -> out/$$b.pdf"; \
-	  typst watch template/$$tmpl.typ out/$$b.pdf --root . \
-	    --input data=../$$f --input fmt=$$fmt & \
+	  ( typst watch template/$$tmpl.typ out/$$b.pdf --root . \
+	      --input data=../$$f --input fmt=$$fmt 2>&1 \
+	    | while IFS= read -r line; do \
+	        printf '%s\n' "$$line"; \
+	        case "$$line" in *'] compiled'*) \
+	          if ! vo=$$($(MAKE) -s --no-print-directory validate VALIDATE_DATA="$$f" 2>&1); then \
+	            printf '>>> %s: schema errors\n' "$$f"; \
+	            printf '%s\n' "$$vo" | grep -vE '^(Validating|OK: |make(\[|:))' | sed 's/^/  /'; \
+	          fi ;; \
+	        esac; \
+	      done ) & \
 	done; \
 	wait
 

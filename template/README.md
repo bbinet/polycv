@@ -29,7 +29,7 @@ is noise. To use TOML, pass `FMT=toml` to every `make` command.
 ```sh
 make                 # validate, then compile every cv*/letter* that changed -> PDFs
 make validate        # check each data file against the polycv schema
-make watch           # live-preview them all while you edit (Ctrl-C to stop)
+make watch           # live-preview them all + re-validate on change (Ctrl-C to stop)
 make yaml-reference  # print every available field, its type and its doc
 ```
 

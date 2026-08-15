@@ -67,7 +67,7 @@ validate:
 	    echo "warning: schema unavailable (offline?) - skipping validation" >&2; rm -f "$$sch"; exit 0; \
 	  fi; \
 	fi; \
-	ok=1; for f in $(CV_SRCS) $(LET_SRCS); do \
+	ok=1; for f in $(or $(V),$(CV_SRCS) $(LET_SRCS)); do \
 	  if json=$$(typst eval 'query(<polycv-data>).first().value' --in _schema.typ \
 	      --input data=$$f --input fmt=$(FMT) --format json --root . 2>/dev/null); then \
 	    printf '%s' "$$json" | python3 validate.py "$$sch" $$f || ok=0; \
@@ -77,13 +77,25 @@ validate:
 	done; \
 	[ $$ok = 1 ] && echo "OK: all data files valid" || exit 1
 
+# Live-preview all data files; also re-validate on every change and print any
+# schema errors (with location). typst compiles some invalid data silently, so
+# this surfaces mistakes the preview alone would hide.
 watch:
 	@files="$(WATCH)"; [ -n "$$files" ] || files="$(wildcard cv*.$(EXT)) $(wildcard letter*.$(EXT))"; \
 	echo "Watching $$files (Ctrl-C to stop)..."; \
 	trap 'kill 0' EXIT INT TERM; \
 	for f in $$files; do \
 	  tmpl=$${f%.*}; tmpl=$${tmpl%%-*}; \
-	  typst watch $$tmpl.typ $${f%.*}.pdf --input data=$$f --input fmt=$(FMT) & \
+	  ( typst watch $$tmpl.typ $${f%.*}.pdf --input data=$$f --input fmt=$(FMT) 2>&1 \
+	    | while IFS= read -r line; do \
+	        printf '%s\n' "$$line"; \
+	        case "$$line" in *'] compiled'*) \
+	          if ! vo=$$($(MAKE) --no-print-directory validate V="$$f" 2>&1); then \
+	            printf '>>> %s: schema errors\n' "$$f"; \
+	            printf '%s\n' "$$vo" | grep -vE '^(Fetching |OK: |make(\[|:))' | sed 's/^/  /'; \
+	          fi ;; \
+	        esac; \
+	      done ) & \
 	done; \
 	wait
 

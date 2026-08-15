@@ -268,7 +268,7 @@ For contributing to the package itself (not needed to *use* it).
 git clone https://github.com/bbinet/polycv
 cd polycv
 make build          # compile every content/ file (incremental)
-make watch          # live-preview all content/ files (WATCH=one file)
+make watch          # live-preview all content/ files + re-validate on change (WATCH=one file)
 make build-examples # compile the shipped sample data only
 make build-layouts  # compile the header layout variants side by side
 make validate       # validate data files against schema.cue (cue vet)
