@@ -11,10 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: extractions/setup-just@v3
-        with:
-          just-version: 1.46.0
-
       - uses: typst-community/setup-typst@v4
         with:
           typst-version: "latest"
@@ -28,6 +24,6 @@ jobs:
       - uses: j178/prek-action@v1
         with:
           install-only: true
-      - run: just prek-ci
-      - run: just spell
-      - run: just build
+      - run: make prek-ci
+      - run: make spell
+      - run: make build-examples
