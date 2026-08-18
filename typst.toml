@@ -14,11 +14,9 @@ compiler = "0.14.0"
 exclude = [
   ".github",
   ".claude",
-  ".gitignore",
   ".bumpversion.toml",
   "schema",
   "justfile",
-  "Makefile",
   "shell.nix",
   "cspell.toml",
   ".pre-commit-config.yaml",
