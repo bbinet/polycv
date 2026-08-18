@@ -226,7 +226,7 @@ schema:
 	$(MAKE) -C schema json
 
 yaml-reference:
-	@python3 template/gen-reference.py schema/schema.json
+	@python3 schema/gen-reference.py schema/schema.json
 
 link:
 	@mkdir -p "$(dir $(PREVIEW_TARGET))"

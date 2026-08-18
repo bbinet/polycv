@@ -1,51 +1,12 @@
 // typst compile --root . template/cv.typ
-#import "@preview/polycv:0.1.1": cv
+#import "@preview/polycv:0.1.1": cv, load-cv-data
 
-// --- Load data (fmt and data-file from sys.inputs, with sensible defaults) ---
+// --- Load, resolve `inherit:` and validate the data. fmt/data-file come from
+// sys.inputs; the loader closure lives here so relative paths resolve against
+// your project. Invalid data stops the compile, naming the offending field. ---
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let data-file = sys.inputs.at("data", default: if fmt == "toml" { "cv.toml" } else { "cv.yml" })
-#let load-data(f) = if fmt == "yaml" { yaml(f) } else { toml(f) }
-
-// Recursively merge a child over its parent: dicts merge key by key, arrays
-// merge by index, other values are replaced. `none` keeps the parent value -
-// use null at an array position to leave that item untouched.
-#let deep-merge(base, over) = {
-  if over == none {
-    base
-  } else if type(base) == dictionary and type(over) == dictionary {
-    let out = base
-    for (k, v) in over { out.insert(k, deep-merge(base.at(k, default: none), v)) }
-    out
-  } else if type(base) == array and type(over) == array {
-    range(calc.max(base.len(), over.len())).map(i => deep-merge(
-      base.at(i, default: none),
-      over.at(i, default: none),
-    ))
-  } else { over }
-}
-
-// Directory part of a path ("sub/cv-fr.yml" -> "sub/", "cv-fr.yml" -> "").
-#let dir-of(f) = {
-  let parts = f.split("/")
-  if parts.len() <= 1 { "" } else { parts.slice(0, -1).join("/") + "/" }
-}
-
-// Resolve `inherit: <path>` chains: load a file, and if it declares a parent
-// (path relative to the file itself), deep-merge this file over the
-// recursively-resolved parent. Lets a customized CV hold only what changes.
-#let load-inherited(f) = {
-  let raw = load-data(f)
-  let parent = raw.at("inherit", default: none)
-  if parent == none {
-    raw
-  } else {
-    let child = raw
-    let _ = child.remove("inherit")
-    deep-merge(load-inherited(dir-of(f) + parent), child)
-  }
-}
-
-#let raw = load-inherited(data-file)
+#let raw = load-cv-data(data-file, f => if fmt == "yaml" { yaml(f) } else { toml(f) })
 #let meta = raw.at("meta", default: (:))
 #let cd = raw.cv
 
@@ -69,52 +30,11 @@
 // 0 = auto (one badge per line)
 #let keywords-lines = int(input-str("keywords-lines", default: "0"))
 
-#let locale-args = if locale == "fr" {
-  (
-    month-names: (
-      "jan.", "fév.", "mars", "avr.", "mai", "juin",
-      "juil.", "août", "sep.", "oct.", "nov.", "déc.",
-    ),
-    date-separator: " – ",
-  )
-} else { (:) }
-
-#let locale-titles = if locale == "fr" {
-  (
-    contact: "CONTACT",
-    skills: "COMPÉTENCES",
-    values: "VALEURS",
-    hobbies: "LOISIRS",
-    references: "RÉFÉRENCES",
-    publications: "PUBLICATIONS",
-    summary: "RÉSUMÉ",
-    motivation: "MOTIVATION",
-    experience: "EXPÉRIENCE",
-    education: "FORMATION",
-    awards: "DISTINCTIONS",
-    volunteering: "ENGAGEMENTS",
-    courses: "FORMATIONS",
-  )
-} else { (:) }
-
-// Section ordering / titles / icons from meta (all optional). section-titles
-// merges over the locale titles so meta overrides win.
+// Section ordering / titles / icons from meta (all optional). Locale titles and
+// month names are applied by cv() itself from `locale`.
 #let section-args = (:)
-#if "sidebar-sections" in meta {
-  section-args.insert("sidebar-sections", meta.sidebar-sections)
-}
-#if "main-sections" in meta {
-  section-args.insert("main-sections", meta.main-sections)
-}
-#if "section-icons" in meta {
-  section-args.insert("section-icons", meta.section-icons)
-}
-#if "skill-order" in meta {
-  section-args.insert("skill-order", meta.skill-order)
-}
-#let merged-titles = locale-titles + meta.at("section-titles", default: (:))
-#if merged-titles.len() > 0 {
-  section-args.insert("section-titles", merged-titles)
+#for key in ("sidebar-sections", "main-sections", "section-icons", "skill-order", "section-titles") {
+  if key in meta { section-args.insert(key, meta.at(key)) }
 }
 
 // Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
@@ -149,7 +69,7 @@
   ats-split: ats-split,
   entry-inline-meta: entry-inline-meta,
   show-timeline: show-timeline,
-  ..locale-args,
+  locale: locale,
   ..section-args,
   // Reorder/move sections, retitle or re-icon them from the meta block:
   //   sidebar-sections / main-sections / section-titles / section-icons

@@ -1,8 +1,16 @@
 .DEFAULT_GOAL := json
-.PHONY: json draft-2020 order fmt
+.PHONY: json draft-2020 order fmt ship
 
-# Regenerate schema.json from schema.cue
-json: draft-2020 order
+# Regenerate schema.json, ship it into the package, refresh the field reference
+json: draft-2020 order ship
+
+# Ship the schema into src/ (read by the package for compile-time validation)
+# and regenerate the static field reference shipped with the template.
+ship:
+	cp schema.json ../src/schema.json
+	{ echo '# polycv field reference'; echo; echo '```yaml'; \
+	  python3 gen-reference.py schema.json; echo '```'; } > ../template/FIELDS.md
+	@echo "shipped schema.json -> ../src/ ; FIELDS.md -> ../template/"
 
 # Generate schema.json from schema.cue (JSON Schema draft 2020-12)
 draft-2020: fmt

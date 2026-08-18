@@ -88,22 +88,17 @@ cv:
         - "Improved other thing"
 ```
 
-Prefer TOML? Edit `cv.toml` instead (same fields) and add `--input fmt=toml` when you compile. Edit `letter.yml` similarly for your cover letter. Run `make yaml-reference` to print every available field with its type and a one-line description.
+Prefer TOML? Edit `cv.toml` instead (same fields) and add `--input fmt=toml` when you compile. Edit `letter.yml` similarly for your cover letter. `FIELDS.md` lists every available field with its type and a one-line description.
 
 ### 3. Build
 
 ```sh
-# One command, incremental - rebuilds only what changed:
-make            # compiles every cv*.yml / letter*.yml to a PDF
-make watch      # live-preview while you edit (WATCH=<file> for a single one)
-
-# ...or drive Typst directly:
 typst compile cv.typ
 typst compile letter.typ
 typst compile application.typ        # CV + letter in one PDF
 ```
 
-`make` also validates your data against the schema before compiling. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
+Your data is **validated as it compiles** - an invalid field stops the build and names it (e.g. `/meta/locale`), everywhere including the web app. An optional `Makefile` is included for local use (`make` builds incrementally, `make watch` live-previews); `FIELDS.md` lists every field. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
 
 ## Configure from your data (`meta:`)
 

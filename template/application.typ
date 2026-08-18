@@ -1,9 +1,10 @@
 // typst compile --root . template/application.typ
-#import "@preview/polycv:0.1.1": cv, letter
+#import "@preview/polycv:0.1.1": cv, letter, load-cv-data
 
 #let fmt = sys.inputs.at("fmt", default: "yaml")
-#let cd = if fmt == "yaml" { yaml("cv.yml").cv } else { toml("cv.toml").cv }
-#let ld = if fmt == "yaml" { yaml("letter.yml").letter } else { toml("letter.toml").letter }
+#let load = f => if fmt == "yaml" { yaml(f) } else { toml(f) }
+#let cd = load-cv-data(if fmt == "yaml" { "cv.yml" } else { "cv.toml" }, load).cv
+#let ld = load-cv-data(if fmt == "yaml" { "letter.yml" } else { "letter.toml" }, load).letter
 
 // Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
 #set document(title: cd.name, author: cd.name)

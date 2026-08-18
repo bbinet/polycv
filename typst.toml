@@ -10,7 +10,6 @@ description = "A data-driven, not-a-boring CV and cover-letter template"
 repository = "https://github.com/bbinet/polycv"
 keywords = ["cv", "resume", "cover-letter", "curriculum-vitae", "two-column", "letter"]
 categories = ["cv"]
-disciplines = []
 compiler = "0.14.0"
 exclude = [
   ".github",

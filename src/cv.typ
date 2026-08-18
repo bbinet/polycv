@@ -1,5 +1,28 @@
 #import "@preview/fontawesome:0.6.2": *
 
+// Per-locale defaults: section-title overrides (only the keys that differ from
+// the English defaults) and month abbreviations. Add a locale by adding a key.
+#let _locales = (
+  fr: (
+    titles: (
+      skills: "COMPÉTENCES",
+      values: "VALEURS",
+      hobbies: "LOISIRS",
+      references: "RÉFÉRENCES",
+      summary: "RÉSUMÉ",
+      experience: "EXPÉRIENCE",
+      education: "FORMATION",
+      awards: "DISTINCTIONS",
+      volunteering: "ENGAGEMENTS",
+      courses: "FORMATIONS",
+    ),
+    months: (
+      "jan.", "fév.", "mars", "avr.", "mai", "juin",
+      "juil.", "août", "sep.", "oct.", "nov.", "déc.",
+    ),
+  ),
+)
+
 /// A two-column CV template matching the polycv design.
 ///
 /// - name (str): Full name displayed in the header.
@@ -47,7 +70,9 @@
 /// - bullet-icon (str): FontAwesome icon name used for all list bullets.
 /// - address-icon (str): FontAwesome icon name used for the address field.
 /// - doi-icon (str): FontAwesome icon name used for DOI links in publications.
-/// - month-names (array): 12 month abbreviation strings for date formatting.
+/// - locale (str): "en" or "fr". Sets the default section titles and month
+///   names; both stay overridable via section-titles / month-names.
+/// - month-names (array or auto): 12 month abbreviations; auto follows `locale`.
 /// - date-separator (str): String placed between start and end dates.
 /// - profiles-config (dictionary): Map of network name to (icon, url-base) dict.
 ///   Add any network: (Mastodon: (icon: "mastodon", url-base: "https://mastodon.social/@")).
@@ -103,20 +128,8 @@
   bullet-icon: "angle-right",
   address-icon: "location-dot",
   doi-icon: "external-link",
-  month-names: (
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ),
+  locale: "en",
+  month-names: auto,
   date-separator: " – ",
   profiles-config: (
     LinkedIn: (icon: "linkedin", url-base: "https://linkedin.com/in/"),
@@ -147,6 +160,15 @@
   ats-split: false,
   body,
 ) = {
+  // Month names / section titles come from `locale` (see `_locales`) unless the
+  // user passed explicit overrides.
+  let month-names = if month-names == auto {
+    _locales.at(locale, default: (:)).at(
+      "months",
+      default: ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
+    )
+  } else { month-names }
+
   // --- Default theme ---
   let t = (
     (
@@ -719,7 +741,8 @@
     ]
   }
 
-  // --- Section titles ---
+  // --- Section titles: English defaults, locale overrides (from _locales),
+  // then any user section-titles on top. ---
   let st = (
     (
       contact: "CONTACT",
@@ -736,6 +759,7 @@
       volunteering: "VOLUNTEERING",
       courses: "COURSES",
     )
+      + _locales.at(locale, default: (:)).at("titles", default: (:))
       + section-titles
   )
 
