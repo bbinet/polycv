@@ -211,10 +211,11 @@
           "description": "Path to the profile photo, relative to the .typ file."
         },
         "locale": {
-          "description": "Language for section titles and month names.",
+          "description": "Language for section titles, month names and the ongoing-position label.",
           "enum": [
             "en",
-            "fr"
+            "fr",
+            "de"
           ]
         },
         "ats-split": {

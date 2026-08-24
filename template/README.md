@@ -36,12 +36,12 @@ An optional `Makefile` is included for local use: `make` builds every
 `cv*`/`letter*` whose source changed (and, when you edit a base, only the
 variants that inherit it), and `make watch` live-previews them all.
 
-## Bilingual & per-company CVs
+## Multilingual & per-company CVs
 
 The filename prefix before the first `-` picks the template: `cv-*.yml` uses
-`cv.typ`, `letter-*.yml` uses `letter.typ`. So a bilingual CV is just two
-files, `cv-en.yml` and `cv-fr.yml` - both build automatically (set
-`meta: locale` in each).
+`cv.typ`, `letter-*.yml` uses `letter.typ`. Add one CV data file per language,
+for example `cv-en.yml`, `cv-fr.yml`, and `cv-de.yml`; all build automatically
+(set `meta: locale` in each).
 
 To customize a CV for one company without duplicating everything, create a
 file that **inherits** from a base and overrides only what differs:

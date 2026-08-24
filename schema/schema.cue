@@ -130,8 +130,8 @@ package polycv
 #CvMeta: {
 	// Path to the profile photo, relative to the .typ file.
 	photo?: string
-	// Language for section titles and month names.
-	locale?: "en" | "fr"
+	// Language for section titles, month names and the ongoing-position label.
+	locale?: "en" | "fr" | "de"
 	// Full-width header band layout (photo on its left).
 	"header-band"?: bool
 	// With header-band, render the summary inside the header.

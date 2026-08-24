@@ -24,6 +24,7 @@ words = [
   "toggleable",
   "Makefiles",
   "ppi",
+  "poppler",
   "bumpversion",
   "utpm",
   "tidy",
@@ -49,4 +50,5 @@ words = [
   "juin",
   "juil",
   "août",
+  "laufend",
 ]

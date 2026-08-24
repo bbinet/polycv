@@ -98,7 +98,7 @@ typst compile letter.typ
 typst compile application.typ        # CV + letter in one PDF
 ```
 
-Your data is **validated as it compiles** - an invalid field stops the build and names it (e.g. `/meta/locale`), everywhere including the web app. An optional `Makefile` is included for local use (`make` builds incrementally, `make watch` live-previews); `FIELDS.md` lists every field. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
+Your data is **validated as it compiles** - an invalid field stops the build and names it (e.g. `/meta/locale`), everywhere including the web app. An optional `Makefile` is included for local use (`make` builds incrementally, `make watch` live-previews); `FIELDS.md` lists every field. **Multilingual CV?** Add one data file per language - for example `cv-en.yml`, `cv-fr.yml`, and `cv-de.yml` (set `locale` in each, see below); all build automatically.
 
 ## Configure from your data (`meta:`)
 
@@ -107,7 +107,7 @@ Presentation is controlled by an optional **`meta:` block** at the top of your d
 ```yaml
 meta:
   photo: photo.jpg     # path to your photo (relative to the data file)
-  locale: fr           # section titles + month names in French
+  locale: de           # German section titles, months, and "laufend"
   header-band: true    # pick a layout (see below)
 cv:
   name: "Jane Smith"
@@ -130,7 +130,7 @@ Tune the header further: `header-band-summary: true` moves the summary into the 
 
 ### Language
 
-`locale: fr` translates the section titles and month names to French (`en` is the default). Other languages: keep your own titles via `section-titles`, or set `month-names` in the template (see [Advanced](#advanced-template-parameters)).
+`locale: fr` selects French section titles and month names. `locale: de` selects German section titles and month names and renders an ongoing position as `laufend`. English (`en`) remains the default. For other languages, keep your own titles via `section-titles`, or set `month-names` in the template (see [Advanced](#advanced-template-parameters)).
 
 ### Sections: order, placement, titles, icons
 
@@ -184,11 +184,11 @@ cv:
 
 ### All `meta:` keys
 
-`photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`, `skill-order`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input header-band=true` (command-line inputs win over `meta:`).
+`photo`, `locale` (`en`/`fr`/`de`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`, `skill-order`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input locale=de` (command-line inputs win over `meta:`).
 
 ## Advanced: template parameters
 
-A few knobs aren't exposed through `meta:`: **colours, social-network mapping, non-French locales, fonts and per-icon overrides.** Set them as arguments to the `cv(...)` / `letter(...)` call in your project's **`cv.typ` / `letter.typ`** - the entrypoints you already have. You still never edit the package under `src/`.
+A few knobs aren't exposed through `meta:`: **colours, social-network mapping, locales other than English, French and German, fonts and per-icon overrides.** Set them as arguments to the `cv(...)` / `letter(...)` call in your project's **`cv.typ` / `letter.typ`** - the entrypoints you already have. You still never edit the package under `src/`.
 
 ```typ
 #show: cv.with(
@@ -224,9 +224,9 @@ A few knobs aren't exposed through `meta:`: **colours, social-network mapping, n
 
 Header-band layouts drop the sidebar tint; set `header-rule` and/or `sidebar-rule` to a colour (e.g. `rgb("#D5D5D5")`) to draw separators instead.
 
-### Locale (other languages)
+### Locale overrides and other languages
 
-`locale: fr` in `meta:` covers French. For another language, set the month names and date separator directly:
+`locale` has built-in English (`en`), French (`fr`), and German (`de`) presets. To override a preset or add another language, set the month names and date separator directly:
 
 ```typ
 #show: cv.with(
@@ -282,6 +282,7 @@ make watch          # live-preview all content/ files + re-validate on change (W
 make build-examples # compile the shipped sample data only
 make build-layouts  # compile the header layout variants side by side
 make validate       # validate data files against schema.cue (cue vet)
+make test-locale    # compile and verify English, French, and German output
 make yaml-reference # print an annotated reference of every CV field
 ```
 
@@ -299,6 +300,7 @@ Personal data files go in `content/` (gitignored). The **prefix before the first
 | `bump-my-version` | Version bumping (`make bump-patch`) |
 | `cspell` | Spell checking (`make spell`) |
 | `imagemagick` | Pixel-diffing the YAML vs TOML output (`make test-yaml`) - optional |
+| `poppler-utils` | Text assertions for localized output (`make test-locale`) - optional |
 
 A `shell.nix` is provided for a reproducible environment with all tools and font paths pre-configured.
 
@@ -324,8 +326,8 @@ CV*) by xrsl, and keeps its clean two-column, data-driven foundation. The main
 additions since:
 
 - **YAML as well as TOML** for the data files, with identical output
-- **A `meta` block** to configure the layout from data alone - locale (incl. a
-  French preset), section order and placement, per-section titles and icons
+- **A `meta` block** to configure the layout from data alone - locale (incl.
+  French and German presets), section order and placement, per-section titles and icons
 - **ATS-friendly layouts** - an `ats-split` single-column mode and a horizontal
   header band (photo / summary / contact variants) for better text extraction
 - **Tagged PDF/UA-1 output** for accessibility and reliable ATS parsing

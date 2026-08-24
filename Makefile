@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema yaml-reference link unlink sync test-yaml prek prek-ci ci
+.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema yaml-reference link unlink sync test-yaml test-locale prek prek-ci ci
 
 # ---------------------------------------------------------------------------
 # Version & platform
@@ -120,6 +120,7 @@ help:
 	@printf "%-22s %s\n" "bump-TYPE" "bump version (major/minor/patch)"
 	@printf "%-22s %s\n" "release-TYPE" "bump, commit, tag, and push"
 	@printf "%-22s %s\n" "test-yaml" "verify yaml and toml produce identical output"
+	@printf "%-22s %s\n" "test-locale" "verify localized CV output"
 	@printf "%-22s %s\n" "prek" "run all pre-commit hooks"
 	@printf "%-22s %s\n" "prek-ci" "run pre-commit hooks (CI mode)"
 	@printf "%-22s %s\n" "ci" "run full CI suite"
@@ -267,10 +268,35 @@ test-yaml:
 	@echo "OK: YAML and TOML outputs are pixel-identical"
 	@rm -f out/test-yaml*.png out/test-toml*.png
 
+test-locale:
+	@if ! command -v pdftotext >/dev/null 2>&1; then \
+	  echo "pdftotext not found - install poppler-utils"; \
+	  exit 1; \
+	fi
+	@$(MAKE) --no-print-directory validate VALIDATE_DATA="tests/cv-de.yml"
+	@$(MAKE) --no-print-directory link
+	@mkdir -p out
+	@echo "Compiling locale variants..."
+	typst compile template/cv.typ out/test-locale-de.pdf --root . $(PDF_FLAGS) --input data=../tests/cv-de.yml
+	typst compile template/cv.typ out/test-locale-en.pdf --root . $(PDF_FLAGS) --input data=cv.yml --input locale=en
+	typst compile template/cv.typ out/test-locale-fr.pdf --root . $(PDF_FLAGS) --input data=cv.yml --input locale=fr
+	pdftotext -layout out/test-locale-de.pdf out/test-locale-de.txt
+	pdftotext -layout out/test-locale-en.pdf out/test-locale-en.txt
+	pdftotext -layout out/test-locale-fr.pdf out/test-locale-fr.txt
+	@for expected in KONTAKT KOMPETENZEN WERTE HOBBYS REFERENZEN PUBLIKATIONEN PROFIL MOTIVATION BERUFSERFAHRUNG AUSBILDUNG AUSZEICHNUNGEN EHRENAMT WEITERBILDUNGEN; do \
+	  grep -Fq "$$expected" out/test-locale-de.txt || { echo "FAIL: missing German text: $$expected"; exit 1; }; \
+	done
+	@grep -Fq "März 2021 – laufend" out/test-locale-de.txt || { echo "FAIL: German date localization"; exit 1; }
+	@grep -Fq "Mar 2021 – Present" out/test-locale-en.txt || { echo "FAIL: English date localization changed"; exit 1; }
+	@grep -Fq "mars 2021 – Present" out/test-locale-fr.txt || { echo "FAIL: French date localization changed"; exit 1; }
+	@echo "OK: en/fr/de locale output"
+	@rm -f out/test-locale-*.pdf out/test-locale-*.txt
+	@$(MAKE) --no-print-directory unlink
+
 prek:
 	prek run --all-files
 
 prek-ci:
 	prek run --all-files --skip schema --skip typstyle --show-diff-on-failure --color always
 
-ci: prek spell build-examples test-yaml clean
+ci: prek spell build-examples test-yaml test-locale clean

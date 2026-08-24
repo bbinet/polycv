@@ -1,0 +1,43 @@
+meta:
+  locale: de
+
+cv:
+  name: "Test Person"
+  email: "test@example.com"
+  summary: "Kurzprofil"
+  motivation: "Motivationstext"
+  values: ["Verlässlichkeit"]
+  hobbies: ["Lesen"]
+  references: "Auf Anfrage"
+
+  skills:
+    languages:
+      title: "Sprachen"
+      items: ["Deutsch"]
+
+  experience:
+    - company: "Beispiel GmbH"
+      position: "Entwicklung"
+      start_date: "2021-03"
+      end_date: "present"
+
+  education:
+    - company: "Beispiel Universität"
+      position: "Studium"
+      start_date: "2018-10"
+      end_date: "2021-02"
+
+  awards:
+    - name: "Beispielpreis"
+      date: 2021
+
+  volunteering:
+    - name: "Vereinsarbeit"
+      date: 2020
+
+  courses:
+    - name: "Beispielkurs"
+      date: 2022
+
+  publications:
+    - title: "Beispielpublikation"

@@ -13,6 +13,7 @@ in pkgs.mkShell {
     font-awesome
     ibm-plex
     imagemagick
+    poppler-utils
     nodePackages.cspell
   ];
 

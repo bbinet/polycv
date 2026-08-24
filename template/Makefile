@@ -7,7 +7,8 @@
 # the build, naming it (e.g. /meta/locale). See FIELDS.md for every field.
 #
 # The prefix before the first '-' picks the template (cv-*.yml -> cv.typ,
-# letter-*.yml -> letter.typ), so a bilingual CV is just cv-en.yml / cv-fr.yml
+# letter-*.yml -> letter.typ), so localized CVs can be cv-en.yml / cv-fr.yml /
+# cv-de.yml
 # (set `meta: locale` in each). To customize for a company, add a file that
 # inherits a parent (cv-acme.yml with `inherit: cv-fr.yml`) and only the fields
 # that differ; editing a parent rebuilds only what inherits it.

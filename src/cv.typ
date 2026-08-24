@@ -1,8 +1,30 @@
 #import "@preview/fontawesome:0.6.2": *
 
-// Per-locale defaults: section-title overrides (only the keys that differ from
-// the English defaults) and month abbreviations. Add a locale by adding a key.
+// Per-locale defaults: section titles, month abbreviations and other labels.
+// Values omitted from a locale keep their English fallback.
 #let _locales = (
+  de: (
+    titles: (
+      contact: "KONTAKT",
+      skills: "KOMPETENZEN",
+      values: "WERTE",
+      hobbies: "HOBBYS",
+      references: "REFERENZEN",
+      publications: "PUBLIKATIONEN",
+      summary: "PROFIL",
+      motivation: "MOTIVATION",
+      experience: "BERUFSERFAHRUNG",
+      education: "AUSBILDUNG",
+      awards: "AUSZEICHNUNGEN",
+      volunteering: "EHRENAMT",
+      courses: "WEITERBILDUNGEN",
+    ),
+    months: (
+      "Jan.", "Feb.", "März", "Apr.", "Mai", "Juni",
+      "Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dez.",
+    ),
+    present: "laufend",
+  ),
   fr: (
     titles: (
       skills: "COMPÉTENCES",
@@ -70,8 +92,9 @@
 /// - bullet-icon (str): FontAwesome icon name used for all list bullets.
 /// - address-icon (str): FontAwesome icon name used for the address field.
 /// - doi-icon (str): FontAwesome icon name used for DOI links in publications.
-/// - locale (str): "en" or "fr". Sets the default section titles and month
-///   names; both stay overridable via section-titles / month-names.
+/// - locale (str): "en", "fr", or "de". Sets the default section titles,
+///   month names, and ongoing-position label; titles and months stay
+///   overridable via section-titles / month-names.
 /// - month-names (array or auto): 12 month abbreviations; auto follows `locale`.
 /// - date-separator (str): String placed between start and end dates.
 /// - profiles-config (dictionary): Map of network name to (icon, url-base) dict.
@@ -168,6 +191,10 @@
       default: ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
     )
   } else { month-names }
+  let present-label = _locales.at(locale, default: (:)).at(
+    "present",
+    default: "Present",
+  )
 
   // --- Default theme ---
   let t = (
@@ -382,7 +409,7 @@
   let format-date(start, end) = {
     let fmt(date) = {
       if date == none { return "" }
-      if date == "present" { return "Present" }
+      if date == "present" { return present-label }
       let s = str(date)
       if s.len() == 7 {
         let parts = s.split("-")

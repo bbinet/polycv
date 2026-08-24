@@ -19,7 +19,7 @@ jobs:
 
       - name: Install fonts
         run: |
-          sudo apt-get install -y fonts-ibm-plex
+          sudo apt-get install -y fonts-ibm-plex poppler-utils
           mkdir -p ~/.local/share/fonts
           curl -fsSL -o /tmp/fa.zip \
             https://github.com/FortAwesome/Font-Awesome/releases/download/7.3.1/fontawesome-free-7.3.1-desktop.zip
@@ -35,3 +35,4 @@ jobs:
       - run: make prek-ci
       - run: make spell
       - run: make build-examples
+      - run: make test-locale
