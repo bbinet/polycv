@@ -12,13 +12,13 @@
 
 </div>
 
-A data-driven CV and cover letter package for Typst. **You write your resume in a `.yml` (or `.toml`) data file** - the template reads it and renders the PDF. Layout, language, section order, icons and per-company variants are all driven from the data, so day to day you only edit data. The `cv.typ` / `letter.typ` files in your project are entrypoints you compile; you *can* also edit them for advanced options (colours, fonts, social-network mapping), but you never touch the package itself (`src/`).
+A data-driven CV and cover letter package for Typst. **You write your resume in a `.yml` (or `.toml`) data file** - the template reads it and renders the PDF. Paper size, layout, language, section order, icons and per-company variants are all driven from the data, so day to day you only edit data. The `cv.typ` / `letter.typ` files in your project are entrypoints you compile; you *can* also edit them for advanced options (colours, fonts, social-network mapping), but you never touch the package itself (`src/`).
 
 ## Features
 
 - **Data-driven** - your whole CV lives in `cv.yml` / `letter.yml`; no source edits
 - **YAML or TOML** - pick either, identical output
-- **Configurable from the data** - layout, locale, section order, titles and icons all set in a `meta:` block
+- **Configurable from the data** - paper size, layout, locale, section order, titles and icons all set in a `meta:` block
 - **ATS-friendly layouts** - a single-column `ats-split` and a full-width header band, plus tagged PDF/UA-1 output
 - **Per-company variants** - a file `inherit:`s a base and overrides only what changes
 - **Schema-backed** - editor autocomplete/validation, `make validate`, and a generated field reference
@@ -102,11 +102,12 @@ Your data is **validated as it compiles** - an invalid field stops the build and
 
 ## Configure from your data (`meta:`)
 
-Presentation is controlled by an optional **`meta:` block** at the top of your data file - layout, language, section order, titles and icons. No `.typ` editing.
+Presentation is controlled by an optional **`meta:` block** at the top of your data file - paper size, layout, language, section order, titles and icons. No `.typ` editing.
 
 ```yaml
 meta:
   photo: photo.jpg     # path to your photo (relative to the data file)
+  paper: a4            # default: us-letter; accepts Typst paper names
   locale: fr           # section titles + month names in French
   header-band: true    # pick a layout (see below)
 cv:
@@ -184,7 +185,7 @@ cv:
 
 ### All `meta:` keys
 
-`photo`, `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`, `skill-order`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input header-band=true` (command-line inputs win over `meta:`).
+`photo`, `paper` (any [Typst paper name](https://typst.app/docs/reference/layout/page/#parameters-paper), e.g. `us-letter` or `a4`; default: `us-letter`), `locale` (`en`/`fr`), `header-band`, `header-band-summary`, `header-band-contact`, `ats-split`, `keywords-lines`, `entry-inline-meta` (company + location/dates on the title line), `show-timeline` (dots/line on experience & education), `sidebar-sections`, `main-sections`, `section-titles`, `section-icons`, `skill-order`. Any of these can also be passed on the command line, e.g. `typst compile cv.typ --input paper=a4` (command-line inputs win over `meta:`).
 
 ## Advanced: template parameters
 

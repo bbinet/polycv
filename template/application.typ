@@ -3,13 +3,16 @@
 
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let load = f => if fmt == "yaml" { yaml(f) } else { toml(f) }
-#let cd = load-cv-data(if fmt == "yaml" { "cv.yml" } else { "cv.toml" }, load).cv
+#let cv-data = load-cv-data(if fmt == "yaml" { "cv.yml" } else { "cv.toml" }, load)
+#let cd = cv-data.cv
+#let cv-meta = cv-data.at("meta", default: (:))
 #let ld = load-cv-data(if fmt == "yaml" { "letter.yml" } else { "letter.toml" }, load).letter
 
 // Document metadata (required for tagged PDF output, e.g. --pdf-standard ua-1)
 #set document(title: cd.name, author: cd.name)
 
 #cv(
+  paper: sys.inputs.at("paper", default: str(cv-meta.at("paper", default: "us-letter"))),
   // photo: image("assets/avatar.svg", width: 100%, height: 100%, fit: "cover"),
   name: cd.name,
   headline: cd.at("headline", default: none),

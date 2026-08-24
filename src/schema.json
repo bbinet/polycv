@@ -210,6 +210,10 @@
           "type": "string",
           "description": "Path to the profile photo, relative to the .typ file."
         },
+        "paper": {
+          "type": "string",
+          "description": "Typst paper name (for example, \"us-letter\" or \"a4\"). Defaults to US Letter."
+        },
         "locale": {
           "description": "Language for section titles and month names.",
           "enum": [

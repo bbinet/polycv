@@ -25,6 +25,7 @@
 #let entry-inline-meta = input-bool("entry-inline-meta")
 #let show-timeline = input-bool("show-timeline", default: true)
 #let locale = input-str("locale", default: "en")
+#let paper = input-str("paper", default: "us-letter")
 
 // Optional section ordering from meta (arrays); omitted keys use cv() defaults.
 // 0 = auto (one badge per line)
@@ -70,6 +71,7 @@
   entry-inline-meta: entry-inline-meta,
   show-timeline: show-timeline,
   locale: locale,
+  paper: paper,
   ..section-args,
   // Reorder/move sections, retitle or re-icon them from the meta block:
   //   sidebar-sections / main-sections / section-titles / section-icons

@@ -130,6 +130,8 @@ package polycv
 #CvMeta: {
 	// Path to the profile photo, relative to the .typ file.
 	photo?: string
+	// Typst paper name (for example, "us-letter" or "a4"). Defaults to US Letter.
+	paper?: string
 	// Language for section titles and month names.
 	locale?: "en" | "fr"
 	// Full-width header band layout (photo on its left).

@@ -23,7 +23,7 @@ else:
 # Preferred field order per def (schema.cue order); unknown fields appended.
 ORDER = {
     "CvMeta": [
-        "photo", "locale", "header-band", "header-band-summary",
+        "photo", "paper", "locale", "header-band", "header-band-summary",
         "header-band-contact", "ats-split", "entry-inline-meta",
         "keywords-lines", "sidebar-sections", "main-sections",
         "section-titles", "section-icons", "skill-order",

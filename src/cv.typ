@@ -49,6 +49,7 @@
 /// - hobbies (array, none): Hobbies list.
 /// - references (str, array, none): References text or list.
 /// - publications (array, none): Publication entries.
+/// - paper (str): Typst paper name, e.g. "us-letter" or "a4".
 /// - theme (dictionary): Override any theme colour. Keys: primary, secondary,
 ///   accent, links, sidebar-bg, header-bg, header-rule, sidebar-rule,
 ///   summary. header-bg fills the header band (white by default; none for
@@ -115,6 +116,7 @@
   hobbies: none,
   references: none,
   publications: none,
+  paper: "us-letter",
   theme: (:),
   text-size: (:),
   font-family: (:),
@@ -312,12 +314,20 @@
   )
 
   // --- Computed layout ---
-  let page-width = 8.5in
-  let content-width = page-width - layout.margin-left - layout.margin-right
-  let sidebar-absolute = content-width * layout.sidebar-width
-  let sidebar-bg-width = (
-    layout.margin-left + sidebar-absolute + gap.column-gutter / 2
-  )
+  // `page.width` is contextual and reflects the dimensions Typst assigns to
+  // the configured paper. Call this helper from a context expression.
+  let page-layout() = {
+    let content-width = page.width - layout.margin-left - layout.margin-right
+    let sidebar-absolute = content-width * layout.sidebar-width
+    (
+      page-width: page.width,
+      content-width: content-width,
+      sidebar-absolute: sidebar-absolute,
+      sidebar-bg-width: (
+        layout.margin-left + sidebar-absolute + gap.column-gutter / 2
+      ),
+    )
+  }
 
   // --- Per-section style overrides ---
   let text-fill = (summary: t.summary)
@@ -809,10 +819,13 @@
         ]
       }
     },
-    photo: () => {
+    photo: () => context {
       if photo != none {
+        let dims = page-layout()
         let sidebar-content-width = (
-          sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
+          dims.sidebar-absolute
+            - layout.sidebar-left-pad
+            - layout.sidebar-right-pad
         )
         let d = sidebar-content-width * photo-size
         pad(top: 0pt, bottom: gap.sidebar-section-below)[
@@ -1049,6 +1062,7 @@
 
   // --- Header band (full-width, above grid, page 1 only) ---
   let build-header-band() = context {
+    let dims = page-layout()
     let with-photo = photo != none
     // Right side: (name + headline | tags) row, then the contact line
     // spanning the full remaining width so it never gets squeezed by the
@@ -1095,9 +1109,9 @@
     // Two passes: its height depends on the width left over by the photo
     // itself, which is only known after a first guess.
     let photo-cell = if with-photo {
-      let d0 = measure(block(width: content-width, right-cell)).height
+      let d0 = measure(block(width: dims.content-width, right-cell)).height
       let d = measure(block(
-        width: content-width - gap.header-band-photo-gap - d0,
+        width: dims.content-width - gap.header-band-photo-gap - d0,
         right-cell,
       )).height
       (
@@ -1110,7 +1124,7 @@
     // from the band) ends exactly at the rule: the vertical sidebar rule
     // then starts right under it, forming a clean T junction.
     let band = block(
-      width: content-width,
+      width: dims.content-width,
       fill: none,
       stroke: none,
     )[
@@ -1136,7 +1150,7 @@
           dx: -layout.margin-left,
           dy: -layout.margin-top,
           rect(
-            width: page-width,
+            width: dims.page-width,
             height: layout.margin-top + h,
             fill: t.header-bg,
             stroke: none,
@@ -1150,6 +1164,7 @@
 
   // --- ATS split header (photo | name+headline+contacts+keywords, same column proportions as content) ---
   let build-ats-header() = context {
+    let dims = page-layout()
     // Right column: name, headline, keywords, and optionally the summary.
     let right-content = [
       #grid(
@@ -1194,10 +1209,12 @@
     // Photo grows with the header height (e.g. when the summary is shown),
     // floored at the default size and capped at the sidebar column width.
     let max-d = (
-      sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
+      dims.sidebar-absolute - layout.sidebar-left-pad - layout.sidebar-right-pad
     )
     let default-d = max-d * photo-size * layout.ats-photo-scale
-    let right-w = content-width * (100% - layout.sidebar-width) - gap.column-gutter
+    let right-w = (
+      dims.content-width * (100% - layout.sidebar-width) - gap.column-gutter
+    )
     let right-h = measure(block(width: right-w, right-content)).height
     let d = calc.min(calc.max(default-d, right-h), max-d)
     grid(
@@ -1291,30 +1308,37 @@
 
   // --- Page setup ---
   set page(
-    paper: "us-letter",
+    paper: paper,
     margin: (
       left: layout.margin-left,
       right: layout.margin-right,
       top: layout.margin-top,
       bottom: layout.margin-bottom,
     ),
-    background: if show-header-band {
-      // Header-band layouts drop the sidebar tint. An optional vertical
-      // rule between the columns can be enabled via theme.sidebar-rule;
-      // on page 1 the header's backing rect covers its top part.
-      if t.sidebar-rule != none {
-        place(top + left, dx: sidebar-bg-width - gap.sidebar-rule / 2, rect(
-          width: gap.sidebar-rule,
-          height: 100%,
-          fill: t.sidebar-rule,
+    background: context {
+      let dims = page-layout()
+      if show-header-band {
+        // Header-band layouts drop the sidebar tint. An optional vertical
+        // rule between the columns can be enabled via theme.sidebar-rule;
+        // on page 1 the header's backing rect covers its top part.
+        if t.sidebar-rule != none {
+          place(
+            top + left,
+            dx: dims.sidebar-bg-width - gap.sidebar-rule / 2,
+            rect(
+              width: gap.sidebar-rule,
+              height: 100%,
+              fill: t.sidebar-rule,
+            ),
+          )
+        }
+      } else {
+        place(top + left, rect(
+          width: dims.sidebar-bg-width,
+          height: 100% + layout.margin-top + layout.margin-bottom,
+          fill: t.sidebar-bg,
         ))
       }
-    } else {
-      place(top + left, rect(
-        width: sidebar-bg-width,
-        height: 100% + layout.margin-top + layout.margin-bottom,
-        fill: t.sidebar-bg,
-      ))
     },
   )
   set text(font: ff.body, size: ts.body, weight: fw.body)
