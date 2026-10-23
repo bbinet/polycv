@@ -302,6 +302,43 @@ Personal data files go in `content/` (gitignored). The **prefix before the first
 
 A `shell.nix` is provided for a reproducible environment with all tools and font paths pre-configured.
 
+### Releasing
+
+A release is cut with a single command and published to the Typst package
+registry automatically:
+
+```sh
+make release-patch   # or release-minor / release-major
+```
+
+That target runs `bump-my-version`, which rewrites the version in every file it
+tracks (`typst.toml`, the template imports, the schema URLs in the sample data,
+the README badge and the `typst init` command - the full list lives in
+`.bumpversion.toml`), commits that change, and creates a `v<version>` tag. It
+then pushes the commit and the tag. Start from a clean working tree, since the
+bump makes its own commit.
+
+Pushing a `v*.*.*` tag triggers `.github/workflows/release.yml`, which:
+
+1. creates the GitHub release for the tag;
+2. builds the package directory `packages/preview/polycv/<version>/` (the repo
+   minus dev-only files - see the exclude list in the workflow) and drops it
+   into a branch of the [`bbinet/typst-packages`](https://github.com/bbinet/typst-packages)
+   fork;
+3. force-pushes that branch, which **opens or updates in place** the pull
+   request against [`typst/packages`](https://github.com/typst/packages) - the
+   registry behind `@preview`. Force-pushing (rather than recreating the branch)
+   keeps an already-open PR and refreshes it instead of closing it.
+
+Once that PR is reviewed and merged upstream, `@preview/polycv:<version>`
+becomes installable for everyone.
+
+**Dry run / pipeline test:** tag a pre-release - a version containing `-`, e.g.
+`v0.3.0-rc.1`. The workflow still builds and pushes to the fork (so you can
+verify the tag trigger end to end) but skips the GitHub release and the upstream
+PR. The workflow can also be launched manually from the Actions tab
+(`workflow_dispatch`) with a version input and a `dry-run` toggle.
+
 ### Claude Code (nono sandbox)
 
 If you use [Claude Code](https://claude.ai/code) with the [nono](https://github.com/always-further/nono) sandbox, a ready-made profile is included at `.claude/nono-profile-claude-typst.json`. It grants the sandbox access to the Typst package cache and system fonts.
