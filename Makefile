@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := help
-.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema yaml-reference link unlink sync test-yaml prek prek-ci ci
+# bump-* / release-* are named explicitly (via static pattern rules below) so
+# shell completion can enumerate them; a bare bump-% / release-% pattern rule
+# exposes no concrete names.
+.PHONY: help build build-examples build-layouts validate watch thumbs clean spell schema yaml-reference link unlink sync test-yaml prek prek-ci ci bump-patch bump-minor bump-major release-patch release-minor release-major
 
 # ---------------------------------------------------------------------------
 # Version & platform
@@ -242,10 +245,10 @@ sync:
 	utpm ws sync
 	@echo "Done"
 
-bump-%:
+bump-patch bump-minor bump-major: bump-%:
 	bump-my-version bump $*
 
-release-%: bump-%
+release-patch release-minor release-major: release-%: bump-%
 	git push
 	git push --tags
 
