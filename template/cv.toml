@@ -1,4 +1,4 @@
-#:schema https://raw.githubusercontent.com/bbinet/polycv/v0.2.0/schema/schema.json
+#:schema https://raw.githubusercontent.com/bbinet/polycv/v0.2.1/schema/schema.json
 
 [cv]
 name     = "John Doe"

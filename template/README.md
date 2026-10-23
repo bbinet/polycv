@@ -39,7 +39,7 @@ shipped with the template (it would just be noise in the web app); download it
 into your project if you want it:
 
 ```sh
-curl -O https://raw.githubusercontent.com/bbinet/polycv/v0.2.0/extras/Makefile
+curl -O https://raw.githubusercontent.com/bbinet/polycv/v0.2.1/extras/Makefile
 ```
 
 ## Bilingual & per-company CVs

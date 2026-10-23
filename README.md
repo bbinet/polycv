@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![polycv - CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/v0.2.0/thumbnail-all.png)
+![polycv - CV and cover-letter preview](https://raw.githubusercontent.com/bbinet/polycv/v0.2.1/thumbnail-all.png)
 
 **A Typst package for not-a-boring CV - data-driven, fully configurable, two-column layout**
 
-[![Current version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/bbinet/polycv)
+[![Current version](https://img.shields.io/badge/version-0.2.1-blue)](https://github.com/bbinet/polycv)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Requires Typst 0.14 or newer](https://img.shields.io/badge/typst-%3E%3D0.14-orange)](https://typst.app)
 
@@ -57,7 +57,7 @@ A data-driven CV and cover letter package for Typst. **You write your resume in 
 ### 1. Create your project
 
 ```sh
-typst init @preview/polycv:0.2.0
+typst init @preview/polycv:0.2.1
 ```
 
 This creates a `polycv/` folder containing your data files (`cv.yml`, `letter.yml`, and their `.toml` equivalents) and the template entrypoints (`cv.typ`, `letter.typ`, `application.typ`). **You edit the data files; the `.typ` files you only compile.**
@@ -98,7 +98,7 @@ typst compile letter.typ
 typst compile application.typ        # CV + letter in one PDF
 ```
 
-Your data is **validated as it compiles** - an invalid field stops the build and names it (e.g. `/meta/locale`), everywhere including the web app. An optional [`Makefile`](https://github.com/bbinet/polycv/blob/v0.2.0/extras/Makefile) is available for local use (`make` builds incrementally, `make watch` live-previews); `FIELDS.md` lists every field. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
+Your data is **validated as it compiles** - an invalid field stops the build and names it (e.g. `/meta/locale`), everywhere including the web app. An optional [`Makefile`](https://github.com/bbinet/polycv/blob/v0.2.1/extras/Makefile) is available for local use (`make` builds incrementally, `make watch` live-previews); `FIELDS.md` lists every field. **Bilingual CV?** It's just two files - the prefix before the first `-` picks the template, so name them `cv-en.yml` and `cv-fr.yml` (set `locale` in each, see below); both build automatically. Same for letters (`letter-en.yml`, ...).
 
 ## Configure from your data (`meta:`)
 
@@ -116,7 +116,7 @@ cv:
 
 ### Pick a layout
 
-![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/v0.2.0/thumbnail-layouts.png)
+![The standard, header-band and ATS-split layouts side by side](https://raw.githubusercontent.com/bbinet/polycv/v0.2.1/thumbnail-layouts.png)
 
 *Left to right, all from the same data: **Standard** | **Header band** with the summary inside the band | **ATS split** rendered in French with inline entry dates and no timeline.*
 
@@ -371,7 +371,7 @@ additions since:
   and `make yaml-reference` (a generated, annotated list of every field)
 - **Per-company customization** via `inherit:` - a variant file overrides only
   what changes and deep-merges over its parent
-- **Incremental Makefiles**, including an optional [one for your own project](https://github.com/bbinet/polycv/blob/v0.2.0/extras/Makefile),
+- **Incremental Makefiles**, including an optional [one for your own project](https://github.com/bbinet/polycv/blob/v0.2.1/extras/Makefile),
   that rebuild only what changed (and, on a parent edit, only its inheritors)
 
 ## License

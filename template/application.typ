@@ -1,5 +1,5 @@
 // typst compile --root . template/application.typ
-#import "@preview/polycv:0.2.0": cv, letter, load-cv-data
+#import "@preview/polycv:0.2.1": cv, letter, load-cv-data
 
 #let fmt = sys.inputs.at("fmt", default: "yaml")
 #let load = f => if fmt == "yaml" { yaml(f) } else { toml(f) }

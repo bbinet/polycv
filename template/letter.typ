@@ -1,5 +1,5 @@
 // typst compile --root . template/letter.typ
-#import "@preview/polycv:0.2.0": letter, load-cv-data
+#import "@preview/polycv:0.2.1": letter, load-cv-data
 
 // Load, resolve `inherit:` and validate (loader closure defined here so paths
 // resolve against your project; invalid data stops the compile at the field).

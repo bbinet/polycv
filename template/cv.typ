@@ -1,5 +1,5 @@
 // typst compile --root . template/cv.typ
-#import "@preview/polycv:0.2.0": cv, load-cv-data
+#import "@preview/polycv:0.2.1": cv, load-cv-data
 
 // --- Load, resolve `inherit:` and validate the data. fmt/data-file come from
 // sys.inputs; the loader closure lives here so relative paths resolve against
