@@ -118,8 +118,8 @@ jobs:
             --repo typst/packages \
             --title "polycv:${{ steps.version.outputs.version }}" \
             --body "I am submitting
-          - [X] a new package
-          - [ ] an update for a package
+          - [ ] a new package
+          - [X] an update for a package
 
           Description: polycv ${{ steps.version.outputs.version }} - a data-driven two-column CV package for Typst.
 
