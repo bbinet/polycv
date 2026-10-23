@@ -583,6 +583,39 @@
     ]
   }
 
+  // The spaced middle dot used between meta parts (location, dates) and, in the
+  // sidebar education's left alignment, between the school and its meta.
+  let meta-sep = text(fill: t.accent)[#h(0.4em)·#h(0.4em)]
+
+  // Location · dates as a single inline run: 8pt accent text joined by a
+  // spaced middle dot. Shared by the main-column entries (placed flush right)
+  // and the sidebar education section (placed after the school). Returns none
+  // when both are empty.
+  let meta-inline(location, date) = {
+    let parts = ()
+    if location != none {
+      parts.push(text(
+        font: ff.entry-text,
+        size: ts.entry-location,
+        weight: fw.entry-location,
+        fill: t.accent,
+        location,
+      ))
+    }
+    if date != none and date != "" {
+      parts.push(text(
+        font: ff.entry-text,
+        size: ts.entry-date,
+        weight: fw.entry-date,
+        fill: t.accent,
+        date,
+      ))
+    }
+    if parts.len() > 0 {
+      parts.join(meta-sep)
+    }
+  }
+
   let entry(
     title,
     date,
@@ -605,25 +638,6 @@
     let entry-header = if entry-inline-meta {
       // Title line: company (left) with location · dates right-aligned;
       // the position then follows on its own line.
-      let meta-parts = ()
-      if location != none {
-        meta-parts.push(text(
-          font: ff.entry-text,
-          size: ts.entry-location,
-          weight: fw.entry-location,
-          fill: t.accent,
-          location,
-        ))
-      }
-      if date != none and date != "" {
-        meta-parts.push(text(
-          font: ff.entry-text,
-          size: ts.entry-date,
-          weight: fw.entry-date,
-          fill: t.accent,
-          date,
-        ))
-      }
       [
         // A single-line flow (title + 1fr + meta) rather than a 2-column grid:
         // the meta still sits flush right, but the line stays one linear text
@@ -633,7 +647,7 @@
           size: ts.entry-text,
           weight: fw.entry-title,
           title,
-        )#h(1fr)#meta-parts.join(text(fill: t.accent)[#h(0.4em)·#h(0.4em)])
+        )#h(1fr)#meta-inline(location, date)
         #if subtitle != none [
           #v(gap.main-entry-date-to-location)
           #text(
@@ -812,25 +826,30 @@
 
   // --- Sidebar section renderers ---
   let sidebar-renderers = (
-    // Compact education for the narrow sidebar: degree, institution,
-    // location and dates stacked, without timeline or right-aligned grid.
+    // Compact education for the narrow sidebar: school (institution) as the
+    // headline, degree below, location and dates alongside - inline on the
+    // headline when entry-inline-meta is set, stacked below otherwise.
     education: () => {
       if education != none {
         sidebar-section(si.education, st.education)[
           #show: section-text("education")
           #for edu in education [
-            #text(weight: fw.skill-group)[
-              #edu.at("degree", default: edu.at("company", default: ""))
-            ] \
-            #let inst = edu.at("summary", default: edu.at("institution", default: none))
-            #if inst != none [ #inst \ ]
+            // The school (institution) is the headline; the degree/explanation
+            // follows below and may span several lines (a YAML block scalar |
+            // keeps its newlines, which we turn into explicit line breaks).
+            #let school = edu.at("institution", default: edu.at("summary", default: ""))
+            #let detail = edu.at("degree", default: edu.at("company", default: none))
+            #let detail-body = if detail != none {
+              detail.split("\n").map(s => s.trim()).filter(s => s != "").join(linebreak())
+            }
             #let loc = edu.at("location", default: none)
             #let d = format-date(edu.at("start_date", default: none), edu.at("end_date", default: none))
-            #if loc != none or d != "" [
-              #text(fill: t.accent)[
-                #loc#if loc != none and d != "" [ · ]#d
-              ]
-            ]
+            #let meta = meta-inline(loc, d)
+            // School is the headline; with entry-inline-meta the location · dates
+            // follow it on the same line, joined by a middle dot, else below.
+            #text(weight: fw.skill-group)[#school]#if entry-inline-meta and meta != none [#meta-sep#meta] \
+            #if detail-body != none [ #detail-body \ ]
+            #if not entry-inline-meta and meta != none [ #meta ]
             #v(gap.sidebar-skill-between-items)
           ]
         ]
